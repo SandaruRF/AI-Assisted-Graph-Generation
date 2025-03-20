@@ -7,7 +7,6 @@ load_dotenv()
 
 class Settings(BaseSettings):
     # API Keys
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY")
 
     # App Settings
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
