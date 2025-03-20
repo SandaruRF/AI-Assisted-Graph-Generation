@@ -2,6 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.intent import router as intent_router
 
+from app.agents.sql_agent.metadata import router as metadata_router
+from app.agents.sql_agent.sql_query import router as query_router
+from app.agents.sql_agent.database_api import router as get_database_router
+
+
+
 app = FastAPI(
     title="AI Assisted Graph Generation - VizGen",
     description="An AI-powered system for generating visualizations, insights, and explanations from text data.",
@@ -17,6 +23,11 @@ app.add_middleware(
 )
 
 app.include_router(intent_router, prefix="/api", tags=["Intent Classification"])
+
+app.include_router(query_router)
+app.include_router(metadata_router)
+app.include_router(get_database_router)
+
 
 @app.get("/")
 async def root():
