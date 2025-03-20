@@ -8,10 +8,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history to access all branches
+
+      - name: Fetch dev branch
+        run: git fetch origin dev:dev  # Ensure 'dev' branch exists
 
       - name: Get commit messages
         run: |
-          commits=$(git log --format="%s" origin/${{ github.base_ref }}..HEAD)
+          commits=$(git log --format="%s" dev..HEAD)  # Compare with 'dev'
           echo "$commits" > commits.txt
 
       - name: Validate commit messages
