@@ -1,0 +1,25 @@
+name: "Check JIRA Commit Messages"
+
+on: [push, pull_request]
+
+jobs:
+  check-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get commit messages
+        run: |
+          commits=$(git log --format="%s" origin/${{ github.base_ref }}..HEAD)
+          echo "$commits" > commits.txt
+
+      - name: Validate commit messages
+        run: |
+          JIRA_PATTERN="^\[AAGG-[0-9]+\] .+"
+          while read -r commit; do
+            if ! [[ "$commit" =~ $JIRA_PATTERN ]]; then
+              echo "ERROR: Invalid commit message: $commit"
+              exit 1
+            fi
+          done < commits.txt
