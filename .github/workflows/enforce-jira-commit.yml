@@ -9,22 +9,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history to access all branches
+          fetch-depth: 0  # Fetch full history for proper comparison
 
       - name: Fetch dev branch
-        run: git fetch origin dev:dev  # Ensure 'dev' branch exists
+        run: git fetch origin dev:dev  # Ensure 'dev' branch is available
 
       - name: Get commit messages
         run: |
-          commits=$(git log --format="%s" dev..HEAD)  # Compare with 'dev'
-          echo "$commits" > commits.txt
-
-      - name: Validate commit messages
-        run: |
           JIRA_PATTERN="^\[AAGG-[0-9]+\] .+"
-          while read -r commit; do
-            if ! [[ "$commit" =~ $JIRA_PATTERN ]]; then
+          
+          # Get commit messages excluding merge commits
+          commits=$(git log --no-merges --format="%s" dev..HEAD)
+          
+          echo "Commits to validate:"
+          echo "$commits"
+
+          # Validate commit messages
+          while IFS= read -r commit; do
+            if [[ ! "$commit" =~ $JIRA_PATTERN ]]; then
               echo "ERROR: Invalid commit message: $commit"
               exit 1
             fi
-          done < commits.txt
+          done <<< "$commits"
