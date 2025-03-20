@@ -73,3 +73,10 @@ pip-delete-this-directory.txt
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Virtual environment
+venv/
+
+# IDE and editor directories and files
+.vscode/
+.idea/
