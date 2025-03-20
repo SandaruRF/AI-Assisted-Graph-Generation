@@ -19,14 +19,14 @@ jobs:
           JIRA_PATTERN="^\[AAGG-[0-9]+\] .+"
           
           # Get commit messages excluding merge commits
-          commits=$(git log --no-merges --format="%s" dev..HEAD)
-          
+          commits=$(git log --no-merges --format="%s" dev..HEAD | grep -vE "^Merge ")
+
           echo "Commits to validate:"
           echo "$commits"
 
           # Validate commit messages
           while IFS= read -r commit; do
-            if [[ ! "$commit" =~ $JIRA_PATTERN ]]; then
+            if [[ -n "$commit" && ! "$commit" =~ $JIRA_PATTERN ]]; then
               echo "ERROR: Invalid commit message: $commit"
               exit 1
             fi
