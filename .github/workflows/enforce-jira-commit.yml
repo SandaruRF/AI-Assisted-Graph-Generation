@@ -26,13 +26,6 @@ jobs:
 
           # Validate commit messages
           while IFS= read -r commit; do
-            # Skip workflow-related commits
-            if git log -1 --name-only --pretty=format: "$commit" | grep -q "^.github/workflows/"; then
-              echo "Skipping commit related to workflows: $commit"
-              continue
-            fi
-
-            # Validate commit messages
             if [[ -n "$commit" && ! "$commit" =~ $JIRA_PATTERN ]]; then
               echo "ERROR: Invalid commit message: $commit"
               exit 1
