@@ -19,11 +19,9 @@ async def generate_sql_query(db: Session, nl_query):
     {nl_query}
 
     SQL Query:"""
-
-    response = client.models.generate_content(
-        model="gemini-2.0-flash",
-        contents=prompt,
-    )
+    model = genai.GenerativeModel(model_name='gemini-1.5-flash')
+    response = model.generate_content(prompt)
+    
 
     sql_query = re.sub(r"```sql|```", "", response.text).strip()
     sql_query = sql_query.replace("\n", " ")

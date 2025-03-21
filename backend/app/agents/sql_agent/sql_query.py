@@ -9,7 +9,7 @@ router = APIRouter()
 @router.get("/sql_query")
 async def get_sql_query(db: Session = Depends(get_db)):
     try:
-        nl_query = "Give me all the details of the customers" #user NL Query
+        nl_query = "Give me number of customers in the database" #user NL Query
         sql_query = await generate_sql_query(db, nl_query)
         if not sql_query:
             raise HTTPException(status_code=400, detail="Failed to generate SQL query.")
