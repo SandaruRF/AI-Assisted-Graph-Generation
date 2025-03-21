@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.models.database_model import Database
-from app.models.database_model import DatabaseType
+from app.models.database_model import Database, DatabaseType
+from app.api.database import get_db, get_metadata
 
 router = APIRouter()
 
@@ -23,15 +23,22 @@ def generate_connection_string(db: Database) -> str:
     elif db_type == DatabaseType.Redshift:
         return f"redshift+psycopg2://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
     
-    return "Unsupported database type"
+    raise ValueError("Unsupported database type")
 
-@router.post("/get_database/")
+async def get_connection_string(db: Database) -> str:
+    return generate_connection_string(db)
+
+@router.post("/connect_database/")
 async def create_database_connection(db: Database):
     try:
         connection_string = generate_connection_string(db)
+        # Test database connection
+        metadata = get_metadata(connection_string)  # Ensures the database is reachable
+
         return {
-            "message": "Database connection string generated successfully",
-            "connection_string": connection_string
+            "message": "Database connection successful",
+            "connection_string": connection_string,
+            "tables": list(metadata.tables.keys())  # List database tables as a response
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating connection string: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error connecting to database: {str(e)}")
