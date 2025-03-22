@@ -25,11 +25,11 @@ DEFAULT_PORTS: Dict[DatabaseType, int] = {
 class Database(BaseModel):
     type: List[DatabaseType]
     host: str ="localhost"
-    port: int = Field(default=None)  # Default will be set dynamically
+    port: int = Field(default=None)  
     user: str = "root"
     password: str = "root"
     database: str = "chinook"
-    tls_ssl: bool = False  # Renamed for clarity
+    tls_ssl: bool = False  
     remember: bool = False
 
     def set_default_port(self):
