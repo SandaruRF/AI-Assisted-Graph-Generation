@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -7,173 +7,322 @@ import {
   Button,
   Snackbar,
   Alert,
+  FormControlLabel,
+  Checkbox,
+  Paper,
+  Grid
 } from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
+import MemoryIcon from "@mui/icons-material/Memory";
 
-const EditDatabaseConnection = () => {
+const databaseTypes = [
+  "MySQL",
+  "PostgreSQL",
+  "SQL Server",
+  "MariaDB",
+  "Oracle DB",
+  "SQLite",
+  "Redshift",
+];
+
+const NewConnection = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
-
-  const connections = useMemo(() => [
-    {
-      id: 1,
-      name: "eCommerce Database",
-      host: "localhost",
-      port: "1433",
-      databaseName: "PostgreSQL",
-      username: "Sandaru",
-      
-    },
-    {
-      id: 2,
-      name: "EagleCart Database",
-      host: "localhost",
-      port: "1433",
-      databaseName: "SQLite",
-      username: "Sandaru",
-      
-    },
-    {
-      id: 3,
-      name: "eCommerce Database",
-      host: "localhost",
-      port: "1433",
-      databaseName: "ComShopDB",
-      username: "Sandaru",
-      
-    },
-  ], []);
-
+  const [selectedDbType, setSelectedDbType] = useState("");
+  const [showForm, setShowForm] = useState(false);
   const [connectionDetails, setConnectionDetails] = useState({
     name: "",
+    connectionString: "",
     host: "",
     port: "",
-    databaseName: "",
+    database: "",
     username: "",
-    // Removed password from state
+    password: "",
+    ssl: false,
+    remember: false,
   });
-
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  useEffect(() => {
-    const connection = connections.find((conn) => conn.id === parseInt(id));
-    if (connection) {
-      // Destructure password out of the connection object
-      const { password, ...connectionWithoutPassword } = connection;
-      setConnectionDetails(connectionWithoutPassword);
-    } else {
-      setError("Connection not found.");
-    }
-  }, [id, connections]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setConnectionDetails({
-      ...connectionDetails,
-      [name]: value,
-    });
+    setConnectionDetails({ ...connectionDetails, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setConnectionDetails({ ...connectionDetails, [name]: checked });
+  };
 
+  const handleTestConnection = async () => {
+    setError("");
+    setSuccess("Testing connection...");
     try {
-      setSuccess("Updating connection...");
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      setSuccess("Connection updated successfully!");
-      navigate("/existing-connections");
+      setSuccess("Connection test successful!");
     } catch (err) {
-      setError("Failed to update connection. Please try again.");
+      setError("Connection test failed");
     }
+  };
+
+  const handleSaveConnection = () => {
+    navigate("/existing-connections");
   };
 
   return (
-    <Box sx={{ maxWidth: 500, margin: "auto", mt: 4 }}>
-      <Typography variant="h4" fontWeight="600" mb={3}>
-        Edit Database Connections
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Name"
-          name="name"
-          value={connectionDetails.name}
-          onChange={handleInputChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Host"
-          name="host"
-          value={connectionDetails.host}
-          onChange={handleInputChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Port"
-          name="port"
-          value={connectionDetails.port}
-          onChange={handleInputChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Database Name"
-          name="databaseName"
-          value={connectionDetails.databaseName}
-          onChange={handleInputChange}
-          margin="normal"
-          required
-        />
-        <TextField
-          fullWidth
-          label="Username"
-          name="username"
-          value={connectionDetails.username}
-          onChange={handleInputChange}
-          margin="normal"
-          required
-        />
-
-        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
-          <Button type="submit" variant="contained" color="primary">
-            Save Changes
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary.light"
-            onClick={() => navigate("/existing-connections")}
-          >
-            Cancel
-          </Button>
-          
+    <Box sx={{ maxWidth: 850, margin: "auto", p: 3 }}>
+      <Paper sx={{ p: 3, mb: 3 }}>
+        {/* Header Section */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h4" fontWeight="600" mb={3}>
+            Edit Database Connection
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+            <Button
+              variant={!showForm ? "contained" : "outlined"}
+              onClick={() => setShowForm(false)}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                px: 3,
+                py: 1,
+                fontSize: '0.875rem'
+              }}
+            >
+              Connection String
+            </Button>
+            <Button
+              variant={showForm ? "contained" : "outlined"}
+              onClick={() => setShowForm(true)}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                px: 3,
+                py: 1,
+                fontSize: '0.875rem'
+              }}
+            >
+              Connection Form
+            </Button>
+          </Box>
         </Box>
-      </form>
 
-      {/* Success and Error Messages */}
-      {success && (
-        <Snackbar open={true} autoHideDuration={6000} onClose={() => setSuccess("")}>
-          <Alert severity="success" sx={{ width: "100%" }}>
-            {success}
-          </Alert>
-        </Snackbar>
-      )}
+        {/* Database Type Selection */}
+        <Box sx={{ 
+          display: "flex",
+          flexWrap: "nowrap",
+          overflowX: "auto",
+          gap: 1, 
+          mb: 3,
+          pb: 1,
+          "&::-webkit-scrollbar": {
+            height: "4px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "action.selected",
+            borderRadius: "2px",
+          }
+        }}>
+          {databaseTypes.map((dbType) => (
+            <Button
+              key={dbType}
+              variant="contained"
+              color={selectedDbType === dbType ? "primary" : "inherit"}
+              onClick={() => setSelectedDbType(dbType)}
+              sx={{
+                flexShrink: 0,
+                textTransform: 'none',
+                fontWeight: 500,
+                px: 2.5,
+                py: 0.75,
+                fontSize: '0.875rem',
+                boxShadow: 'none',
+                backgroundColor: selectedDbType === dbType 
+                  ? 'primary.main' 
+                  : 'action.hover',
+                '&:hover': {
+                  backgroundColor: selectedDbType === dbType 
+                    ? 'primary.dark' 
+                    : 'action.selected',
+                  boxShadow: 'none'
+                }
+              }}
+            >
+              {dbType}
+            </Button>
+          ))}
+        </Box>
 
-      {error && (
-        <Snackbar open={true} autoHideDuration={6000} onClose={() => setError("")}>
-          <Alert severity="error" sx={{ width: "100%" }}>
-            {error}
-          </Alert>
-        </Snackbar>
-      )}
+        {/* Form Section */}
+        {!showForm ? (
+          <>
+            <TextField
+              fullWidth
+              label="Connection Name"
+              name="name"
+              value={connectionDetails.name}
+              onChange={handleInputChange}
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Connection String"
+              name="connectionString"
+              value={connectionDetails.connectionString}
+              onChange={handleInputChange}
+              margin="normal"
+            />
+          </>
+        ) : (
+          <Grid container spacing={0.5}> 
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Connection Name"
+                name="name"
+                value={connectionDetails.name}
+                onChange={handleInputChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Host"
+                name="host"
+                value={connectionDetails.host}
+                onChange={handleInputChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Port"
+                name="port"
+                type="number"
+                value={connectionDetails.port}
+                onChange={handleInputChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Database Name"
+                name="database"
+                value={connectionDetails.database}
+                onChange={handleInputChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="User name"
+                name="username"
+                value={connectionDetails.username}
+                onChange={handleInputChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                type="password"
+                value={connectionDetails.password}
+                onChange={handleInputChange}
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+        )}
+
+        {/* SSL & Remember Connection */}
+        <Box sx={{ mt: 2 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="ssl"
+                checked={connectionDetails.ssl}
+                onChange={handleCheckboxChange}
+                icon={<LockIcon />}
+                checkedIcon={<LockIcon />}
+              />
+            }
+            label="Enable SSL/TLS"
+            sx={{ display: "block" }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="remember"
+                checked={connectionDetails.remember}
+                onChange={handleCheckboxChange}
+                icon={<MemoryIcon />}
+                checkedIcon={<MemoryIcon />}
+              />
+            }
+            label="Remember connection"
+            sx={{ display: "block" }}
+          />
+        </Box>
+
+        {/* Action Buttons */}
+        <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={handleTestConnection}
+            sx={{
+              flexShrink: 0,
+              textTransform: 'none',
+              fontWeight: 500,
+              px: 2.5,
+              py: 0.75,
+              fontSize: '0.875rem',
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: 'primary.dark'
+              }
+            }}
+          >
+            Test Connection
+          </Button>
+          <Button 
+            variant="contained" 
+            color="success" 
+            onClick={handleSaveConnection}
+            sx={{
+              flexShrink: 0,
+              textTransform: 'none',
+              fontWeight: 500,
+              px: 2.5,
+              py: 0.75,
+              fontSize: '0.875rem',
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: 'success.dark'
+              }
+            }}
+          >
+            Save Connection
+          </Button>
+        </Box>
+      </Paper>
+
+      {/* Notifications */}
+      <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess("")}>
+        <Alert severity="success">{success}</Alert>
+      </Snackbar>
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError("")}>
+        <Alert severity="error">{error}</Alert>
+      </Snackbar>
     </Box>
   );
 };
 
-export default EditDatabaseConnection;
+export default NewConnection;

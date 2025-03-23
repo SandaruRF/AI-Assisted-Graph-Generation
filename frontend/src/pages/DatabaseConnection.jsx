@@ -69,47 +69,90 @@ const NewConnection = () => {
   };
 
   return (
-   
-    <Box sx={{ maxWidth: 800, margin: "auto", p: 3 }}>
-       <Paper sx={{ p: 3, mb: 3 }}>
-      {/* Header Section */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" fontWeight="600" mb={3}>
-                New Connection
-        </Typography>
-        <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-          <Button
-            variant={!showForm ? "contained" : "outlined"}
-            onClick={() => setShowForm(false)}
-          >
-            Connection String
-          </Button>
-          <Button
-            variant={showForm ? "contained" : "outlined"}
-            onClick={() => setShowForm(true)}
-          >
-            Connection Form
-          </Button>
+    <Box sx={{ maxWidth: 850, margin: "auto", p: 3 }}>
+      <Paper sx={{ p: 3, mb: 3 }}>
+        {/* Header Section */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h4" fontWeight="600" mb={3}>
+            New Connection
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+            <Button
+              variant={!showForm ? "contained" : "outlined"}
+              onClick={() => setShowForm(false)}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                px: 3,
+                py: 1,
+                fontSize: '0.875rem'
+              }}
+            >
+              Connection String
+            </Button>
+            <Button
+              variant={showForm ? "contained" : "outlined"}
+              onClick={() => setShowForm(true)}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                px: 3,
+                py: 1,
+                fontSize: '0.875rem'
+              }}
+            >
+              Connection Form
+            </Button>
+          </Box>
         </Box>
-      </Box>
 
-      {/* Database Type Selection */}
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 3 }}>
-        {databaseTypes.map((dbType) => (
-          <Button
-            key={dbType}
-            variant={selectedDbType === dbType ? "contained" : "outlined"}
-            color={selectedDbType === dbType ? "primary" : "default"}
-            onClick={() => setSelectedDbType(dbType)}
-          >
-            {dbType}
-          </Button>
-        ))}
-      </Box>
+        {/* Database Type Selection */}
+        <Box sx={{ 
+          display: "flex",
+          flexWrap: "nowrap",
+          overflowX: "auto",
+          gap: 1, 
+          mb: 3,
+          pb: 1,
+          "&::-webkit-scrollbar": {
+            height: "4px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "action.selected",
+            borderRadius: "2px",
+          }
+        }}>
+          {databaseTypes.map((dbType) => (
+            <Button
+              key={dbType}
+              variant="contained"
+              color={selectedDbType === dbType ? "primary" : "inherit"}
+              onClick={() => setSelectedDbType(dbType)}
+              sx={{
+                flexShrink: 0,
+                textTransform: 'none',
+                fontWeight: 500,
+                px: 2.5,
+                py: 0.75,
+                fontSize: '0.875rem',
+                boxShadow: 'none',
+                backgroundColor: selectedDbType === dbType 
+                  ? 'primary.main' 
+                  : 'action.hover',
+                '&:hover': {
+                  backgroundColor: selectedDbType === dbType 
+                    ? 'primary.dark' 
+                    : 'action.selected',
+                  boxShadow: 'none'
+                }
+              }}
+            >
+              {dbType}
+            </Button>
+          ))}
+        </Box>
 
-      {/* Form Section */}
-      
-      
+        {/* Form Section */}
         {!showForm ? (
           <>
             <TextField
@@ -130,7 +173,7 @@ const NewConnection = () => {
             />
           </>
         ) : (
-          <Grid container spacing={2}>
+          <Grid container spacing={0.5}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -228,10 +271,44 @@ const NewConnection = () => {
 
         {/* Action Buttons */}
         <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
-          <Button variant="contained" color="primary" onClick={handleTestConnection}>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={handleTestConnection}
+            sx={{
+              flexShrink: 0,
+              textTransform: 'none',
+              fontWeight: 500,
+              px: 2.5,
+              py: 0.75,
+              fontSize: '0.875rem',
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: 'primary.dark'
+              }
+            }}
+          >
             Test Connection
           </Button>
-          <Button variant="contained" color="success" onClick={handleSaveConnection}>
+          <Button 
+            variant="contained" 
+            color="success" 
+            onClick={handleSaveConnection}
+            sx={{
+              flexShrink: 0,
+              textTransform: 'none',
+              fontWeight: 500,
+              px: 2.5,
+              py: 0.75,
+              fontSize: '0.875rem',
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: 'success.dark'
+              }
+            }}
+          >
             Save Connection
           </Button>
         </Box>
