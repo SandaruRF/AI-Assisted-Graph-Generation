@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
-from app.models.database_model import DatabaseType
+from app.main import app  # Changed to absolute import
+from app.models.database_model import DatabaseType  # Changed to absolute import
 
 client = TestClient(app)
 
@@ -10,12 +10,12 @@ client = TestClient(app)
 def sample_db():
     """Returns a sample database connection payload."""
     return {
-        "type": [DatabaseType.SQLITE],
+        "type": [DatabaseType.MYSQL],
         "user": "root",
         "password": "root",
         "host": "localhost",
         "port": "3306",
-        "database": "chinook"
+        "database": "sakila"
     }
 
 
@@ -30,8 +30,8 @@ def test_connect_database_success(sample_db):
 def test_connect_database_invalid():
     """Test with an invalid database type"""
     invalid_db = {
-        "type": ["UNKNOWN"],
-        "user": "root",
+        "type": ["mysql"],
+        "user": "sample",
         "password": "root",
         "host": "localhost",
         "port": "3306",
