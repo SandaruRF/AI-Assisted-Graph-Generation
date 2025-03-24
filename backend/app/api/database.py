@@ -1,8 +1,9 @@
-# from sqlalchemy import create_engine, MetaData
-# from sqlalchemy.orm import sessionmaker
-# from sqlalchemy.exc import SQLAlchemyError
-# from app.utils.logging import logger
-# from fastapi import HTTPException
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import sessionmaker, close_all_sessions
+from sqlalchemy.exc import SQLAlchemyError
+from app.config import  DATABASE_URL
+from app.utils.logging import logger
+#from app.agents.sql_agent.databaseApi import GLOBAL_CONNECTION_STRING
 
 
 def create_dynamic_engine(connection_string: str):
@@ -20,50 +21,9 @@ def create_dynamic_engine(connection_string: str):
         raise RuntimeError("Error initializing database engine.")
 
 
-# def get_dynamic_session(connection_string: str):
-#     """Creates a new SQLAlchemy session factory dynamically."""
-#     engine = create_dynamic_engine(connection_string)
-#     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-#     return SessionLocal
-
-
-# def get_db(connection_string: str):
-#     """Yields a database session dynamically based on user input."""
-#     SessionLocal = get_dynamic_session(connection_string)
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     except SQLAlchemyError as e:
-#         logger.error(f"Database session error: {str(e)}")
-#         raise HTTPException(status_code=500, detail="Database session error.")
-#     finally:
-#         db.close()
-
-
-# def get_metadata(connection_string: str):
-#     """Retrieves metadata dynamically based on the provided connection string."""
-#     engine = None
-#     try:
-#         engine = create_dynamic_engine(connection_string)
-#         metadata = MetaData()
-#         metadata.reflect(bind=engine)
-#         logger.info("Metadata retrieved successfully.")
-#         return metadata
-#     except SQLAlchemyError as e:
-#         logger.error(f"Error reflecting metadata: {str(e)}")
-#         raise RuntimeError("Error retrieving database metadata.")
-#     finally:
-#         if engine:
-#             engine.dispose()
-
-
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker, close_all_sessions
-from sqlalchemy.exc import SQLAlchemyError
-from app.config import DATABASE_URL
-from app.utils.logging import logger
-
+#DATABASE_URL = GLOBAL_CONNECTION_STRING
 if DATABASE_URL is None:
+    #DATABASE_URL = "mysql+pymysql://root:root@localhost/chinook"
     logger.error("DATABASE_URL environment variable is not set!")
     raise ValueError("DATABASE_URL environment variable is not set!")
 

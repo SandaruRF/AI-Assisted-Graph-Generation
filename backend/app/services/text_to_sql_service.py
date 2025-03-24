@@ -2,10 +2,10 @@ import google.generativeai as genai
 from sqlalchemy.orm import Session
 from app.agents.sql_agent.metadata import get_db_metadata
 import re
-from app.config import GEMINI_API
+from app.config import settings
 from app.utils.logging import logger
 
-client = genai.configure(api_key=GEMINI_API)
+client = genai.configure(api_key=settings.GEMINI_API_KEY)
 
 async def generate_sql_query(db: Session, nl_query):
     schema_info = await get_db_metadata(db)

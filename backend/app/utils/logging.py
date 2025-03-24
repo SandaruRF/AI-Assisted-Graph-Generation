@@ -1,4 +1,10 @@
 import logging
+from app.config import settings
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=settings.LOG_LEVEL)
 logger = logging.getLogger(__name__)
+
+
+
+
+

@@ -33,7 +33,7 @@ async def create_database_connection(db: Database):
     global GLOBAL_CONNECTION_STRING
     try:
         connection_string = generate_connection_string(db)
-        GLOBAL_CONNECTION_STRING = connection_string  # Store globally
+        GLOBAL_CONNECTION_STRING = connection_string 
 
         # Test connection
         engine = create_engine(connection_string)
