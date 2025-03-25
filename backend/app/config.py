@@ -11,18 +11,16 @@ class Settings(BaseSettings):
     DATABASE_URL: str  = GLOBAL_CONNECTION_STRING or "mysql+pymysql://root:root@localhost/chinook"
     
     # App Settings
-    DEBUG: bool = False  
-    LOG_LEVEL: str = "INFO"
+    DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
+    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
 
-    class Config:
-        env_file = ".env"  
-        env_file_encoding = "utf-8"
+    
 
 
-model_config = ConfigDict(
-    env_file=".env",
-    env_file_encoding="utf-8"
-)
+    model_config = ConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8"
+    )
 
 settings = Settings()
 
