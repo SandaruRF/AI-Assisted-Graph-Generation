@@ -19,7 +19,6 @@
 4. The LLM generates SQL based on the metadata and structured prompt.
 5. Run SQL query in the external database.
 
-
 ```json
 {
   "query": "SELECT COUNT(*) FROM customer;",
@@ -30,4 +29,3 @@
   ]
 }
 ```
-

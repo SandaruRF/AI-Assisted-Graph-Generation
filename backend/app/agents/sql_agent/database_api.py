@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import create_engine, MetaData
 from app.models.database_model import Database, DatabaseType
+from app.utils.logging import logger
 
 router = APIRouter()
 
@@ -40,10 +41,12 @@ async def create_database_connection(db: Database):
         metadata = MetaData()
         metadata.reflect(bind=engine)
 
+        logger.info("Database connection successful.")
         return {
             "message": "Database connection successful",
             "connection_string": connection_string,
             "tables": list(metadata.tables.keys())
         }
     except Exception as e:
+        logger.error(f"Database connection error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error connecting to database: {str(e)}")

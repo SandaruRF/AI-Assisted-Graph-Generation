@@ -3,8 +3,6 @@ from sqlalchemy.orm import sessionmaker, close_all_sessions
 from sqlalchemy.exc import SQLAlchemyError
 from app.config import  DATABASE_URL
 from app.utils.logging import logger
-#from app.agents.sql_agent.databaseApi import GLOBAL_CONNECTION_STRING
-
 
 def create_dynamic_engine(connection_string: str):
     """Creates a new SQLAlchemy engine dynamically based on user input."""
@@ -19,23 +17,7 @@ def create_dynamic_engine(connection_string: str):
     except SQLAlchemyError as e:
         logger.error(f"Error creating engine: {str(e)}")
         raise RuntimeError("Error initializing database engine.")
-
-
-#DATABASE_URL = GLOBAL_CONNECTION_STRING
-if DATABASE_URL is None:
-    #DATABASE_URL = "mysql+pymysql://root:root@localhost/chinook"
-    logger.error("DATABASE_URL environment variable is not set!")
-    raise ValueError("DATABASE_URL environment variable is not set!")
-
-logger.info(f"Using database URL: {DATABASE_URL}")
-
-# Close all previous database sessions to ensure no lingering connections
-close_all_sessions()
-
-engine = create_engine(DATABASE_URL)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
+    
 def get_db():
     db = SessionLocal()
     try:
@@ -53,3 +35,18 @@ def get_metadata(*args):
     except SQLAlchemyError as e:
         logger.error(f"Error reflecting metadata: {str(e)}")
         raise RuntimeError("Error retrieving database metadata.")
+
+#DATABASE_URL = GLOBAL_CONNECTION_STRING
+if DATABASE_URL is None:
+    #DATABASE_URL = "mysql+pymysql://root:root@localhost/chinook"
+    logger.error("DATABASE_URL environment variable is not set!")
+    raise ValueError("DATABASE_URL environment variable is not set!")
+
+logger.info(f"Using database URL: {DATABASE_URL}")
+
+# Close all previous database sessions to ensure no lingering connections
+close_all_sessions()
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
