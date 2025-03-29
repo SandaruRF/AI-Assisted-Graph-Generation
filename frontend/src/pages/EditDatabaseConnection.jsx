@@ -74,7 +74,7 @@ const NewConnection = () => {
         {/* Header Section */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="h4" fontWeight="600" mb={3}>
-            New Connection
+            Edit Database Connection
           </Typography>
           <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
             <Button
@@ -173,7 +173,7 @@ const NewConnection = () => {
             />
           </>
         ) : (
-          <Grid container spacing={0.5}>
+          <Grid container spacing={0.5}> 
             <Grid item xs={12}>
               <TextField
                 fullWidth
