@@ -25,7 +25,7 @@ const ExistingDatabaseConnection = () => {
       port: "1433",
       database: "ComShopDB",
       user: "Sandaru",
-      type: "PostgreSQL"
+      type: "PostgreSQL",
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ const ExistingDatabaseConnection = () => {
       port: "1433",
       database: "EagleCartDB",
       user: "Sandaru",
-      type: "SQLite"
+      type: "SQLite",
     },
     {
       id: 3,
@@ -43,51 +43,39 @@ const ExistingDatabaseConnection = () => {
       port: "1433",
       database: "ComShopDB",
       user: "Sandaru",
-      type: "MySQL"
-    }
+      type: "MySQL",
+    },
   ]);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredConnections = connections.filter(conn =>
+  const filteredConnections = connections.filter((conn) =>
     conn.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleTestConnection = async (connection) => {
-    try {
-      setSuccess(`Testing connection to ${connection.name}...`);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSuccess(`Connection to ${connection.name} successful!`);
-    } catch (err) {
-      setError(`Failed to connect to ${connection.name}. Please check your details.`);
-    }
+  const handleConnectClick = () => {
+    setSuccess("Database connected successfully!");
   };
 
   return (
-    <Box sx={{ maxWidth: 1200, margin: 'auto', p: 3 }}>
+    <Box sx={{ maxWidth: 1200, margin: "auto", p: 3 }}>
       {/* Header Section */}
       <Typography variant="h4" fontWeight="600" mb={3}>
         Connections
       </Typography>
-      
-      <Stack 
-        direction="row" 
-        justifyContent="space-between" 
-        alignItems="center" 
-        mb={4}
-        gap={2}
-      >
+
+      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4} gap={2}>
         <Button
           variant="contained"
-          startIcon={<Add />}
+          
           onClick={() => navigate("/new-connection")}
           sx={{ height: 40, minWidth: 200 }}
         >
           Create New Connection
         </Button>
-        
+
         <TextField
           placeholder="Search..."
           variant="outlined"
@@ -100,50 +88,46 @@ const ExistingDatabaseConnection = () => {
 
       {/* Connection Cards */}
       {filteredConnections.map((connection) => (
-        <Paper 
-          key={connection.id} 
-          sx={{ 
-            mb: 2, 
+        <Paper
+          key={connection.id}
+          sx={{
+            mb: 2,
             p: 2.5,
             borderRadius: 2,
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           }}
         >
           <Stack spacing={2}>
             {/* Top Row - Name and Type */}
-            <Stack 
-              direction="row" 
-              justifyContent="space-between" 
-              alignItems="center"
-            >
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="subtitle1" fontWeight="600">
                 {connection.name}
               </Typography>
-              <Chip 
-                label={connection.type} 
+              <Chip
+                label={connection.type}
                 size="small"
-                sx={{ 
-                  backgroundColor: 'action.hover',
-                  color: 'text.primary',
+                sx={{
+                  backgroundColor: "action.hover",
+                  color: "text.primary",
                   fontWeight: 400,
                   ml: 2,
-                  opacity: 0.8
+                  opacity: 0.8,
                 }}
               />
             </Stack>
 
             {/* Connection Details */}
-            <Stack 
-              direction="row" 
-              spacing={1} 
-              sx={{ 
-                flexWrap: 'wrap',
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                flexWrap: "wrap",
                 gap: 1,
-                '& .MuiChip-root': { 
+                "& .MuiChip-root": {
                   borderRadius: 1,
-                  backgroundColor: 'action.hover',
-                  color: 'text.primary'
-                }
+                  backgroundColor: "action.hover",
+                  color: "text.primary",
+                },
               }}
             >
               <Chip label={`Host: ${connection.host}`} size="small" />
@@ -153,40 +137,58 @@ const ExistingDatabaseConnection = () => {
             </Stack>
 
             {/* Bottom Action Row */}
-            <Stack 
-              direction="row" 
-              spacing={1.5} 
-              alignItems="center"
-              justifyContent="space-between"
-            >
+            <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="space-between">
               <Button
                 variant="outlined"
-                onClick={() => handleTestConnection(connection)}
-                sx={{ 
-                  whiteSpace: 'nowrap',
+                sx={{
+                  whiteSpace: "nowrap",
                   minWidth: 180,
                   height: 36,
-                  borderColor: 'primary.main',
-                  color: 'primary.main',
-                  '&:hover': {
-                    borderColor: 'primary.dark',
-                    backgroundColor: 'primary.light',
-                    opacity: 0.9
-                  }
+                  borderColor: "primary.main",
+                  color: "primary.main",
+                  "&:hover": {
+                    borderColor: "primary.dark",
+                    backgroundColor: "primary.light",
+                    opacity: 0.9,
+                  },
                 }}
+                onClick={handleConnectClick} // Trigger success message
               >
                 Connect Database
               </Button>
+
+              {/* Visualization Button with same style as Connect Database button */}
+              <Button
+                variant="outlined"
+                sx={{
+                  whiteSpace: "nowrap",
+                  minWidth: 120,
+                  height: 36,
+                  borderColor: "primary.main",
+                  color: "primary.main",
+                  "&:hover": {
+                    borderColor: "primary.dark",
+                    backgroundColor: "primary.light",
+                    opacity: 0.9,
+                  },
+                }}
+                
+          
+                onClick={() => navigate("/graph-visualization")}
+              >
+                View Graph
+              </Button>
+
               <Stack direction="row" spacing={1}>
-                <IconButton 
+                <IconButton
                   onClick={() => navigate(`/edit-connection/${connection.id}`)}
-                  sx={{ color: 'text.secondary' }}
+                  sx={{ color: "text.secondary" }}
                 >
                   <Edit fontSize="small" />
                 </IconButton>
-                <IconButton 
-                  onClick={() => setConnections(connections.filter(c => c.id !== connection.id))}
-                  sx={{ color: 'error.main' }}
+                <IconButton
+                  onClick={() => setConnections(connections.filter((c) => c.id !== connection.id))}
+                  sx={{ color: "error.main" }}
                 >
                   <Delete fontSize="small" />
                 </IconButton>
@@ -198,13 +200,13 @@ const ExistingDatabaseConnection = () => {
 
       {/* Notification Snackbars */}
       <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess("")}>
-        <Alert severity="success" sx={{ width: '100%' }}>
+        <Alert severity="success" sx={{ width: "100%" }}>
           {success}
         </Alert>
       </Snackbar>
-      
+
       <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError("")}>
-        <Alert severity="error" sx={{ width: '100%' }}>
+        <Alert severity="error" sx={{ width: "100%" }}>
           {error}
         </Alert>
       </Snackbar>
