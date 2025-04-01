@@ -27,7 +27,6 @@ def get_db():
 
 def get_metadata(*args):
     try:
-        # engine = create_dynamic_engine(args)
         metadata = MetaData()
         metadata.reflect(engine)
         logger.info("Metadata retrieved successfully.")
@@ -38,7 +37,6 @@ def get_metadata(*args):
 
 #DATABASE_URL = GLOBAL_CONNECTION_STRING
 if DATABASE_URL is None:
-    #DATABASE_URL = "mysql+pymysql://root:root@localhost/chinook"
     logger.error("DATABASE_URL environment variable is not set!")
     raise ValueError("DATABASE_URL environment variable is not set!")
 

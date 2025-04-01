@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import create_engine, MetaData
+from sqlalchemy.engine import URL
 from app.models.database_model import Database, DatabaseType
 from app.utils.logging import logger
+import json
 
 router = APIRouter()
 
@@ -16,14 +18,16 @@ def generate_connection_string(db: Database) -> str:
     elif db_type == DatabaseType.POSTGRESQL:
         return f"postgresql://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
     elif db_type == DatabaseType.SQLSERVER:
-        return f"mssql+pyodbc://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}?driver=SQL+Server"
-    elif db_type == DatabaseType.MariaDB:
+        driver = "{ODBC Driver 17 for SQL Server}"
+        connection_details = f"DRIVER={driver};SERVER={db.host};PORT={db.port};DATABASE={db.database};UID={db.user};PWD={db.password}"
+        return URL.create("mssql+pyodbc", query={"odbc_connect": connection_details.replace(';', '&')})
+    elif db_type == DatabaseType.MARIA_DB:
         return f"mariadb+pymysql://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
-    elif db_type == DatabaseType.OracleDB:
-        return f"oracle://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
-    elif db_type == DatabaseType.SQLite:
+    elif db_type == DatabaseType.ORACLE_DB:
+        return f"oracle+cx_oracle://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
+    elif db_type == DatabaseType.SQLITE:
         return f"sqlite:///{db.database}.db"
-    elif db_type == DatabaseType.Redshift:
+    elif db_type == DatabaseType.REDSHIFT:
         return f"redshift+psycopg2://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
     
     raise ValueError("Unsupported database type")
@@ -47,6 +51,9 @@ async def create_database_connection(db: Database):
             "connection_string": connection_string,
             "tables": list(metadata.tables.keys())
         }
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Invalid JSON input: {str(e)}")
     except Exception as e:
         logger.error(f"Database connection error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error connecting to database: {str(e)}")

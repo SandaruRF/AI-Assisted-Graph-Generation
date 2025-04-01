@@ -16,7 +16,7 @@ DEFAULT_PORTS: Dict[DatabaseType, int] = {
     DatabaseType.MYSQL: 3306,
     DatabaseType.POSTGRESQL: 5432,
     DatabaseType.SQLSERVER: 1433,
-    DatabaseType.MARIA_DB: 3306,
+    DatabaseType.MARIA_DB: 3308,
     DatabaseType.ORACLE_DB: 1521,
     DatabaseType.SQLITE: 0,  # No port for SQLite
     DatabaseType.REDSHIFT: 5439,
