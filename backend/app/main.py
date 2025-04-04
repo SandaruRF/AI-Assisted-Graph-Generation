@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.intent import router as intent_router
+from app.api.users import router as user_router
 
 app = FastAPI(
     title="AI Assisted Graph Generation - VizGen",
@@ -17,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(intent_router, prefix="/api", tags=["Intent Classification"])
+app.include_router(user_router, prefix="/api", tags=["User Management"])
 
 @app.get("/")
 async def root():
