@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import PasswordStrengthBar from '../Components/PasswordStrengthBar';
 import { 
     Box, 
     TextField, 
@@ -14,17 +16,20 @@ import {
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
+
 const SignUpPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
+        phone_number: '',
         email: '',
-        contactNumber: '',
         password: '',
-        confirmPassword: ''
+        confirm_password: ''
     });
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -42,13 +47,22 @@ const SignUpPage = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         console.log('Form data:', formData);
-        // Add your registration logic here
+        try {
+            const response = await axios.post("http://localhost:8000/api/signup", formData); 
+            if (response.status === 200) {
+                console.log('Sign up successful', response.data);
+                navigate('/log-in'); 
+            }
+        } catch (err) {
+            console.error('Error during sign-up:', err);
+            setError('Sign-up failed. Please try again.');
+        }
     };
 
-    // Navigate to login page
+
     
 
     return (
@@ -62,7 +76,7 @@ const SignUpPage = () => {
             flexDirection: 'column',
             alignItems: 'center',
             borderRadius: 2,
-            bgcolor: '#e3f2fd', // Light blue background matching the image
+            bgcolor: '#e3f2fd', 
             }}
         >
             <Typography component="h1" variant="h4" sx={{ mb: 3, color: '#0277bd', fontWeight: 'bold' }}>
@@ -74,11 +88,11 @@ const SignUpPage = () => {
                 margin="normal"
                 required
                 fullWidth
-                id="firstName"
-                name="firstName"
+                id="first_name"
+                name="first_name"
                 autoComplete="given-name"
                 autoFocus
-                value={formData.firstName}
+                value={formData.first_name}
                 onChange={handleChange}
                 variant="outlined"
                 sx={{
@@ -96,10 +110,10 @@ const SignUpPage = () => {
                 margin="normal"
                 required
                 fullWidth
-                id="lastName"
-                name="lastName"
+                id="last_name"
+                name="last_name"
                 autoComplete="family-name"
-                value={formData.lastName}
+                value={formData.last_name}
                 onChange={handleChange}
                 variant="outlined"
                 sx={{
@@ -138,10 +152,10 @@ const SignUpPage = () => {
                 margin="normal"
                 required
                 fullWidth
-                id="contactNumber"
-                name="contactNumber"
+                id="phone_number"
+                name="phone_number"
                 autoComplete="tel"
-                value={formData.contactNumber}
+                value={formData.phone_number}
                 onChange={handleChange}
                 variant="outlined"
                 sx={{
@@ -193,11 +207,11 @@ const SignUpPage = () => {
                 margin="normal"
                 required
                 fullWidth
-                name="confirmPassword"
+                name="confirm_password"
                     type={showConfirmPassword ? 'text' : 'password'}
-                id="confirmPassword"
+                id="confirm_password"
                 autoComplete="new-password"
-                value={formData.confirmPassword}
+                value={formData.confirm_password}
                 onChange={handleChange}
                 sx={{
                 mb: 2,
@@ -222,6 +236,10 @@ const SignUpPage = () => {
                 }}
             />
 
+        <PasswordStrengthBar password={formData.password} />
+
+            {error && <Typography color="error">{error}</Typography>}
+
             <Button
                 type="submit"
                 fullWidth
@@ -233,7 +251,7 @@ const SignUpPage = () => {
                 bgcolor: '#90caf9',
                 color: '#0277bd',
                 borderRadius: 10,
-              ' &:hover': {
+                ' &:hover': {
                     bgcolor: '#64b5f6',
                 },
             }}

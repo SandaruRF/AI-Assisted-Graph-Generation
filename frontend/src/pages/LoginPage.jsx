@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { 
   Box, 
   TextField, 
@@ -15,17 +17,30 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState("");
+
+  const Navigate = useNavigate();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Username:', username, 'Password:', password);
-    // Add your authentication logic here
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try{
+      const res = await axios.post("http://localhost:8000/api/login", {
+        email,
+        password,
+      });
+      console.log("Login successful:", res.data);
+      localStorage.setItem("token", res.data.token);
+      Navigate("/existing-connections");
+      
+    }catch(err){
+      setError("Invalid Credentials")
+    }
   };
 
   return (
@@ -46,17 +61,17 @@ const LoginPage = () => {
           Log in
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
-          <Typography sx={{ mb: 1, color: '#0277bd' }}>User name</Typography>
+          <Typography sx={{ mb: 1, color: '#0277bd' }}>Email</Typography>
           <TextField
             margin="normal"
             required
             fullWidth
-            id="username"
-            name="username"
-            autoComplete="username"
+            id="email"
+            name="email"
+            autoComplete="email"
             autoFocus
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             variant="outlined"
             sx={{
               mb: 2,
@@ -98,6 +113,9 @@ const LoginPage = () => {
               ),
             }}
           />
+
+          {error && <Typography color="error">{error}</Typography>}
+
           <Button
             type="submit"
             fullWidth
