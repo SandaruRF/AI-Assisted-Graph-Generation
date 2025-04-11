@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -10,10 +9,13 @@ import {
   FormControlLabel,
   Checkbox,
   Paper,
-  Grid
+  Grid,
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import MemoryIcon from "@mui/icons-material/Memory";
+import axios from "axios";
+
+const API_URL = "http://localhost:8001"; // Backend URL
 
 const databaseTypes = [
   "MySQL",
@@ -26,8 +28,7 @@ const databaseTypes = [
 ];
 
 const NewConnection = () => {
-  const navigate = useNavigate();
-  const [selectedDbType, setSelectedDbType] = useState("");
+  const [selectedDbType, setSelectedDbType] = useState("MySQL");
   const [showForm, setShowForm] = useState(false);
   const [connectionDetails, setConnectionDetails] = useState({
     name: "",
@@ -40,8 +41,10 @@ const NewConnection = () => {
     ssl: false,
     remember: false,
   });
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,187 +62,168 @@ const NewConnection = () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setSuccess("Connection test successful!");
-    } catch (err) {
+    } catch {
       setError("Connection test failed");
     }
   };
 
-  const handleSaveConnection = () => {
-    navigate("/existing-connections");
+  const handleSaveConnection = async () => {
+    if (!selectedDbType) {
+      setError("Please select a database type");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      let endpoint = "";
+      let payload = {};
+
+      if (showForm) {
+        // Detailed form
+        endpoint = `${API_URL}/api/connections`;
+        payload = {
+          name: connectionDetails.name,
+          db_type: selectedDbType,
+          host: connectionDetails.host,
+          port: parseInt(connectionDetails.port || "0"),
+          database: connectionDetails.database,
+          username: connectionDetails.username,
+          password: connectionDetails.password,
+          ssl: connectionDetails.ssl,
+          remember: connectionDetails.remember,
+        };
+      } else {
+        // Connection string form
+        endpoint = `${API_URL}/api/connection-strings`;
+        payload = {
+          name: connectionDetails.name,
+          db_type: selectedDbType,
+          connection_string: connectionDetails.connectionString,
+          ssl: connectionDetails.ssl,
+          remember: connectionDetails.remember,
+        };
+      }
+
+      const response = await axios.post(endpoint, payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      setSuccess(`Connection "${response.data.connection_name}" saved successfully!`);
+
+      setConnectionDetails({
+        name: "",
+        connectionString: "",
+        host: "",
+        port: "",
+        database: "",
+        username: "",
+        password: "",
+        ssl: false,
+        remember: false,
+      });
+      setSelectedDbType("MySQL");
+    } catch (err) {
+      setError(err.response?.data?.detail || "Failed to save connection");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const ConnectionStringForm = () => (
+    <>
+      <TextField
+        fullWidth
+        label="Connection Name"
+        name="name"
+        value={connectionDetails.name}
+        onChange={handleInputChange}
+        margin="normal"
+        required
+      />
+      <TextField
+        fullWidth
+        label="Connection String"
+        name="connectionString"
+        value={connectionDetails.connectionString}
+        onChange={handleInputChange}
+        margin="normal"
+        required
+      />
+    </>
+  );
+
+  const DetailedConnectionForm = () => (
+    <Grid container spacing={0.5}>
+      {["name", "host", "port", "database", "username", "password"].map((field, idx) => (
+        <Grid item xs={12} key={idx}>
+          <TextField
+            fullWidth
+            label={field === "name" ? "Connection Name" : field.charAt(0).toUpperCase() + field.slice(1)}
+            name={field}
+            type={field === "password" ? "password" : field === "port" ? "number" : "text"}
+            value={connectionDetails[field]}
+            onChange={handleInputChange}
+            margin="normal"
+            required
+          />
+        </Grid>
+      ))}
+    </Grid>
+  );
 
   return (
     <Box sx={{ maxWidth: 850, margin: "auto", p: 3 }}>
       <Paper sx={{ p: 3, mb: 3 }}>
-        {/* Header Section */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h4" fontWeight="600" mb={3}>
-            New Connection
-          </Typography>
-          <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-            <Button
-              variant={!showForm ? "contained" : "outlined"}
-              onClick={() => setShowForm(false)}
-              sx={{
-                textTransform: 'none',
-                fontWeight: 600,
-                px: 3,
-                py: 1,
-                fontSize: '0.875rem'
-              }}
-            >
-              Connection String
-            </Button>
-            <Button
-              variant={showForm ? "contained" : "outlined"}
-              onClick={() => setShowForm(true)}
-              sx={{
-                textTransform: 'none',
-                fontWeight: 600,
-                px: 3,
-                py: 1,
-                fontSize: '0.875rem'
-              }}
-            >
-              Connection Form
-            </Button>
-          </Box>
+        <Typography variant="h4" fontWeight="600" mb={3}>
+          New Connection
+        </Typography>
+
+        <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+          <Button variant={!showForm ? "contained" : "outlined"} onClick={() => setShowForm(false)}>
+            Connection String
+          </Button>
+          <Button variant={showForm ? "contained" : "outlined"} onClick={() => setShowForm(true)}>
+            Connection Form
+          </Button>
         </Box>
 
-        {/* Database Type Selection */}
-        <Box sx={{ 
-          display: "flex",
-          flexWrap: "nowrap",
-          overflowX: "auto",
-          gap: 1, 
-          mb: 3,
-          pb: 1,
-          "&::-webkit-scrollbar": {
-            height: "4px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "action.selected",
-            borderRadius: "2px",
-          }
-        }}>
-          {databaseTypes.map((dbType) => (
+        {/* Database Types */}
+        <Box
+          sx={{
+            display: "flex",
+            overflowX: "auto",
+            gap: 1,
+            mb: 3,
+            pb: 1,
+            "&::-webkit-scrollbar": { height: "4px" },
+            "&::-webkit-scrollbar-thumb": { backgroundColor: "action.selected", borderRadius: "2px" },
+          }}
+        >
+          {databaseTypes.map((db) => (
             <Button
-              key={dbType}
-              variant="contained"
-              color={selectedDbType === dbType ? "primary" : "inherit"}
-              onClick={() => setSelectedDbType(dbType)}
+              key={db}
+              variant={selectedDbType === db ? "contained" : "outlined"}
+              onClick={() => setSelectedDbType(db)}
               sx={{
-                flexShrink: 0,
-                textTransform: 'none',
-                fontWeight: 500,
-                px: 2.5,
-                py: 0.75,
-                fontSize: '0.875rem',
-                boxShadow: 'none',
-                backgroundColor: selectedDbType === dbType 
-                  ? 'primary.main' 
-                  : 'action.hover',
-                '&:hover': {
-                  backgroundColor: selectedDbType === dbType 
-                    ? 'primary.dark' 
-                    : 'action.selected',
-                  boxShadow: 'none'
-                }
+                textTransform: "none",
+                backgroundColor: selectedDbType === db ? "primary.main" : "action.hover",
+                "&:hover": {
+                  backgroundColor: selectedDbType === db ? "primary.dark" : "action.selected",
+                },
               }}
             >
-              {dbType}
+              {db}
             </Button>
           ))}
         </Box>
 
-        {/* Form Section */}
-        {!showForm ? (
-          <>
-            <TextField
-              fullWidth
-              label="Connection Name"
-              name="name"
-              value={connectionDetails.name}
-              onChange={handleInputChange}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Connection String"
-              name="connectionString"
-              value={connectionDetails.connectionString}
-              onChange={handleInputChange}
-              margin="normal"
-            />
-          </>
-        ) : (
-          <Grid container spacing={0.5}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Connection Name"
-                name="name"
-                value={connectionDetails.name}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Host"
-                name="host"
-                value={connectionDetails.host}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Port"
-                name="port"
-                type="number"
-                value={connectionDetails.port}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Database Name"
-                name="database"
-                value={connectionDetails.database}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="User name"
-                name="username"
-                value={connectionDetails.username}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Password"
-                name="password"
-                type="password"
-                value={connectionDetails.password}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-          </Grid>
-        )}
+        {/* Forms */}
+        {showForm ? <DetailedConnectionForm /> : <ConnectionStringForm />}
 
-        {/* SSL & Remember Connection */}
+        {/* SSL / Remember */}
         <Box sx={{ mt: 2 }}>
           <FormControlLabel
             control={
@@ -252,7 +236,6 @@ const NewConnection = () => {
               />
             }
             label="Enable SSL/TLS"
-            sx={{ display: "block" }}
           />
           <FormControlLabel
             control={
@@ -265,51 +248,16 @@ const NewConnection = () => {
               />
             }
             label="Remember connection"
-            sx={{ display: "block" }}
           />
         </Box>
 
-        {/* Action Buttons */}
+        {/* Buttons */}
         <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={handleTestConnection}
-            sx={{
-              flexShrink: 0,
-              textTransform: 'none',
-              fontWeight: 500,
-              px: 2.5,
-              py: 0.75,
-              fontSize: '0.875rem',
-              boxShadow: 'none',
-              '&:hover': {
-                boxShadow: 'none',
-                backgroundColor: 'primary.dark'
-              }
-            }}
-          >
+          <Button variant="contained" onClick={handleTestConnection} disabled={isLoading}>
             Test Connection
           </Button>
-          <Button 
-            variant="contained" 
-            color="success" 
-            onClick={handleSaveConnection}
-            sx={{
-              flexShrink: 0,
-              textTransform: 'none',
-              fontWeight: 500,
-              px: 2.5,
-              py: 0.75,
-              fontSize: '0.875rem',
-              boxShadow: 'none',
-              '&:hover': {
-                boxShadow: 'none',
-                backgroundColor: 'success.dark'
-              }
-            }}
-          >
-            Save Connection
+          <Button variant="contained" color="success" onClick={handleSaveConnection} disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save Connection"}
           </Button>
         </Box>
       </Paper>
