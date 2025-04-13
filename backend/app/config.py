@@ -8,7 +8,8 @@ load_dotenv()
 class Settings(BaseSettings):
     # API Keys
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY")
-
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "mysql+pymysql://root:root@localhost/chinook")
+    
     # App Settings
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
@@ -19,3 +20,5 @@ class Settings(BaseSettings):
     )
 
 settings = Settings()
+
+DATABASE_URL = settings.DATABASE_URL  # Export for backward compatibility
