@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from app.api.database import get_db
-from app.services.text_to_sql_metadata import fetch_db_metadata
+from sqlalchemy import inspect
+from typing import Dict, List
+from api.database import get_db
+from services.text_to_sql_metadata import fetch_db_metadata
 
 router = APIRouter()
 

@@ -1,10 +1,10 @@
 import os
 import google.generativeai as genai
-from app.config import settings
-from app.utils.logging import logger
+from config import settings
+from utils.logging import logger
 import json
 
-class GeminiClient:
+class IntentClassifier:
     def __init__(self):
         genai.configure(api_key=settings.GEMINI_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
@@ -26,7 +26,7 @@ class GeminiClient:
 
         Return a JSON object with the following structure:
         {{
-            "intent": "intent1_intent2",  # List of intents separated by underscores
+            "intent": ["intent1", "intent2"],  # List of intents
             "confidence": 0.95,  # Confidence score (float between 0 and 1)
             "reason": ["reason for intent1", "reason for intent2"]  # Reasons for each identified intent
         }}
