@@ -82,7 +82,8 @@ const VisualizationPage = () => {
   const [resultHistory, setResultHistory] = useState([]);
   const [isFirstSend, setIsFirstSend] = useState(true);
   const [typingDone, setTypingDone] = useState(false);
-  const bottomRef = useRef(null);
+  const scrollContainerRef = useRef(null);
+  const lastPromptRef = useRef(null);
 
   const handleSend = async () => {
     if (userPrompt.trim() === "") return;
@@ -110,8 +111,20 @@ const VisualizationPage = () => {
   };
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [promptHistory, resultHistory]);
+    if (lastPromptRef.current && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const lastPrompt = lastPromptRef.current;
+
+      const containerTop = container.getBoundingClientRect().top;
+      const promptTop = lastPrompt.getBoundingClientRect().top;
+      const scrollOffset = promptTop - containerTop - 0;
+
+      container.scrollBy({
+        top: scrollOffset,
+        behavior: "smooth",
+      });
+    }
+  }, [promptHistory]);
 
   return (
     <>
@@ -125,6 +138,7 @@ const VisualizationPage = () => {
 
       {/* History */}
       <Box
+        ref={scrollContainerRef}
         sx={{
           overflowY: "auto",
           maxHeight: "77vh",
@@ -145,7 +159,7 @@ const VisualizationPage = () => {
             <React.Fragment key={index}>
               {/* Prompt */}
               <Paper
-                key={index}
+                ref={index === promptHistory.length - 1 ? lastPromptRef : null}
                 sx={{
                   p: 2,
                   borderRadius: "12px",
@@ -205,7 +219,8 @@ const VisualizationPage = () => {
               )}
             </React.Fragment>
           ))}
-          <div ref={bottomRef} />
+          {/* Spacer */}
+          <Box sx={{ height: isFirstSend ? 0 : "63vh" }} />
         </Stack>
 
         {/* Input section */}

@@ -11,7 +11,7 @@ const TypewriterWords = ({ text, onDone }) => {
       const timer = setTimeout(() => {
         setDisplayedText((prev) => prev + words[currentIndex] + " ");
         setCurrentIndex((prev) => prev + 1);
-      }, 60);
+      }, 30);
 
       return () => clearTimeout(timer);
     }
