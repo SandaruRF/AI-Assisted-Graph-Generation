@@ -9,6 +9,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import TypewriterWords from "../components/TypewriterWords";
 
 const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
   <Stack spacing={2}>
@@ -80,6 +81,7 @@ const VisualizationPage = () => {
   const [promptHistory, setPromptHistory] = useState([]);
   const [resultHistory, setResultHistory] = useState([]);
   const [isFirstSend, setIsFirstSend] = useState(true);
+  const [typingDone, setTypingDone] = useState(false);
   const bottomRef = useRef(null);
 
   const handleSend = async () => {
@@ -156,25 +158,49 @@ const VisualizationPage = () => {
               </Paper>
 
               {/* Response */}
+              {promptHistory[index] && !resultHistory[index] && (
+                <video
+                  ref={(el) => {
+                    if (el) el.playbackRate = 2;
+                  }}
+                  src="/assets/loading_animation_1.webm"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  style={{ width: "40px", height: "auto" }}
+                />
+              )}
               {resultHistory[index] && (
                 <Box
                   sx={{
                     display: "flex",
-                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
                     width: "100%",
+                    p: 1,
+                    pb: 4,
                   }}
                 >
-                  <Paper
-                    sx={{
-                      p: 2,
-                      borderRadius: "12px",
-                      backgroundColor: "#e8f4f8",
-                      maxWidth: "100%",
-                      marginBottom: 3,
-                    }}
-                  >
-                    <Typography>{resultHistory[index].response}</Typography>
-                  </Paper>
+                  <TypewriterWords
+                    text={resultHistory[index].response}
+                    onDone={() => setTypingDone(true)}
+                  />
+                  {!typingDone && (
+                    <Box sx={{ ml: -1 }}>
+                      <video
+                        ref={(el) => {
+                          if (el) el.playbackRate = 2;
+                        }}
+                        src="/assets/loading_animation_1.webm"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        style={{ width: "40px", height: "auto" }}
+                      />
+                    </Box>
+                  )}
                 </Box>
               )}
             </React.Fragment>
