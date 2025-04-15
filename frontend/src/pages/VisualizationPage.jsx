@@ -63,6 +63,9 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
             mt: 2,
             borderRadius: "8px",
             textTransform: "none",
+            transition: "all 0.3s ease-in-out",
+            opacity: userPrompt.trim() === "" ? 0.7 : 1,
+            transform: userPrompt.trim() === "" ? "scale(0.98)" : "scale(1)",
           }}
         >
           Send
@@ -75,11 +78,19 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
 const VisualizationPage = () => {
   const [userPrompt, setUserPrompt] = useState("");
   const [promptHistory, setPromptHistory] = useState([]);
-  const [result, setResult] = useState(null);
+  const [resultHistory, setResultHistory] = useState([]);
+  const [isFirstSend, setIsFirstSend] = useState(true);
   const bottomRef = useRef(null);
 
   const handleSend = async () => {
     if (userPrompt.trim() === "") return;
+
+    if (isFirstSend) {
+      setIsFirstSend(false);
+    }
+
+    setPromptHistory((prev) => [...prev, userPrompt]);
+    setUserPrompt("");
 
     try {
       const response = await axios.post(
@@ -88,10 +99,9 @@ const VisualizationPage = () => {
           user_prompt: userPrompt,
         }
       );
-      console.log("Response from backend:", response.data);
-      setResult(response.data.result);
-      setPromptHistory((prev) => [...prev, userPrompt]);
-      setUserPrompt("");
+      const newResult = response.data.result;
+      console.log("Response from backend:", newResult);
+      setResultHistory((prev) => [...prev, newResult]);
     } catch (error) {
       console.log("Error sending user prompt:", error);
     }
@@ -99,11 +109,11 @@ const VisualizationPage = () => {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [promptHistory]);
+  }, [promptHistory, resultHistory]);
 
   return (
     <>
-      {promptHistory.length === 0 && (
+      {isFirstSend && (
         <Box sx={{ textAlign: "center", mt: 25 }}>
           <Typography variant="h4" component="h1">
             Hi there! 👋 I'm your Data Assistant.
@@ -111,62 +121,72 @@ const VisualizationPage = () => {
         </Box>
       )}
 
-      <Box sx={{ p: 4, maxWidth: 1200, mx: "auto" }}>
-        {/* Prompt History */}
-        <Stack spacing={2} sx={{ mb: 3, maxHeight: "60vh", overflowY: "auto" }}>
+      {/* History */}
+      <Box
+        sx={{
+          overflowY: "auto",
+          maxHeight: "77vh",
+          width: "100%",
+          marginTop: 2,
+        }}
+      >
+        <Stack
+          spacing={2}
+          sx={{
+            mb: 3,
+            px: 2,
+            maxWidth: 800,
+            mx: "auto",
+          }}
+        >
           {promptHistory.map((prompt, index) => (
-            <Paper
-              key={index}
-              sx={{
-                p: 2,
-                borderRadius: "12px",
-                backgroundColor: "#f5f5f5",
-                maxWidth: "80%",
-                alignSelf: "flex-start",
-              }}
-            >
-              <Typography>{prompt}</Typography>
-            </Paper>
+            <React.Fragment key={index}>
+              {/* Prompt */}
+              <Paper
+                key={index}
+                sx={{
+                  p: 2,
+                  borderRadius: "12px",
+                  backgroundColor: "#f5f5f5",
+                  maxWidth: "100%",
+                  alignSelf: "flex-start",
+                }}
+              >
+                <Typography>{prompt}</Typography>
+              </Paper>
+
+              {/* Response */}
+              {resultHistory[index] && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
+                  <Paper
+                    sx={{
+                      p: 2,
+                      borderRadius: "12px",
+                      backgroundColor: "#e8f4f8",
+                      maxWidth: "100%",
+                      marginBottom: 3,
+                    }}
+                  >
+                    <Typography>{resultHistory[index].response}</Typography>
+                  </Paper>
+                </Box>
+              )}
+            </React.Fragment>
           ))}
           <div ref={bottomRef} />
         </Stack>
 
-        {/* Display the results */}
-        {result && (
-          <Paper
-            sx={{
-              p: 2,
-              borderRadius: "12px",
-              backgroundColor: "#e8f4f8",
-              maxWidth: "80%",
-              marginTop: 2,
-            }}
-          >
-            <Typography variant="h6">Result:</Typography>
-            {result.response && <Typography>{result.response}</Typography>}
-            {result.intents && result.intents.length > 0 && (
-              <Box sx={{ mt: 2 }}>
-                <Typography variant="subtitle1">Identified Intents:</Typography>
-                <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                  {result.intents.map((intent, index) => (
-                    <Chip
-                      key={index}
-                      label={intent}
-                      color="primary"
-                      variant="outlined"
-                    />
-                  ))}
-                </Stack>
-              </Box>
-            )}
-          </Paper>
-        )}
-
         {/* Input section */}
         <Box
           sx={{
-            position: promptHistory.length === 0 ? "sticky" : "fixed",
-            bottom: promptHistory.length === 0 ? 20 : 0,
+            position: isFirstSend ? "sticky" : "fixed",
+            bottom: isFirstSend === 0 ? 20 : 0,
             zIndex: 1,
             left: 0,
             right: 0,
