@@ -81,7 +81,6 @@ const VisualizationPage = () => {
   const [promptHistory, setPromptHistory] = useState([]);
   const [resultHistory, setResultHistory] = useState([]);
   const [isFirstSend, setIsFirstSend] = useState(true);
-  const [typingDone, setTypingDone] = useState(false);
   const scrollContainerRef = useRef(null);
   const lastPromptRef = useRef(null);
 
@@ -173,17 +172,19 @@ const VisualizationPage = () => {
 
               {/* Response */}
               {promptHistory[index] && !resultHistory[index] && (
-                <video
-                  ref={(el) => {
-                    if (el) el.playbackRate = 2;
-                  }}
-                  src="/assets/loading_animation_1.webm"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  style={{ width: "40px", height: "auto" }}
-                />
+                <Box sx={{ pl: 1 }}>
+                  <video
+                    ref={(el) => {
+                      if (el) el.playbackRate = 2;
+                    }}
+                    src="/assets/loading_animation_1.webm"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    style={{ width: "40px", height: "auto" }}
+                  />
+                </Box>
               )}
               {resultHistory[index] && (
                 <Box
@@ -196,25 +197,7 @@ const VisualizationPage = () => {
                     pb: 4,
                   }}
                 >
-                  <TypewriterWords
-                    text={resultHistory[index].response}
-                    onDone={() => setTypingDone(true)}
-                  />
-                  {!typingDone && (
-                    <Box sx={{ ml: -1 }}>
-                      <video
-                        ref={(el) => {
-                          if (el) el.playbackRate = 2;
-                        }}
-                        src="/assets/loading_animation_1.webm"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        style={{ width: "40px", height: "auto" }}
-                      />
-                    </Box>
-                  )}
+                  <TypewriterWords text={resultHistory[index].response} />
                 </Box>
               )}
             </React.Fragment>

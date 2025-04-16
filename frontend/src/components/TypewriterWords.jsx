@@ -3,22 +3,24 @@ import { Typography } from "@mui/material";
 
 const TypewriterWords = ({ text, onDone }) => {
   const [displayedText, setDisplayedText] = useState("");
+  const [flag, setFlag] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const words = text.split(" ");
 
   useEffect(() => {
+    let timer;
+
     if (currentIndex < words.length) {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setDisplayedText((prev) => prev + words[currentIndex] + " ");
         setCurrentIndex((prev) => prev + 1);
       }, 30);
+    } else {
+      setFlag(true);
+    }
 
-      return () => clearTimeout(timer);
-    }
-    if (currentIndex >= words.length) {
-      if (onDone) onDone();
-    }
-  }, [currentIndex, words, onDone]);
+    return () => clearTimeout(timer);
+  }, [currentIndex, words]);
 
   return (
     <Typography
@@ -29,6 +31,20 @@ const TypewriterWords = ({ text, onDone }) => {
       }}
     >
       {displayedText}
+      {"\n"}
+      {!flag && (
+        <video
+          ref={(el) => {
+            if (el) el.playbackRate = 2;
+          }}
+          src="/assets/loading_animation_1.webm"
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{ width: "40px", height: "auto" }}
+        />
+      )}
     </Typography>
   );
 };
