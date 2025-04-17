@@ -1,176 +1,236 @@
-import React, { useState } from 'react';
-import ReactECharts from 'echarts-for-react';
-import { 
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import {
   Box,
-  Typography,
   Paper,
-  Grid,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
   TextField,
   Chip,
-  Stack
-} from '@mui/material';
+  Stack,
+  Button,
+  Typography,
+} from "@mui/material";
+import TypewriterWords from "../components/TypewriterWords";
+
+const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
+  <Stack spacing={2}>
+    {/* Prompt Suggestions */}
+    <Stack direction="row" spacing={1} flexWrap="wrap">
+      {["Show sales trends for Q1", "Find anomalies in customer behavior"].map(
+        (prompt, index) => (
+          <Chip
+            key={index}
+            label={prompt}
+            onClick={() => setUserPrompt(prompt)}
+            sx={{ borderRadius: "8px", mb: 1 }}
+          />
+        )
+      )}
+    </Stack>
+
+    {/* Input & Send */}
+    <Paper
+      sx={{
+        p: 2,
+        borderRadius: "16px",
+        boxShadow: 3,
+      }}
+    >
+      <TextField
+        fullWidth
+        placeholder="What would you like to explore today?"
+        value={userPrompt}
+        onChange={(e) => setUserPrompt(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && userPrompt.trim() !== "") {
+            handleSend();
+          }
+        }}
+        variant="outlined"
+        InputProps={{
+          sx: {
+            borderRadius: "8px",
+            "& fieldset": { borderColor: "divider" },
+          },
+        }}
+      />
+
+      {/* Send Button */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button
+          onClick={handleSend}
+          variant="contained"
+          disabled={userPrompt.trim() === ""}
+          sx={{
+            mt: 2,
+            borderRadius: "8px",
+            textTransform: "none",
+            transition: "all 0.3s ease-in-out",
+            opacity: userPrompt.trim() === "" ? 0.7 : 1,
+            transform: userPrompt.trim() === "" ? "scale(0.98)" : "scale(1)",
+          }}
+        >
+          Send
+        </Button>
+      </Box>
+    </Paper>
+  </Stack>
+);
 
 const VisualizationPage = () => {
-  const [chartType, setChartType] = useState('bar');
-  const [prompt, setPrompt] = useState('');
+  const [userPrompt, setUserPrompt] = useState("");
+  const [promptHistory, setPromptHistory] = useState([]);
+  const [resultHistory, setResultHistory] = useState([]);
+  const [isFirstSend, setIsFirstSend] = useState(true);
+  const scrollContainerRef = useRef(null);
+  const lastPromptRef = useRef(null);
 
-  // Chart data configuration
-  const getChartOption = () => ({
-    xAxis: {
-      type: 'category',
-      data: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-      name: 'Months',
-      nameLocation: 'middle',
-      nameGap: 30
-    },
-    yAxis: {
-      type: 'value',
-      name: 'Revenue ($)',
-      nameLocation: 'middle',
-      nameGap: 30
-    },
-    series: [{
-      data: [3349, 4200, 3800, 4500, 5100, 4800, 4900, 5300, 4700, 5100, 5800, 7200],
-      type: chartType,
-      itemStyle: { color: '#1976d2' },
-      smooth: true
-    }],
-    tooltip: { trigger: 'axis' }
-  });
+  const handleSend = async () => {
+    if (userPrompt.trim() === "") return;
+
+    if (isFirstSend) {
+      setIsFirstSend(false);
+    }
+
+    setPromptHistory((prev) => [...prev, userPrompt]);
+    setUserPrompt("");
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/send-user-prompt",
+        {
+          user_prompt: userPrompt,
+        }
+      );
+      const newResult = response.data.result;
+      console.log("Response from backend:", newResult);
+      setResultHistory((prev) => [...prev, newResult]);
+    } catch (error) {
+      console.log("Error sending user prompt:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (lastPromptRef.current && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const lastPrompt = lastPromptRef.current;
+
+      const containerTop = container.getBoundingClientRect().top;
+      const promptTop = lastPrompt.getBoundingClientRect().top;
+      const scrollOffset = promptTop - containerTop - 0;
+
+      container.scrollBy({
+        top: scrollOffset,
+        behavior: "smooth",
+      });
+    }
+  }, [promptHistory]);
 
   return (
-    <Box sx={{ p: 4, maxWidth: 1200, margin: 'auto' }}>
-      <Grid container spacing={4}>
-        {/* Left Column */}
-        <Grid item xs={12} md={3}>
-          {/* Quick Summary */}
-          <Paper sx={{ 
-            p: 3,
-            mb: 2,
-            borderRadius: '16px',
-            boxShadow: 3
-          }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-              Quick Summary
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-              "Revenue grew 15% in Q4, with December as the top month due to holiday demand. 
-              Sales dipped in January, likely from a post-holiday slowdown."
-            </Typography>
-          </Paper>
+    <>
+      {isFirstSend && (
+        <Box sx={{ textAlign: "center", mt: 25 }}>
+          <Typography variant="h4" component="h1">
+            Hi there! 👋 I'm your Data Assistant.
+          </Typography>
+        </Box>
+      )}
 
-          {/* View Database Button */}
-          <Button 
-            variant="contained" 
-            fullWidth
-            sx={{ 
-              height: 35,
-              borderRadius: '12px',
-              boxShadow: 3,
-              textTransform: 'none',
-              fontSize: '1rem'
-            }}
-            onClick={() => console.log('View Database clicked')}
-          >
-            View Database
-          </Button>
-        </Grid>
+      {/* History */}
+      <Box
+        ref={scrollContainerRef}
+        sx={{
+          overflowY: "auto",
+          maxHeight: "77vh",
+          width: "100%",
+          marginTop: 2,
+        }}
+      >
+        <Stack
+          spacing={2}
+          sx={{
+            mb: 3,
+            px: 2,
+            maxWidth: 800,
+            mx: "auto",
+          }}
+        >
+          {promptHistory.map((prompt, index) => (
+            <React.Fragment key={index}>
+              {/* Prompt */}
+              <Paper
+                ref={index === promptHistory.length - 1 ? lastPromptRef : null}
+                sx={{
+                  p: 2,
+                  borderRadius: "12px",
+                  backgroundColor: "#f5f5f5",
+                  maxWidth: "100%",
+                  alignSelf: "flex-start",
+                }}
+              >
+                <Typography>{prompt}</Typography>
+              </Paper>
 
-        {/* Middle Column - Main Chart */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ 
-            p: 3,
-            height: 500,
-            borderRadius: '16px',
-            boxShadow: 3
-          }}>
-            <ReactECharts
-              option={getChartOption()}
-              style={{ height: '100%', width: '100%' }}
-              opts={{ renderer: 'svg' }}
-            />
-          </Paper>
-        </Grid>
-
-        {/* Right Column - Chart Types */}
-        <Grid item xs={12} md={3}>
-          <Paper sx={{ 
-            p: 3,
-            borderRadius: '16px',
-            boxShadow: 3
-          }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-              Chart Types
-            </Typography>
-            <List dense>
-              {['bar', 'line', 'scatter'].map((type) => (
-                <ListItem 
-                  button 
-                  key={type}
-                  selected={chartType === type}
-                  onClick={() => setChartType(type)}
-                  sx={{ borderRadius: '8px' }}
-                >
-                  <ListItemText 
-                    primary={`${type.charAt(0).toUpperCase() + type.slice(1)} Chart`} 
+              {/* Response */}
+              {promptHistory[index] && !resultHistory[index] && (
+                <Box sx={{ pl: 1 }}>
+                  <video
+                    ref={(el) => {
+                      if (el) el.playbackRate = 2;
+                    }}
+                    src="/assets/loading_animation_1.webm"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    style={{ width: "40px", height: "auto" }}
                   />
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
-        </Grid>
-      </Grid>
+                </Box>
+              )}
+              {resultHistory[index] && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    width: "100%",
+                    p: 1,
+                    pb: 4,
+                  }}
+                >
+                  <TypewriterWords text={resultHistory[index].response} />
+                </Box>
+              )}
+            </React.Fragment>
+          ))}
+          {/* Spacer */}
+          <Box sx={{ height: isFirstSend ? 0 : "63vh" }} />
+        </Stack>
 
-      {/* User Prompt Section */}
-      <Box sx={{ 
-        mt: 4,
-        position: 'sticky',
-        bottom: 20,
-        zIndex: 1
-      }}>
-        
-          <Stack spacing={2}>
-            {/* Prompt Suggestions */}
-            <Stack direction="row" spacing={1}>
-              <Chip 
-                label="Prompt suggestions" 
-                onClick={() => setPrompt('Prompt suggestions')}
-                sx={{ borderRadius: '8px' }}
-              />
-              <Chip
-                label="Prompt suggestions"
-                onClick={() => setPrompt('Prompt Suggestions')}
-                sx={{ borderRadius: '8px' }}
-              />
-            </Stack>
-            <Paper sx={{ 
-          p: 2,
-          borderRadius: '16px',
-          boxShadow: 3,
-        }}>
-            {/* Input Field */}
-            <TextField
-              fullWidth
-              placeholder="What would you like to visualize?"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              variant="outlined"
-              InputProps={{
-                sx: { 
-                  borderRadius: '8px',
-                  '& fieldset': { borderColor: 'divider' }
-                }
-              }}
+        {/* Input section */}
+        <Box
+          sx={{
+            position: isFirstSend ? "sticky" : "fixed",
+            bottom: isFirstSend === 0 ? 20 : 0,
+            zIndex: 1,
+            left: 0,
+            right: 0,
+            backgroundColor: "background.paper",
+            pb: 2,
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
+          <Box sx={{ width: "100%", maxWidth: "700px" }}>
+            <InputSection
+              userPrompt={userPrompt}
+              setUserPrompt={setUserPrompt}
+              handleSend={handleSend}
             />
-             </Paper>
-          </Stack>
-       
+          </Box>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

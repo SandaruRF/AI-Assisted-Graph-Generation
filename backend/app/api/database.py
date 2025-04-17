@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, close_all_sessions
 from sqlalchemy.exc import SQLAlchemyError
-from app.config import  DATABASE_URL
-from app.utils.logging import logger
+from config import DATABASE_URL
+from utils.logging import logger
 
 def create_dynamic_engine(connection_string: str):
     """Creates a new SQLAlchemy engine dynamically based on user input."""

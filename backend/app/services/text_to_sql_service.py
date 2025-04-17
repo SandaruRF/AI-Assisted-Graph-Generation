@@ -1,9 +1,9 @@
 import google.generativeai as genai
 from sqlalchemy.orm import Session
-from app.agents.sql_agent.metadata import get_db_metadata
+from agents.sql_agent.metadata import get_db_metadata
 import re
-from app.config import settings
-from app.utils.logging import logger
+from config import settings
+from utils.logging import logger
 
 client = genai.configure(api_key=settings.GEMINI_API_KEY)
 

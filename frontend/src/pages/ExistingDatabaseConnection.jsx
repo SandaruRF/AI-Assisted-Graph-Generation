@@ -12,7 +12,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { Edit, Delete, Add } from "@mui/icons-material";
+import { Edit, Delete } from "@mui/icons-material";
 
 const ExistingDatabaseConnection = () => {
   const navigate = useNavigate();
@@ -66,10 +66,15 @@ const ExistingDatabaseConnection = () => {
         Connections
       </Typography>
 
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4} gap={2}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={4}
+        gap={2}
+      >
         <Button
           variant="contained"
-          
           onClick={() => navigate("/new-connection")}
           sx={{ height: 40, minWidth: 200 }}
         >
@@ -99,7 +104,11 @@ const ExistingDatabaseConnection = () => {
         >
           <Stack spacing={2}>
             {/* Top Row - Name and Type */}
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Typography variant="subtitle1" fontWeight="600">
                 {connection.name}
               </Typography>
@@ -137,7 +146,12 @@ const ExistingDatabaseConnection = () => {
             </Stack>
 
             {/* Bottom Action Row */}
-            <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="space-between">
+            <Stack
+              direction="row"
+              spacing={1.5}
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <Button
                 variant="outlined"
                 sx={{
@@ -172,8 +186,6 @@ const ExistingDatabaseConnection = () => {
                     opacity: 0.9,
                   },
                 }}
-                
-          
                 onClick={() => navigate("/graph-visualization")}
               >
                 View Graph
@@ -187,7 +199,11 @@ const ExistingDatabaseConnection = () => {
                   <Edit fontSize="small" />
                 </IconButton>
                 <IconButton
-                  onClick={() => setConnections(connections.filter((c) => c.id !== connection.id))}
+                  onClick={() =>
+                    setConnections(
+                      connections.filter((c) => c.id !== connection.id)
+                    )
+                  }
                   sx={{ color: "error.main" }}
                 >
                   <Delete fontSize="small" />
@@ -199,13 +215,21 @@ const ExistingDatabaseConnection = () => {
       ))}
 
       {/* Notification Snackbars */}
-      <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess("")}>
+      <Snackbar
+        open={!!success}
+        autoHideDuration={6000}
+        onClose={() => setSuccess("")}
+      >
         <Alert severity="success" sx={{ width: "100%" }}>
           {success}
         </Alert>
       </Snackbar>
 
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError("")}>
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError("")}
+      >
         <Alert severity="error" sx={{ width: "100%" }}>
           {error}
         </Alert>
