@@ -3,10 +3,15 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ExistingDatabaseConnection from "./pages/ExistingDatabaseConnection";
 import DatabaseConnection from "./pages/DatabaseConnection"; // Default import
 import EditDatabaseConnection from "./pages/EditDatabaseConnection";
+
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import Loading from "./Components/Loading";
 import { useEffect, useState } from "react";
+
+import VisualizationPage from "./pages/VisualizationPage";
+
+
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -32,12 +37,13 @@ function App() {
             <Route path="/edit-connection/:id" element={<EditDatabaseConnection />} />
             <Route path="/log-in/" element={<LoginPage />} />
             <Route path="/sign-up/" element={<SignUpPage />} />
+            <Route path="/graph-visualization" element={<VisualizationPage />} />
           </Routes>
         </Router>  
       </div>}
     </div>
 
-    
+
   );
 }
 
