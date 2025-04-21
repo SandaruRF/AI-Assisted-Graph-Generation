@@ -135,7 +135,7 @@ const LoginPage = () => {
             Log in
           </Button>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Link href="#" variant="body2" sx={{ color: '#0277bd' }}>
+            <Link href="/forgot-password/" variant="body2" sx={{ color: '#0277bd' }}>
               Forgot your password?
             </Link>
           </Box>
