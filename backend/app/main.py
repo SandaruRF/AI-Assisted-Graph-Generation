@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.intent import router as intent_router
 from app.api.users import router as user_router
-from app.api.passwd_reset import router as passwd_reset_router
 
 app = FastAPI(
     title="AI Assisted Graph Generation - VizGen",
@@ -20,7 +19,6 @@ app.add_middleware(
 
 
 app.include_router(user_router, prefix="/api", tags=["User Management"])
-app.include_router(passwd_reset_router, prefix="/api", tags=["Password Reset"])
 
 @app.get("/")
 async def root():

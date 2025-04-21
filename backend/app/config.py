@@ -12,9 +12,6 @@ class Settings(BaseSettings):
     MONGO_URI: str = os.getenv("MONGO_URI")
     DATABASE_NAME: str = os.getenv("DATABASE_NAME")
     SECRET_KEY: str = os.getenv("SECRET_KEY")
-    CLICK_SEND_API: str = os.getenv("CLICK_SEND_API")
-    CLICK_SEND_USERNAME: str = os.getenv("CLICK_SEND_USERNAME")
-    
 
 
     # App Settings
