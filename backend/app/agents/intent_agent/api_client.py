@@ -4,7 +4,7 @@ from app.config import settings
 from app.utils.logging import logger
 import json
 
-class IntentClassifier:
+class GeminiClient:
     def __init__(self):
         genai.configure(api_key=settings.GEMINI_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
@@ -26,7 +26,7 @@ class IntentClassifier:
 
         Return a JSON object with the following structure:
         {{
-            "intent": ["intent1", "intent2"],  # List of intents
+            "intent": "intent1_intent2",  # List of intents separated by underscores
             "confidence": 0.95,  # Confidence score (float between 0 and 1)
             "reason": ["reason for intent1", "reason for intent2"]  # Reasons for each identified intent
         }}
@@ -50,7 +50,7 @@ class IntentClassifier:
                 if "intent" in parsed_result and "confidence" in parsed_result:
                     return parsed_result
             except json.JSONDecodeError as e:
-                                logger.error(f"JSON Parsing Error: {e}")
+                logger.error(f"JSON Parsing Error: {e}")
 
             return {"intent": "unknown", "confidence": 0.0}
 

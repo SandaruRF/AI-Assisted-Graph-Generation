@@ -4,8 +4,8 @@ from langgraph.graph import StateGraph
 from pydantic import BaseModel
 from typing import List
 
-from agents.intent_agent.intent_classifier import IntentClassifier
-from agents.system_agent.other_response import System
+from app.agents.intent_agent.intent_classifier import IntentClassifier
+from app.agents.system_agent.other_response import System
 
 class UserPromptState(BaseModel):
     user_prompt: str
@@ -28,6 +28,7 @@ def other_response_generator(state: UserPromptState) -> UserPromptState:
     state.response = response
     print(response)
     return state
+
 
 # def sql_generator():
 #     """Generates SQL queries from user input."""

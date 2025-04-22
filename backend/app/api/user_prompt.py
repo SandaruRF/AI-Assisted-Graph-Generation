@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from graph import orchestrator_worker, UserPromptState
+from app.graph import orchestrator_worker, UserPromptState
 
 router = APIRouter()
 

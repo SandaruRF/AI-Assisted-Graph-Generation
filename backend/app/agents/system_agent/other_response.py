@@ -1,7 +1,8 @@
 import os
 import google.generativeai as genai
-from config import settings
-from utils.logging import logger
+from app.config import settings
+from app.utils.logging import logger
+import json
 
 class System:
     def __init__(self):
@@ -31,4 +32,3 @@ class System:
         except Exception as e:
             logger.error(f"Error generating response: {e}")
             return "I'm here to help you explore your data! Ask me anything data-related."
-        
