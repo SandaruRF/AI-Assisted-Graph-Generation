@@ -3,8 +3,8 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from sqlalchemy import inspect
 from typing import Dict, List
-from app.api.database import get_db
-from app.services.text_to_sql_metadata import fetch_db_metadata
+from api.database import get_db
+from services.text_to_sql_metadata import fetch_db_metadata
 
 router = APIRouter()
 

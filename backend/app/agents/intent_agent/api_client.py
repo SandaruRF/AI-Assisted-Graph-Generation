@@ -1,7 +1,7 @@
 import os
 import google.generativeai as genai
-from app.config import settings
-from app.utils.logging import logger
+from config import settings
+from utils.logging import logger
 import json
 
 class GeminiClient:

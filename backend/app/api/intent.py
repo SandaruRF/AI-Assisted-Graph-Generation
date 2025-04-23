@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.agents.intent_agent.classifier import IntentClassifier
+from agents.intent_agent.classifier import IntentClassifier
 
 router = APIRouter()
 classifier = IntentClassifier()

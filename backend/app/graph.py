@@ -4,8 +4,8 @@ from langgraph.graph import StateGraph
 from pydantic import BaseModel
 from typing import List
 
-from app.agents.intent_agent.intent_classifier import IntentClassifier
-from app.agents.system_agent.other_response import System
+from agents.intent_agent.intent_classifier import IntentClassifier
+from agents.system_agent.other_response import System
 
 class UserPromptState(BaseModel):
     user_prompt: str

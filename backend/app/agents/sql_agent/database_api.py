@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.engine import URL
-from app.models.database_model import Database, DatabaseType
-from app.utils.logging import logger
+from models.database_model import Database, DatabaseType
+from utils.logging import logger
 import json
 
 router = APIRouter()

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from app.api.database import get_metadata
+from api.database import get_metadata
 import re
-from app.utils.logging import logger
+from utils.logging import logger
 
 # table names
 # columns
