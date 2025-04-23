@@ -7,7 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import Loading from "./Components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import VisualizationPage from "./pages/VisualizationPage";
+
 import { useEffect, useState } from "react";
 
 function App() {
@@ -26,16 +26,16 @@ function App() {
         <Router>
           <Routes>
           {/* Default Route */}
-            <Route path="/" element={<ExistingDatabaseConnection />} />
+            <Route path="/existing-database-connection/" element={<ExistingDatabaseConnection />} />
 
             {/* Database Connection Routes */}
             <Route path="/existing-connections" element={<ExistingDatabaseConnection />} />
             <Route path="/new-connection" element={<DatabaseConnection />} /> {/* Use the component here */}
             <Route path="/edit-connection/:id" element={<EditDatabaseConnection />} />
-            <Route path="/log-in/" element={<LoginPage />} />
+            <Route path="/" element={<LoginPage />} />
             <Route path="/sign-up/" element={<SignUpPage />} />
             <Route path="/forgot-password/" element={<ForgotPasswordPage />} />
-            <Route path="/graph-visualization" element={<VisualizationPage />} />
+           
           </Routes>
         </Router>  
       </div>}

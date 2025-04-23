@@ -177,6 +177,26 @@ const ExistingDatabaseConnection = () => {
               >
                 Connect Database
               </Button>
+
+              {/* Visualization Button with same style as Connect Database button */}
+              <Button
+                variant="outlined"
+                sx={{
+                  whiteSpace: "nowrap",
+                  minWidth: 120,
+                  height: 36,
+                  borderColor: "primary.main",
+                  color: "primary.main",
+                  "&:hover": {
+                    borderColor: "primary.dark",
+                    backgroundColor: "primary.light",
+                    opacity: 0.9,
+                  },
+                }}
+                onClick={() => navigate("/graph-visualization")}
+              >
+                View Graph
+              </Button>
               <Stack direction="row" spacing={1}>
                 <IconButton 
                   onClick={() => navigate(`/edit-connection/${connection.id}`)}
