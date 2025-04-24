@@ -29,7 +29,6 @@ def other_response_generator(state: UserPromptState) -> UserPromptState:
     print(response)
     return state
 
-
 # def sql_generator():
 #     """Generates SQL queries from user input."""
 #     print("SQL query generation successfull.")
