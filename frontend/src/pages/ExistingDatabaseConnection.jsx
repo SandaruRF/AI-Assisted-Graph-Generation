@@ -12,7 +12,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { Edit, Delete, Add } from "@mui/icons-material";
+import { Edit, Delete } from "@mui/icons-material";
 
 const ExistingDatabaseConnection = () => {
   const navigate = useNavigate();
@@ -56,13 +56,9 @@ const ExistingDatabaseConnection = () => {
   );
 
   const handleTestConnection = async (connection) => {
-    try {
+    
       setSuccess(`Testing connection to ${connection.name}...`);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSuccess(`Connection to ${connection.name} successful!`);
-    } catch (err) {
-      setError(`Failed to connect to ${connection.name}. Please check your details.`);
-    }
+      
   };
 
   return (
@@ -161,7 +157,7 @@ const ExistingDatabaseConnection = () => {
             >
               <Button
                 variant="outlined"
-                onClick={() => handleTestConnection(connection)}
+                
                 sx={{ 
                   whiteSpace: 'nowrap',
                   minWidth: 180,
@@ -172,8 +168,9 @@ const ExistingDatabaseConnection = () => {
                     borderColor: 'primary.dark',
                     backgroundColor: 'primary.light',
                     opacity: 0.9
-                  }
+                  },
                 }}
+                onClick={handleConnectClick} // Trigger success message
               >
                 Connect Database
               </Button>
