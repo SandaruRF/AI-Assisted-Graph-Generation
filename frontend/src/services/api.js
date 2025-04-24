@@ -2,13 +2,10 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8001";  // FastAPI backend URL
 
-// Save a new connection
-export const saveConnection = async (connectionData) => {
+// Save a new connection (supports both connection string and form)
+export const saveConnection = async (connectionData, endpoint = "/api/connections") => {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/api/connections`,  // ✅ added /api
-      connectionData
-    );
+    const response = await axios.post(`${API_BASE_URL}${endpoint}`, connectionData);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.detail || "Failed to save connection");
@@ -18,7 +15,7 @@ export const saveConnection = async (connectionData) => {
 // Get a single connection by ID (for editing)
 export const getConnectionById = async (connectionId) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/connections/${connectionId}`); // ✅ added /api
+    const response = await axios.get(`${API_BASE_URL}/api/connections/${connectionId}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.detail || "Failed to fetch connection data");
@@ -29,7 +26,7 @@ export const getConnectionById = async (connectionId) => {
 export const updateConnection = async (connectionId, updatedConnectionData) => {
   try {
     const response = await axios.put(
-      `${API_BASE_URL}/api/connections/${connectionId}`, // ✅ added /api
+      `${API_BASE_URL}/api/connections/${connectionId}`,
       updatedConnectionData
     );
     return response.data;
