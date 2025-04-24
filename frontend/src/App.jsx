@@ -1,8 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ExistingDatabaseConnection from "./pages/ExistingDatabaseConnection";
-import DatabaseConnection from "./pages/DatabaseConnection"; // Default import
+import DatabaseConnection from "./pages/DatabaseConnection"; 
 import EditDatabaseConnection from "./pages/EditDatabaseConnection";
+import VisualizationPage from "./pages/VisualizationPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import Loading from "./components/Loading";
@@ -27,27 +28,14 @@ function App() {
         <div>
           <Router>
             <Routes>
-              {/* Default Route */}
-              <Route
-                path="/existing-database-connection/"
-                element={<ExistingDatabaseConnection />}
-              />
-              {/* Database Connection Routes */}
-              <Route
-                path="/existing-connections"
-                element={<ExistingDatabaseConnection />}
-              />
-              <Route path="/new-connection" element={<DatabaseConnection />} />{" "}
-              {/* Use the component here */}
-              <Route
-                path="/edit-connection/:id"
-                element={<EditDatabaseConnection />}
-              />
+              <Route path="/existing-database-connection/" element={<ExistingDatabaseConnection />} />
+              <Route path="/existing-connections" element={<ExistingDatabaseConnection />} />
+              <Route path="/new-connection" element={<DatabaseConnection />} />
+              <Route path="/edit-connection/:id" element={<EditDatabaseConnection />} />
+              <Route path="/graph-visualization" element={<VisualizationPage />} />
               <Route path="/" element={<LoginPage />} />
               <Route path="/sign-up/" element={<SignUpPage />} />
-              <Route
-                path="/forgot-password/"
-                element={<ForgotPasswordPage />}
+              <Route path="/forgot-password/" element={<ForgotPasswordPage />}
               />
             </Routes>
           </Router>
