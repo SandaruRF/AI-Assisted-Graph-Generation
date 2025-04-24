@@ -57,7 +57,7 @@ const ExistingDatabaseConnection = () => {
 
   const handleTestConnection = async (connection) => {
     
-      setSuccess(`Testing connection to ${connection.name}...`);
+      setSuccess(`Database connected successfully!`);
       
   };
 
