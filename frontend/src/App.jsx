@@ -28,7 +28,6 @@ function App() {
         <div>
           <Router>
             <Routes>
-              <Route path="/existing-database-connection/" element={<ExistingDatabaseConnection />} />
               <Route path="/existing-connections" element={<ExistingDatabaseConnection />} />
               <Route path="/new-connection" element={<DatabaseConnection />} />
               <Route path="/edit-connection/:id" element={<EditDatabaseConnection />} />
