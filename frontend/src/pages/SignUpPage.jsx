@@ -277,7 +277,7 @@ const SignUpPage = () => {
           <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
             <Typography variant="body2" sx={{ color: "#0277bd" }}>
               Already have an account?
-              <Link href="/log-in" sx={{ ml: 1, color: "#0277bd" }}>
+              <Link href="/" sx={{ ml: 1, color: "#0277bd" }}>
                 Log in
               </Link>
             </Typography>
