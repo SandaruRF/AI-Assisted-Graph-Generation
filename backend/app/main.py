@@ -6,22 +6,20 @@ from typing import List, Optional, Union
 from bson import ObjectId
 import logging
 
+from config import settings
+
 # Enable logging (optional, for debugging)
 logging.basicConfig(level=logging.INFO)
 
-# Step 1: Initialize the FastAPI app
-app = FastAPI()
-
-# Step 2: Add CORS Middleware
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "*",  # ⚠️ Be cautious in production
-]
+app = FastAPI(
+    title="AI Assisted Graph Generation - VizGen",
+    description="An AI-powered system for generating visualizations, insights, and explanations from text data.",
+    version="1.0.0",
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[settings.FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -6,6 +6,8 @@ from pydantic import ConfigDict
 load_dotenv()
 
 class Settings(BaseSettings):
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL")
+
     # API Keys
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY")
 

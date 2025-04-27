@@ -26,7 +26,7 @@ const ExistingDatabaseConnection = () => {
   // Fetch from backend
   useEffect(() => {
     setIsLoading(true);
-    fetch("http://localhost:8001/api/connections")
+    fetch("http://localhost:8000/api/connections")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch connections");
@@ -49,9 +49,10 @@ const ExistingDatabaseConnection = () => {
       });
   }, []);
 
-  const filteredConnections = connections?.filter((conn) =>
-    conn?.name?.toLowerCase()?.includes(searchQuery.toLowerCase())
-  ) || [];
+  const filteredConnections =
+    connections?.filter((conn) =>
+      conn?.name?.toLowerCase()?.includes(searchQuery.toLowerCase())
+    ) || [];
 
   const handleConnectClick = () => {
     setSuccess("Database connected successfully!");
@@ -64,7 +65,7 @@ const ExistingDatabaseConnection = () => {
     }
 
     // Make a delete API call
-    fetch(`http://localhost:8001/api/connections/${connectionId}`, {
+    fetch(`http://localhost:8000/api/connections/${connectionId}`, {
       method: "DELETE",
     })
       .then((response) => {
@@ -86,7 +87,13 @@ const ExistingDatabaseConnection = () => {
         Connections
       </Typography>
 
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4} gap={2}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={4}
+        gap={2}
+      >
         <Button
           variant="contained"
           onClick={() => navigate("/new-connection")}
@@ -122,7 +129,11 @@ const ExistingDatabaseConnection = () => {
             }}
           >
             <Stack spacing={2}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Typography variant="subtitle1" fontWeight="600">
                   {connection.name}
                 </Typography>
@@ -152,13 +163,26 @@ const ExistingDatabaseConnection = () => {
                   },
                 }}
               >
-                {connection.host && <Chip label={`Host: ${connection.host}`} size="small" />}
-                {connection.port && <Chip label={`Port: ${connection.port}`} size="small" />}
-                {connection.database && <Chip label={`DB: ${connection.database}`} size="small" />}
-                {connection.username && <Chip label={`User: ${connection.username}`} size="small" />}
+                {connection.host && (
+                  <Chip label={`Host: ${connection.host}`} size="small" />
+                )}
+                {connection.port && (
+                  <Chip label={`Port: ${connection.port}`} size="small" />
+                )}
+                {connection.database && (
+                  <Chip label={`DB: ${connection.database}`} size="small" />
+                )}
+                {connection.username && (
+                  <Chip label={`User: ${connection.username}`} size="small" />
+                )}
               </Stack>
 
-              <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="space-between">
+              <Stack
+                direction="row"
+                spacing={1.5}
+                alignItems="center"
+                justifyContent="space-between"
+              >
                 <Button
                   variant="outlined"
                   sx={{
@@ -197,7 +221,9 @@ const ExistingDatabaseConnection = () => {
 
                 <Stack direction="row" spacing={1}>
                   <IconButton
-                    onClick={() => navigate(`/edit-connection/${connection._id}`)}
+                    onClick={() =>
+                      navigate(`/edit-connection/${connection._id}`)
+                    }
                     sx={{ color: "text.secondary" }}
                   >
                     <Edit fontSize="small" />
@@ -216,13 +242,21 @@ const ExistingDatabaseConnection = () => {
       )}
 
       {/* Snackbars */}
-      <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess("")}>
+      <Snackbar
+        open={!!success}
+        autoHideDuration={6000}
+        onClose={() => setSuccess("")}
+      >
         <Alert severity="success" sx={{ width: "100%" }}>
           {success}
         </Alert>
       </Snackbar>
 
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError("")}>
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError("")}
+      >
         <Alert severity="error" sx={{ width: "100%" }}>
           {error}
         </Alert>
