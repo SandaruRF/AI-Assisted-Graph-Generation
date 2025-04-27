@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import MemoryIcon from "@mui/icons-material/Memory";
-import { saveConnection, getConnectionById, updateConnection } from "../services/api";
+import { getConnectionById, updateConnection } from "../services/api";
 
 const databaseTypes = [
   "MySQL",
@@ -63,25 +63,25 @@ const EditConnection = () => {
 
   // Sync database type with form state
   useEffect(() => {
-    setConnectionDetails(prev => ({
+    setConnectionDetails((prev) => ({
       ...prev,
-      db_type: selectedDbType
+      db_type: selectedDbType,
     }));
   }, [selectedDbType]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setConnectionDetails(prev => ({
+    setConnectionDetails((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
-    setConnectionDetails(prev => ({
+    setConnectionDetails((prev) => ({
       ...prev,
-      [name]: checked
+      [name]: checked,
     }));
   };
 
@@ -99,10 +99,10 @@ const EditConnection = () => {
   const handleUpdateConnection = async () => {
     setError("");
     setSuccess("Updating connection...");
-  
-    let payload = { 
+
+    let payload = {
       ...connectionDetails,
-      db_type: selectedDbType // Use correct field name
+      db_type: selectedDbType, // Use correct field name
     };
 
     // Clear unused fields based on form type
@@ -113,12 +113,12 @@ const EditConnection = () => {
         port: "",
         database: "",
         username: "",
-        password: ""
+        password: "",
       };
     } else {
       payload = {
         ...payload,
-        connectionString: ""
+        connectionString: "",
       };
     }
 
@@ -204,7 +204,9 @@ const EditConnection = () => {
                   selectedDbType === dbType ? "primary.main" : "action.hover",
                 "&:hover": {
                   backgroundColor:
-                    selectedDbType === dbType ? "primary.dark" : "action.selected",
+                    selectedDbType === dbType
+                      ? "primary.dark"
+                      : "action.selected",
                 },
               }}
             >
@@ -350,10 +352,18 @@ const EditConnection = () => {
       </Paper>
 
       {/* Notifications */}
-      <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess("")}>
+      <Snackbar
+        open={!!success}
+        autoHideDuration={6000}
+        onClose={() => setSuccess("")}
+      >
         <Alert severity="success">{success}</Alert>
       </Snackbar>
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError("")}>
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError("")}
+      >
         <Alert severity="error">{error}</Alert>
       </Snackbar>
     </Box>
