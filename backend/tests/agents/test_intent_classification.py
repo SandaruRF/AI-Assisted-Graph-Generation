@@ -1,5 +1,5 @@
 import pytest 
-from app.agents.intent_agent.classifier import IntentClassifier
+from backend.app.agents.intent_agent.intent_classifier import IntentClassifier
 
 def test_combined_intents():
     classifier = IntentClassifier()

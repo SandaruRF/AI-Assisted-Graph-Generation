@@ -4,6 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from config import DATABASE_URL
 from utils.logging import logger
 
+
 def create_dynamic_engine(connection_string: str):
     """Creates a new SQLAlchemy engine dynamically based on user input."""
     if not connection_string:

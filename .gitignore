@@ -76,7 +76,6 @@ Thumbs.db
 
 # Virtual environment
 venv/
-myenv/
 
 # IDE and editor directories and files
 .vscode/

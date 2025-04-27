@@ -32,4 +32,3 @@ class System:
         except Exception as e:
             logger.error(f"Error generating response: {e}")
             return "I'm here to help you explore your data! Ask me anything data-related."
-        
