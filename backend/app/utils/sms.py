@@ -2,7 +2,7 @@ from __future__ import print_function
 import clicksend_client
 from clicksend_client import SmsMessage
 from clicksend_client.rest import ApiException
-from app.config import settings
+from config import settings
 
 configuration = clicksend_client.Configuration()
 configuration.username = settings.CLICK_SEND_USERNAME

@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from unittest.mock import patch
 from app.main import app
 
+
 client = TestClient(app)
 
 @pytest.fixture
@@ -36,5 +37,3 @@ def test_sql_query_count_artists(mock_generate_sql_query):
     assert response.json()["query"] == "SELECT COUNT(*) FROM artist;"
     assert "data" in response.json()
     assert isinstance(response.json()["data"], list)
-
-

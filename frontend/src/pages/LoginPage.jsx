@@ -134,11 +134,19 @@ const LoginPage = () => {
           >
             Log in
           </Button>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Link href="#" variant="body2" sx={{ color: '#0277bd' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+            <Link href="/forgot-password/" variant="body2" sx={{ color: '#0277bd' }}>
               Forgot your password?
             </Link>
           </Box>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+                      <Typography variant="body2" sx={{ color: "#0277bd" }}>
+                        Don't have an account?
+                        <Link href="/sign-up" sx={{ ml: 1, color: "#0277bd" }}>
+                          Sign up
+                        </Link>
+                      </Typography>
+                    </Box>
         </Box>
       </Paper>
     </Container>

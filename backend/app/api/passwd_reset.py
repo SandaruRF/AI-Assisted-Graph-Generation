@@ -1,13 +1,13 @@
-from fastapi import FastAPI, HTTPException
-from app.models.twilio_otp_schema import OTPRequest, OTPVerify, PasswordReset
-from app.utils.sms import send_sms
+from fastapi import  HTTPException
+from models.twilio_otp_schema import OTPRequest, OTPVerify, PasswordReset
+from utils.sms import send_sms
 from passlib.hash import bcrypt
 from datetime import datetime, timedelta
 import random
-from app.config import settings,db
+from config import settings,db
 from fastapi.routing import APIRouter
-from app.models.twilio_otp_schema import EmailRequest
-from app.utils.logging import logger
+from models.twilio_otp_schema import EmailRequest
+from utils.logging import logger
 
 users = db["user"]
 otp_collection = db["otps"]

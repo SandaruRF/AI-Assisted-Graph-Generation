@@ -13,4 +13,3 @@ class PasswordReset(BaseModel):
 
 class EmailRequest(BaseModel):
     email: EmailStr
-
