@@ -7,6 +7,7 @@ from typing import  Union
 from utils.logging import logger
 
 
+
 client = MongoClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
 connections_collection = db["DatabaseDetails"]
@@ -29,7 +30,7 @@ async def save_connection_form(connection: ConnectionData):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/api/connection-strings")
+@router.post("/connection-strings")  # Adjusted to avoid duplicate prefix
 async def save_connection_string_form(data: ConnectionStringData):
     try:
         data_dict = data.dict()
