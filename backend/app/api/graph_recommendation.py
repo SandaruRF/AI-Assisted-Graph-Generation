@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pathlib import Path
 
 from services.graph_recommendation import GraphModel
-from models_test.graph_recommendation_model import GraphInput, PredictionResult
+from models.graph_recommendation_model import GraphInput, PredictionResult
 
 router = APIRouter()
 model = GraphModel()
