@@ -3,10 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import settings
 from api.database import router as database_router
 
-
-
-
-
 app = FastAPI(
     title="AI Assisted Graph Generation - VizGen",
     description="An AI-powered system for generating visualizations, insights, and explanations from text data.",
