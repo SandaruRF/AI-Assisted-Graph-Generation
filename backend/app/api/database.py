@@ -4,8 +4,9 @@ from config import settings
 from pymongo import MongoClient
 from bson import ObjectId
 from typing import  Union
+from utils.logging import logger
 
-# Step 3: MongoDB Client Setup
+
 client = MongoClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
 connections_collection = db["DatabaseDetails"]
@@ -32,6 +33,7 @@ async def save_connection_form(connection: ConnectionData):
 async def save_connection_string_form(data: ConnectionStringData):
     try:
         data_dict = data.dict()
+        logger.info(f"Received connection string data: {data_dict}")
         if not data_dict.get("ssl"):
             data_dict["ssl"] = False
         data_dict["form_type"] = "connection_string_form"
@@ -88,7 +90,7 @@ async def update_connection(connection_id: str, updated_connection: Union[Connec
         elif isinstance(updated_connection, ConnectionStringData):
             updated_data["form_type"] = "connection_string_form"
 
-        logging.info(f"Updating connection {connection_id} with data: {updated_data}")
+        logger.info(f"Updating connection {connection_id} with data: {updated_data}")
 
         result = connections_collection.update_one(
             {"_id": ObjectId(connection_id)},

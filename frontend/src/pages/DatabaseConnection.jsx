@@ -77,7 +77,6 @@ const NewConnection = () => {
   const handleSaveConnection = async () => {
     const isConnectionStringMode = !useFormMode;
   
-    // ✅ Common validation
     if (!selectedDbType) {
       showSnackbar("Please select a database type.", "error");
       return;
@@ -142,6 +141,9 @@ const NewConnection = () => {
     try {
       await saveConnection(payload, endpoint);
       showSnackbar("Connection saved successfully!", "success");
+      
+
+
       setTimeout(() => navigate("/existing-connections"), 1000);
     } catch (err) {
       showSnackbar(err.response?.data?.detail || "Failed to save connection.", "error");
