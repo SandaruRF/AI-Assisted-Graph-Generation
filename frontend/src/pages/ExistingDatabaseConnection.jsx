@@ -162,6 +162,7 @@ const ExistingDatabaseConnection = () => {
                     color: "text.primary",
                   },
                 }}
+                onClick={handleConnectClick} // Trigger success message
               >
                 {connection.host && (
                   <Chip label={`Host: ${connection.host}`} size="small" />
