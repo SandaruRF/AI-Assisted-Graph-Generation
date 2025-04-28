@@ -14,7 +14,7 @@ connections_collection = db["DatabaseDetails"]
 
 router = APIRouter()
 
-@router.post("/api/connections")
+@router.post("/connections")
 async def save_connection_form(connection: ConnectionData):
     try:
         data = connection.dict()
@@ -49,7 +49,7 @@ async def save_connection_string_form(data: ConnectionStringData):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/api/connections")
+@router.get("/connections")
 async def get_connections():
     try:
         connections = list(connections_collection.find())
@@ -60,7 +60,7 @@ async def get_connections():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/api/connections/{connection_id}")
+@router.get("/connections/{connection_id}")
 async def get_connection_by_id(connection_id: str):
     try:
         if not ObjectId.is_valid(connection_id):
@@ -77,7 +77,7 @@ async def get_connection_by_id(connection_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.put("/api/connections/{connection_id}")
+@router.put("/connections/{connection_id}")
 async def update_connection(connection_id: str, updated_connection: Union[ConnectionData, ConnectionStringData]):
     try:
         if not ObjectId.is_valid(connection_id):
@@ -109,7 +109,7 @@ async def update_connection(connection_id: str, updated_connection: Union[Connec
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/api/connections/{connection_id}")
+@router.delete("/connections/{connection_id}")
 async def delete_connection(connection_id: str):
     try:
         if not ObjectId.is_valid(connection_id):
