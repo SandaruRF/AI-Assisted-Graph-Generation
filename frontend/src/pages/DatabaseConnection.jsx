@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -10,10 +9,12 @@ import {
   FormControlLabel,
   Checkbox,
   Paper,
-  Grid
+  Grid,
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import MemoryIcon from "@mui/icons-material/Memory";
+import { saveConnection } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const databaseTypes = [
   "MySQL",
@@ -28,7 +29,7 @@ const databaseTypes = [
 const NewConnection = () => {
   const navigate = useNavigate();
   const [selectedDbType, setSelectedDbType] = useState("");
-  const [showForm, setShowForm] = useState(false);
+  const [useFormMode, setUseFormMode] = useState(false);
   const [connectionDetails, setConnectionDetails] = useState({
     name: "",
     connectionString: "",
@@ -39,89 +40,153 @@ const NewConnection = () => {
     password: "",
     ssl: false,
     remember: false,
+    db_type: "",
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setConnectionDetails({ ...connectionDetails, [name]: value });
+    setConnectionDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
-    setConnectionDetails({ ...connectionDetails, [name]: checked });
+    setConnectionDetails((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
   };
 
   const handleTestConnection = async () => {
-    setError("");
-    setSuccess("Testing connection...");
+    showSnackbar("Testing connection...");
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setSuccess("Connection test successful!");
-    } catch (err) {
-      setError("Connection test failed");
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Mock test
+      showSnackbar("Connection test successful!", "success");
+    } catch {
+      showSnackbar("Connection test failed.", "error");
     }
   };
 
-  const handleSaveConnection = () => {
-    navigate("/existing-connections");
+  const handleSaveConnection = async () => {
+    const isConnectionStringMode = !useFormMode;
+  
+    if (!selectedDbType) {
+      showSnackbar("Please select a database type.", "error");
+      return;
+    }
+  
+    if (!connectionDetails.name || connectionDetails.name.trim() === "") {
+      showSnackbar("Please enter a connection name.", "error");
+      return;
+    }
+  
+    if (isConnectionStringMode) {
+      // Validate connection string
+      if (!connectionDetails.connectionString || connectionDetails.connectionString.trim() === "") {
+        showSnackbar("Please enter a connection string.", "error");
+        return;
+      }
+    } else {
+      // Validate individual form fields
+      const requiredFields = [
+        { key: "host", label: "Host" },
+        { key: "port", label: "Port" },
+        { key: "database", label: "Database" },
+        { key: "username", label: "Username" },
+        { key: "password", label: "Password" },
+      ];
+  
+      for (const field of requiredFields) {
+        const value = connectionDetails[field.key];
+        if (!value || value.toString().trim() === "") {
+          showSnackbar(`Please enter ${field.label}.`, "error");
+          return;
+        }
+      }
+    }
+  
+    const payload = isConnectionStringMode
+      ? {
+          name: connectionDetails.name,
+          db_type: selectedDbType,
+          connection_string: connectionDetails.connectionString,
+          ssl: connectionDetails.ssl,
+          remember: connectionDetails.remember,
+        }
+      : {
+          name: connectionDetails.name,
+          db_type: selectedDbType,
+          host: connectionDetails.host,
+          port: parseInt(connectionDetails.port || "0"),
+          database: connectionDetails.database,
+          username: connectionDetails.username,
+          password: connectionDetails.password,
+          ssl: connectionDetails.ssl,
+          remember: connectionDetails.remember,
+        };
+  
+    const endpoint = isConnectionStringMode
+      ? "/api/connection-strings"
+      : "/api/connections";
+  
+    showSnackbar("Saving connection...");
+    try {
+      await saveConnection(payload, endpoint);
+      showSnackbar("Connection saved successfully!", "success");
+      
+
+
+      setTimeout(() => navigate("/existing-connections"), 1000);
+    } catch (err) {
+      showSnackbar(err.response?.data?.detail || "Failed to save connection.", "error");
+    }
   };
+  
 
   return (
     <Box sx={{ maxWidth: 850, margin: "auto", p: 3 }}>
       <Paper sx={{ p: 3, mb: 3 }}>
-        {/* Header Section */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h4" fontWeight="600" mb={3}>
-            New Connection
-          </Typography>
-          <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-            <Button
-              variant={!showForm ? "contained" : "outlined"}
-              onClick={() => setShowForm(false)}
-              sx={{
-                textTransform: 'none',
-                fontWeight: 600,
-                px: 3,
-                py: 1,
-                fontSize: '0.875rem'
-              }}
-            >
-              Connection String
-            </Button>
-            <Button
-              variant={showForm ? "contained" : "outlined"}
-              onClick={() => setShowForm(true)}
-              sx={{
-                textTransform: 'none',
-                fontWeight: 600,
-                px: 3,
-                py: 1,
-                fontSize: '0.875rem'
-              }}
-            >
-              Connection Form
-            </Button>
-          </Box>
+        <Typography variant="h4" fontWeight="600" mb={3}>
+          New Connection
+        </Typography>
+
+        <Box sx={{ display: "flex", gap: 1, mt: 1, mb: 2 }}>
+          <Button
+            variant={!useFormMode ? "contained" : "outlined"}
+            onClick={() => setUseFormMode(false)}
+          >
+            Connection String
+          </Button>
+          <Button
+            variant={useFormMode ? "contained" : "outlined"}
+            onClick={() => setUseFormMode(true)}
+          >
+            Connection Form
+          </Button>
         </Box>
 
-        {/* Database Type Selection */}
-        <Box sx={{ 
-          display: "flex",
-          flexWrap: "nowrap",
-          overflowX: "auto",
-          gap: 1, 
-          mb: 3,
-          pb: 1,
-          "&::-webkit-scrollbar": {
-            height: "4px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "action.selected",
-            borderRadius: "2px",
-          }
-        }}>
+        {/* DB Type Selection */}
+        <Box
+          sx={{
+            display: "flex",
+            overflowX: "auto",
+            gap: 1,
+            mb: 3,
+            pb: 1,
+            "&::-webkit-scrollbar": { height: "4px" },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "action.selected",
+              borderRadius: "2px",
+            },
+          }}
+        >
           {databaseTypes.map((dbType) => (
             <Button
               key={dbType}
@@ -130,21 +195,20 @@ const NewConnection = () => {
               onClick={() => setSelectedDbType(dbType)}
               sx={{
                 flexShrink: 0,
-                textTransform: 'none',
+                textTransform: "none",
                 fontWeight: 500,
                 px: 2.5,
                 py: 0.75,
-                fontSize: '0.875rem',
-                boxShadow: 'none',
-                backgroundColor: selectedDbType === dbType 
-                  ? 'primary.main' 
-                  : 'action.hover',
-                '&:hover': {
-                  backgroundColor: selectedDbType === dbType 
-                    ? 'primary.dark' 
-                    : 'action.selected',
-                  boxShadow: 'none'
-                }
+                fontSize: "0.875rem",
+                boxShadow: "none",
+                backgroundColor:
+                  selectedDbType === dbType ? "primary.main" : "action.hover",
+                "&:hover": {
+                  backgroundColor:
+                    selectedDbType === dbType
+                      ? "primary.dark"
+                      : "action.selected",
+                },
               }}
             >
               {dbType}
@@ -152,8 +216,8 @@ const NewConnection = () => {
           ))}
         </Box>
 
-        {/* Form Section */}
-        {!showForm ? (
+        {/* Connection Fields */}
+        {!useFormMode ? (
           <>
             <TextField
               fullWidth
@@ -173,73 +237,30 @@ const NewConnection = () => {
             />
           </>
         ) : (
-          <Grid container spacing={0.5}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Connection Name"
-                name="name"
-                value={connectionDetails.name}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Host"
-                name="host"
-                value={connectionDetails.host}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Port"
-                name="port"
-                type="number"
-                value={connectionDetails.port}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Database Name"
-                name="database"
-                value={connectionDetails.database}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="User name"
-                name="username"
-                value={connectionDetails.username}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Password"
-                name="password"
-                type="password"
-                value={connectionDetails.password}
-                onChange={handleInputChange}
-                margin="normal"
-              />
-            </Grid>
+          <Grid container spacing={1}>
+            {[
+              ["name", "Connection Name"],
+              ["host", "Host"],
+              ["port", "Port", "number"],
+              ["database", "Database"],
+              ["username", "Username"],
+              ["password", "Password", "password"],
+            ].map(([name, label, type = "text"]) => (
+              <Grid item xs={12} key={name}>
+                <TextField
+                  fullWidth
+                  label={label}
+                  name={name}
+                  type={type}
+                  value={connectionDetails[name]}
+                  onChange={handleInputChange}
+                  margin="normal"
+                />
+              </Grid>
+            ))}
           </Grid>
         )}
 
-        {/* SSL & Remember Connection */}
         <Box sx={{ mt: 2 }}>
           <FormControlLabel
             control={
@@ -252,7 +273,6 @@ const NewConnection = () => {
               />
             }
             label="Enable SSL/TLS"
-            sx={{ display: "block" }}
           />
           <FormControlLabel
             control={
@@ -265,61 +285,32 @@ const NewConnection = () => {
               />
             }
             label="Remember connection"
-            sx={{ display: "block" }}
           />
         </Box>
 
-        {/* Action Buttons */}
         <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={handleTestConnection}
-            sx={{
-              flexShrink: 0,
-              textTransform: 'none',
-              fontWeight: 500,
-              px: 2.5,
-              py: 0.75,
-              fontSize: '0.875rem',
-              boxShadow: 'none',
-              '&:hover': {
-                boxShadow: 'none',
-                backgroundColor: 'primary.dark'
-              }
-            }}
-          >
+          <Button variant="contained" color="primary" onClick={handleTestConnection}>
             Test Connection
           </Button>
-          <Button 
-            variant="contained" 
-            color="success" 
-            onClick={handleSaveConnection}
-            sx={{
-              flexShrink: 0,
-              textTransform: 'none',
-              fontWeight: 500,
-              px: 2.5,
-              py: 0.75,
-              fontSize: '0.875rem',
-              boxShadow: 'none',
-              '&:hover': {
-                boxShadow: 'none',
-                backgroundColor: 'success.dark'
-              }
-            }}
-          >
+          <Button variant="contained" color="success" onClick={handleSaveConnection}>
             Save Connection
           </Button>
         </Box>
       </Paper>
 
-      {/* Notifications */}
-      <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess("")}>
-        <Alert severity="success">{success}</Alert>
-      </Snackbar>
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError("")}>
-        <Alert severity="error">{error}</Alert>
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
       </Snackbar>
     </Box>
   );
