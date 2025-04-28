@@ -7,12 +7,13 @@ load_dotenv()
 
 class Settings(BaseSettings):
     FRONTEND_URL: str = os.getenv("FRONTEND_URL")
-
-    # API Keys
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY")
-    MONGO_URI: str = os.getenv('MONGO_URI')
+    MONGO_URI: str = os.getenv("MONGO_URI")
     DATABASE_NAME: str = os.getenv("DATABASE_NAME")
-    FRONTEND_URL: str = os.getenv("FRONTEND_URL")
+    SECRET_KEY: str = os.getenv("SECRET_KEY")
+    CLICK_SEND_API: str = os.getenv("CLICK_SEND_API")
+    CLICK_SEND_USERNAME: str = os.getenv("CLICK_SEND_USERNAME")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "mysql+pymysql://root:root@localhost/chinook")
 
     # App Settings
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
