@@ -88,13 +88,13 @@ const NewConnection = () => {
     }
   
     if (isConnectionStringMode) {
-      // ✅ Validate connection string
+      // Validate connection string
       if (!connectionDetails.connectionString || connectionDetails.connectionString.trim() === "") {
         showSnackbar("Please enter a connection string.", "error");
         return;
       }
     } else {
-      // ✅ Validate individual form fields
+      // Validate individual form fields
       const requiredFields = [
         { key: "host", label: "Host" },
         { key: "port", label: "Port" },
@@ -112,7 +112,6 @@ const NewConnection = () => {
       }
     }
   
-    // ✅ All good – continue to save
     const payload = isConnectionStringMode
       ? {
           name: connectionDetails.name,
