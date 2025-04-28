@@ -1,6 +1,7 @@
-from pydantic import BaseModel
 
-class DatabaseConnection(BaseModel):
+from pydantic import BaseModel, Field
+from typing import Optional
+class ConnectionData(BaseModel):
     name: str
     db_type: str
     host: str
@@ -11,9 +12,10 @@ class DatabaseConnection(BaseModel):
     ssl: bool
     remember: bool
 
-class ConnectionString(BaseModel):
+# Step 4b: Model for Connection String Form
+class ConnectionStringData(BaseModel):
     name: str
     db_type: str
     connection_string: str
-    ssl: bool
-    remember: bool
+    ssl: Optional[bool] = False
+    remember: Optional[bool] = False
