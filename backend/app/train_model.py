@@ -1,12 +1,12 @@
 import pandas as pd
-from app.models import GraphModel
+from services.graph_recommendation import GraphModel
 from pathlib import Path
 
 def train_and_save_model():
     
     model = GraphModel()
     
-    data_path = Path("data/graph_recommendation_dataset.csv")
+    data_path = Path("../data/graph_recommendation_dataset.csv")
     
     if not data_path.exists():
         print(f"Error: Training data not found at {data_path}")

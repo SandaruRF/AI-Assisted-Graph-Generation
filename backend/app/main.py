@@ -1,6 +1,6 @@
 from fastapi import FastAPI,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from models import GraphModel
+from services.graph_recommendation import GraphModel
 from models_test.graph_recommendation_model import GraphInput, PredictionResult
 from pathlib import Path
 
