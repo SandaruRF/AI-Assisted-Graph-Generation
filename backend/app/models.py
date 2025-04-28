@@ -8,7 +8,7 @@ from xgboost import XGBClassifier
 from sklearn.metrics import classification_report, accuracy_score
 import joblib
 from pathlib import Path
-from .config import MODEL_PATH, PCA_PATH, LABEL_ENCODER_PATH, FEATURE_COLUMNS_PATH
+from config import MODEL_PATH, PCA_PATH, LABEL_ENCODER_PATH, FEATURE_COLUMNS_PATH
 
 class GraphModel:
     def __init__(self):

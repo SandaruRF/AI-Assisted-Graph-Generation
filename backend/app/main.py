@@ -1,9 +1,8 @@
 from fastapi import FastAPI,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from app.models import GraphModel
-from app.schemas import GraphInput, PredictionResult
+from models import GraphModel
+from schemas import GraphInput, PredictionResult
 from pathlib import Path
-from app.api.intent import router as intent_router
 
 app = FastAPI(
     title="AI Assisted Graph Generation - VizGen",
@@ -19,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(intent_router, prefix="/api", tags=["Intent Classification"])
 model = GraphModel()
 
 @app.on_event("startup")
