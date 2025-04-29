@@ -70,9 +70,9 @@ def other_response_generator(state: UserPromptState) -> UserPromptState:
 #     """Generate explanations for the identified anomalies, trends or correlations."""
 #     print("Explanation generation successfull.")
 
-# def graph_recommender():
-#     """Recommends suitable graph types for visualize data."""
-#     print("Graph recommendation successfull.")
+def graph_recommender():
+    """Recommends suitable graph types for visualize data."""
+    print("Graph recommendation successfull.")
 
 # def graph_generator():
 #     """Generate the graph for visualize data."""

@@ -1,5 +1,5 @@
 import pandas as pd
-from services.graph_recommendation import GraphModel
+from agents.visualization_agent.graph_recommender import GraphModel
 from pathlib import Path
 
 def train_and_save_model():
