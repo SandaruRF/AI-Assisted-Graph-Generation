@@ -9,7 +9,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import TypewriterWords from "../Components/TypewriterWords";
+import TypewriterWords from "../components/TypewriterWords";
 
 const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
   <Stack spacing={2}>
