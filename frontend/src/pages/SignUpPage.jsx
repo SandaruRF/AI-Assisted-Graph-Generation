@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import PasswordStrengthBar from "../components/PasswordStrengthBar";
+import PasswordStrengthBar from "../Components/PasswordStrengthBar";
 import {
   Box,
   TextField,
@@ -56,7 +56,7 @@ const SignUpPage = () => {
       );
       if (response.status === 200) {
         console.log("Sign up successful", response.data);
-        navigate("/log-in");
+        navigate("/");
       }
     } catch (err) {
       console.error("Error during sign-up:", err);

@@ -8,7 +8,7 @@ import EditDatabaseConnection from "./pages/EditDatabaseConnection";
 import VisualizationPage from "./pages/VisualizationPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import Loading from "./components/Loading";
+import Loading from "./Components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 function App() {
