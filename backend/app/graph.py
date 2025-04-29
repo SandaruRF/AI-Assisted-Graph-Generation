@@ -5,12 +5,18 @@ from pydantic import BaseModel
 from typing import List
 
 from agents.intent_agent.intent_classifier import IntentClassifier
+from agents.visualization_agent.graph_recommender import GraphModel
 from agents.system_agent.other_response import System
 
 class UserPromptState(BaseModel):
     user_prompt: str
     intents: List[str]
     response: str
+
+class GraphState(BaseModel):
+    dataset: dict
+    features: dict
+    graph_types: List[str]
 
 # Nodes
 def orchestrator(state: UserPromptState) -> UserPromptState:
@@ -70,9 +76,13 @@ def other_response_generator(state: UserPromptState) -> UserPromptState:
 #     """Generate explanations for the identified anomalies, trends or correlations."""
 #     print("Explanation generation successfull.")
 
-def graph_recommender():
+def graph_recommender(state: GraphState) -> GraphState:
     """Recommends suitable graph types for visualize data."""
-    print("Graph recommendation successfull.")
+    model = GraphModel()
+    prediction = model.predict(state.features)
+    state.graph_types = prediction["predicted_graph"]
+    print(f"Recommended graph types: {state.graph_types}")
+    return state
 
 # def graph_generator():
 #     """Generate the graph for visualize data."""
