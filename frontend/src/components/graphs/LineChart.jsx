@@ -2,71 +2,109 @@ import React from "react";
 import Plot from "react-plotly.js";
 
 
-/*const type = "line_uni";
-const groupedData = [
-  { date: "2024-01", value: 100 },
-  { date: "2024-02", value: 120 },
-  { date: "2024-03", value: 130 },
-  { date: "2024-04", value: 125 },
-  { date: "2024-05", value: 150 },
-];*/
 
-
-const type = "line_grouped";
-const groupedData = [
-  { date: "2024-01", category: "A", value: 100 },
-  { date: "2024-02", category: "A", value: 120 },
-  { date: "2024-03", category: "A", value: 130 },
-  { date: "2024-01", category: "B", value: 90 },
-  { date: "2024-02", category: "B", value: 110 },
-  { date: "2024-03", category: "B", value: 105 },
-  { date: "2024-01", category: "C", value: 80 },
-  { date: "2024-02", category: "C", value: 95 },
-  { date: "2024-03", category: "C", value: 100 },
+const type = "num_1_cat_0_temp_1";
+const Data = [
+  { date: "2023-01", value: 419.0 },
+  { date: "2023-02", value: 420.1 },
+  { date: "2023-03", value: 421.3 },
+  { date: "2023-04", value: 423.2 },
+  { date: "2023-05", value: 424.0 },
+  { date: "2023-06", value: 422.5 },
+  { date: "2023-07", value: 420.8 },
+  { date: "2023-08", value: 419.9 },
+  { date: "2023-09", value: 418.4 },
+  { date: "2023-10", value: 417.5 },
+  { date: "2023-11", value: 418.0 },
+  { date: "2023-12", value: 418.7 },
 ];
 
-const LineChart = () => {
-  let data = [];
-  let title = "";
+/*const type = "num_1_cat_1_temp_1";
+const Data = [
+  { date: "2023-01", category: "Clothing", value: 27.1 },
+  { date: "2023-01", category: "Electronics", value: 92.3 },
+  { date: "2023-01", category: "Groceries", value: 71.5 },
 
-  if (type === "line_uni") {
-    title = "Simple Univariate Time Series";
+  { date: "2023-02", category: "Clothing", value: 26.8 },
+  { date: "2023-02", category: "Furniture", value: 13.2 },
+  { date: "2023-02", category: "Groceries", value: 72.4 },
+
+  { date: "2023-03", category: "Clothing", value: 28.5 },
+  { date: "2023-03", category: "Electronics", value: 95.1 },
+
+  { date: "2023-04", category: "Clothing", value: 29.2 },
+  { date: "2023-04", category: "Furniture", value: 14.4 },
+  { date: "2023-04", category: "Groceries", value: 75.2 },
+
+  { date: "2023-05", category: "Electronics", value: 96.7 },
+  { date: "2023-05", category: "Groceries", value: 76.1 },
+
+  { date: "2023-06", category: "Furniture", value: 15.0 },
+  { date: "2023-06", category: "Clothing", value: 30.3 }
+
+];*/
+
+const TimeSeriesChart = () => {
+  let data = [];
+  let layout = {};
+
+  if (type === "num_1_cat_0_temp_1") {
     data = [
       {
-        x: groupedData.map((d) => d.date),
-        y: groupedData.map((d) => d.value),
+        x: Data.map((d) => `${d.date}-01`), 
+        y: Data.map((d) => d.value),
         type: "scatter",
         mode: "lines+markers",
+        line: { shape: "linear" },
         name: "Value",
       },
     ];
-  } else if (type === "line_grouped") {
-    title = "Grouped Time Series by Category";
-    const categories = [...new Set(groupedData.map((d) => d.category))];
-    data = categories.map((cat) => {
-      const filtered = groupedData.filter((d) => d.category === cat);
+
+    layout = {
+      title: "Univariate Time Series Line Chart",
+      xaxis: {
+        title: "Date",
+        type: "date",
+      },
+      yaxis: {
+        title: "Value",
+      },
+      width: 700,
+      height: 500,
+    };
+  } else if (type === "num_1_cat_1_temp_1") {
+    const categories = [...new Set(Data.map((d) => d.category))];
+
+    data = categories.map((category) => {
+      const filtered = Data.filter((d) => d.category === category);
       return {
-        x: filtered.map((d) => d.date),
+        x: filtered.map((d) => `${d.date}-01`), 
         y: filtered.map((d) => d.value),
         type: "scatter",
         mode: "lines+markers",
-        name: cat,
+        name: category,
       };
     });
+
+    layout = {
+      title: "Grouped Time Series Line Chart by Category",
+      xaxis: {
+        title: "Date",
+        type: "date",
+      },
+      yaxis: {
+        title: "Value",
+      },
+      width: 700,
+      height: 500,
+    };
   }
 
   return (
-    <Plot
-      data={data}
-      layout={{
-        width: 700,
-        height: 500,
-        title: { text: title },
-        xaxis: { title: "Date" },
-        yaxis: { title: "Value" },
-      }}
-    />
+    <div>
+      <Plot data={data} layout={layout} />
+    </div>
   );
 };
 
-export default LineChart;
+export default TimeSeriesChart;
