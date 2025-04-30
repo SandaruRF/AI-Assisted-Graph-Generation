@@ -64,15 +64,32 @@ const mockData5 = [
 // num_1_cat_0_temp_1  --  mockData2
 // num_1_cat_1_temp_1  --  mockData4
 // num_n_cat_1_temp_0  --  mockData5
-const type = "num_n_cat_1_temp_0";
-const mockData = mockData5;
+const type = "num_1_cat_1_temp_1";
+const mockData = mockData4;
+
+const generateGroupedOrStackedAxis = (axis, data, orientation = "v") => {
+  const xKey = Object.keys(data[0])[0];
+  let yKey;
+
+  if (type === "num_1_cat_2_temp_0" || type === "num_1_cat_1_temp_1") {
+    yKey = Object.keys(data[0])[2];
+  } else if (type === "num_n_cat_1_temp_0") {
+    yKey = undefined;
+  }
+  if (axis === "x") {
+    return orientation === "v" ? xKey : yKey;
+  } else if (axis === "y") {
+    return orientation === "v" ? yKey : xKey;
+  }
+};
 
 const generateGroupedOrStackedData = (data, orientation = "v") => {
   if (type === "num_1_cat_2_temp_0" || type === "num_1_cat_1_temp_1") {
+    const legendGroupTitle = Object.keys(data[0])[1];
     const cat1 = [...new Set(data.map((item) => Object.values(item)[0]))];
     const cat2 = [...new Set(data.map((item) => Object.values(item)[1]))];
 
-    return cat2.map((cat_2_val) => ({
+    return cat2.map((cat_2_val, i) => ({
       [orientation === "v" ? "x" : "y"]: cat1,
       [orientation === "v" ? "y" : "x"]: cat1.map((cat_1_val) => {
         const entry = data.find(
@@ -83,6 +100,9 @@ const generateGroupedOrStackedData = (data, orientation = "v") => {
         return entry ? Object.values(entry)[2] : 0;
       }),
       name: cat_2_val,
+      legendgroup: "cat_2",
+      showlegend: true,
+      ...(i === 0 && { legendgrouptitle: { text: legendGroupTitle } }),
       type: "bar",
       orientation: orientation === "h" ? "h" : undefined,
     }));
@@ -104,16 +124,21 @@ const BarChart = () => {
   const charts = [];
 
   if (type === "num_1_cat_1_temp_0" || type === "num_1_cat_0_temp_1") {
+    const [xKey, yKey] = Object.keys(mockData[0]);
     const x = mockData.map((item) => Object.values(item)[0]);
     const y = mockData.map((item) => Object.values(item)[1]);
 
     charts.push({
       title: "Basic Bar Chart",
+      xAxisTitle: xKey,
+      yAxisTitle: yKey,
       data: [{ x, y, type: "bar" }],
     });
 
     charts.push({
       title: "Horizontal Basic Bar Chart",
+      xAxisTitle: yKey,
+      yAxisTitle: xKey,
       data: [{ x: y, y: x, type: "bar", orientation: "h" }],
     });
   } else if (
@@ -123,24 +148,32 @@ const BarChart = () => {
   ) {
     charts.push({
       title: "Grouped Bar Chart",
+      xAxisTitle: generateGroupedOrStackedAxis("x", mockData, "v"),
+      yAxisTitle: generateGroupedOrStackedAxis("y", mockData, "v"),
       data: generateGroupedOrStackedData(mockData, "v"),
       barmode: "group",
     });
 
     charts.push({
       title: "Stacked Bar Chart",
+      xAxisTitle: generateGroupedOrStackedAxis("x", mockData, "v"),
+      yAxisTitle: generateGroupedOrStackedAxis("y", mockData, "v"),
       data: generateGroupedOrStackedData(mockData, "v"),
       barmode: "stack",
     });
 
     charts.push({
       title: "Horizontal Stacked Bar Chart",
+      xAxisTitle: generateGroupedOrStackedAxis("x", mockData, "h"),
+      yAxisTitle: generateGroupedOrStackedAxis("y", mockData, "h"),
       data: generateGroupedOrStackedData(mockData, "h"),
       barmode: "stack",
     });
 
     charts.push({
       title: "Horizontal Grouped Bar Chart",
+      xAxisTitle: generateGroupedOrStackedAxis("x", mockData, "h"),
+      yAxisTitle: generateGroupedOrStackedAxis("y", mockData, "h"),
       data: generateGroupedOrStackedData(mockData, "h"),
       barmode: "group",
     });
@@ -156,6 +189,16 @@ const BarChart = () => {
             width: 640,
             height: 480,
             title: { text: chart.title },
+            xaxis: {
+              title: {
+                text: chart.xAxisTitle,
+              },
+            },
+            yaxis: {
+              title: {
+                text: chart.yAxisTitle,
+              },
+            },
             barmode: chart.barmode,
           }}
         />
