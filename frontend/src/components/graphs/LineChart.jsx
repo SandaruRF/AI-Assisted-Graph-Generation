@@ -1,8 +1,6 @@
 import React from "react";
 import Plot from "react-plotly.js";
 
-
-
 const type = "num_1_cat_0_temp_1";
 const Data = [
   { date: "2023-01", value: 419.0 },
@@ -51,7 +49,7 @@ const TimeSeriesChart = () => {
   if (type === "num_1_cat_0_temp_1") {
     data = [
       {
-        x: Data.map((d) => `${d.date}-01`), 
+        x: Data.map((d) => `${d.date}-01`),
         y: Data.map((d) => d.value),
         type: "scatter",
         mode: "lines+markers",
@@ -78,7 +76,7 @@ const TimeSeriesChart = () => {
     data = categories.map((category) => {
       const filtered = Data.filter((d) => d.category === category);
       return {
-        x: filtered.map((d) => `${d.date}-01`), 
+        x: filtered.map((d) => `${d.date}-01`),
         y: filtered.map((d) => d.value),
         type: "scatter",
         mode: "lines+markers",
