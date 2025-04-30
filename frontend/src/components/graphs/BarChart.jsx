@@ -34,8 +34,7 @@ const mockData = [
 const BarChart = () => {
   let data = [];
   let data_1 = [];
-  let barmode = [];
-  let barmode_1 = [];
+  let barmode_1 = "";
 
   if (type === "num_1_cat_1_temp_0") {
     data = [
@@ -49,7 +48,6 @@ const BarChart = () => {
     const cat_1 = [...new Set(mockData.map((item) => Object.values(item)[0]))];
     const cat_2 = [...new Set(mockData.map((item) => Object.values(item)[1]))];
 
-    barmode = "group";
     data = cat_2.map((cat_2_val) => {
       return {
         x: cat_1,
@@ -88,12 +86,7 @@ const BarChart = () => {
     <div>
       <Plot
         data={data}
-        layout={{
-          width: 640,
-          height: 480,
-          title: { text: "Bar Chart" },
-          barmode: { barmode },
-        }}
+        layout={{ width: 640, height: 480, title: { text: "Bar Chart" } }}
       />
       <Plot
         data={data_1}
@@ -101,7 +94,7 @@ const BarChart = () => {
           width: 640,
           height: 480,
           title: { text: "Bar Chart" },
-          barmode: { barmode_1 },
+          barmode: barmode_1,
         }}
       />
     </div>
