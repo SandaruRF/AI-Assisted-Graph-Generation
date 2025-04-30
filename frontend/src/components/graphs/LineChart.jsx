@@ -42,7 +42,7 @@ const Data = [
 
 ];*/
 
-const TimeSeriesChart = () => {
+const LineChart = () => {
   let data = [];
   let layout = {};
 
@@ -105,4 +105,4 @@ const TimeSeriesChart = () => {
   );
 };
 
-export default TimeSeriesChart;
+export default LineChart;
