@@ -51,31 +51,53 @@ const mockData4 = [
   { Month: "2024-06", Region: "South", Sales: 7200 },
 ];
 
-// num_1_cat_1_temp_0
-// num_1_cat_2_temp_0
-// num_1_cat_0_temp_1
-// num_1_cat_1_temp_1
-const type = "num_1_cat_1_temp_1";
-const mockData = mockData4;
+const mockData5 = [
+  { Product: "Product A", Revenue: 15000, Profit: 4000, Cost: 11000 },
+  { Product: "Product B", Revenue: 12000, Profit: 3000, Cost: 9000 },
+  { Product: "Product C", Revenue: 18000, Profit: 5000, Cost: 13000 },
+  { Product: "Product D", Revenue: 14000, Profit: 3500, Cost: 10500 },
+  { Product: "Product E", Revenue: 16000, Profit: 4200, Cost: 11800 },
+];
+
+// num_1_cat_1_temp_0  --  mockData1
+// num_1_cat_2_temp_0  --  mockData3
+// num_1_cat_0_temp_1  --  mockData2
+// num_1_cat_1_temp_1  --  mockData4
+// num_n_cat_1_temp_0  --  mockData5
+const type = "num_n_cat_1_temp_0";
+const mockData = mockData5;
 
 const generateGroupedOrStackedData = (data, orientation = "v") => {
-  const cat1 = [...new Set(data.map((item) => Object.values(item)[0]))];
-  const cat2 = [...new Set(data.map((item) => Object.values(item)[1]))];
+  if (type === "num_1_cat_2_temp_0" || type === "num_1_cat_1_temp_1") {
+    const cat1 = [...new Set(data.map((item) => Object.values(item)[0]))];
+    const cat2 = [...new Set(data.map((item) => Object.values(item)[1]))];
 
-  return cat2.map((cat_2_val) => ({
-    [orientation === "v" ? "x" : "y"]: cat1,
-    [orientation === "v" ? "y" : "x"]: cat1.map((cat_1_val) => {
-      const entry = data.find(
-        (item) =>
-          Object.values(item)[0] === cat_1_val &&
-          Object.values(item)[1] === cat_2_val
-      );
-      return entry ? Object.values(entry)[2] : 0;
-    }),
-    name: cat_2_val,
-    type: "bar",
-    orientation: orientation === "h" ? "h" : undefined,
-  }));
+    return cat2.map((cat_2_val) => ({
+      [orientation === "v" ? "x" : "y"]: cat1,
+      [orientation === "v" ? "y" : "x"]: cat1.map((cat_1_val) => {
+        const entry = data.find(
+          (item) =>
+            Object.values(item)[0] === cat_1_val &&
+            Object.values(item)[1] === cat_2_val
+        );
+        return entry ? Object.values(entry)[2] : 0;
+      }),
+      name: cat_2_val,
+      type: "bar",
+      orientation: orientation === "h" ? "h" : undefined,
+    }));
+  } else if (type === "num_n_cat_1_temp_0") {
+    const cat = data.map((item) => Object.values(item)[0]);
+    const metrics = Object.keys(data[0]).slice(1);
+
+    return metrics.map((metric) => ({
+      [orientation === "v" ? "x" : "y"]: cat,
+      [orientation === "v" ? "y" : "x"]: data.map((item) => item[metric]),
+      name: metric,
+      type: "bar",
+      orientation: orientation === "h" ? "h" : undefined,
+    }));
+  }
 };
 
 const BarChart = () => {
@@ -94,7 +116,11 @@ const BarChart = () => {
       title: "Horizontal Basic Bar Chart",
       data: [{ x: y, y: x, type: "bar", orientation: "h" }],
     });
-  } else if (type === "num_1_cat_2_temp_0" || type === "num_1_cat_1_temp_1") {
+  } else if (
+    type === "num_1_cat_2_temp_0" ||
+    type === "num_1_cat_1_temp_1" ||
+    type === "num_n_cat_1_temp_0"
+  ) {
     charts.push({
       title: "Grouped Bar Chart",
       data: generateGroupedOrStackedData(mockData, "v"),
