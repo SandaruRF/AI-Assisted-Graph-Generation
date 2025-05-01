@@ -12,6 +12,7 @@ import Loading from "./components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import LineChart from "./components/graphs/LineChart";
 import BarChart from "./components/graphs/BarChart";
+import ScatterPlot from "./components/graphs/ScatterPlot";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 0);
   }, []);
 
   return (
@@ -52,6 +53,7 @@ function App() {
 
               <Route path="/line-chart" element={<LineChart />} />
               <Route path="/bar-chart" element={<BarChart />} />
+              <Route path="/scatter-plot" element={<ScatterPlot />} />
             </Routes>
           </Router>
         </div>
