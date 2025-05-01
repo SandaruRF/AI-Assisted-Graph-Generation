@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import ChevronRight from "@mui/icons-material/ChevronRight";
+import NavigationBar from "../components/NavigationBar";
 
 const LandingPage = () => {
   const theme = useTheme();
@@ -27,7 +28,7 @@ const LandingPage = () => {
     { src: "/images/SQLite.png", alt: "SQLite" },
   ];
 
-  const handleNavigation = (path) => navigate(path);
+  
   const handlePrev = () => setCurrentIndex((prev) => (prev > 0 ? prev - 1 : databaseLogos.length - 1));
   const handleNext = () => setCurrentIndex((prev) => (prev < databaseLogos.length - 1 ? prev + 1 : 0));
   const handleDotClick = (index) => setCurrentIndex(index);
@@ -65,24 +66,7 @@ const LandingPage = () => {
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
       <Box sx={{ backgroundColor: "#f0f8ff" }}>  
       {/* Navigation Bar */}
-      <Box component="header" sx={{ position: "sticky", top: 0, zIndex: 1000, boxShadow: 3, bgcolor: "background.paper", backgroundColor: "#f0f8ff", }}>
-        <Container>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", py: 2 }}>
-            <img src="/images/logo.png" alt="Logo" style={{ height: 40 }} />
-            
-            <Box sx={{ display: "flex", gap: 4 }}>
-            <Button onClick={() => handleNavigation("/LandingPage")} color="inherit">Home</Button>
-    <Button onClick={() => handleNavigation("/graph-visualization")} color="inherit">Chat</Button>
-    <Button onClick={() => handleNavigation("/docs")} color="inherit">Docs</Button>
-            </Box>
-            
-            <Box sx={{ display: "flex", gap: 2 }}>
-            <Button variant="outlined" onClick={() => handleNavigation("/")}>Login</Button>
-            <Button variant="contained" onClick={() => handleNavigation("/sign-up/")}>Sign Up</Button>
-            </Box>
-          </Box>
-        </Container>
-      </Box>
+      <NavigationBar />
 
       {/* Hero Section */}
       <Container sx={{ py: 8 }}>
@@ -99,7 +83,7 @@ const LandingPage = () => {
             <Button
     variant="contained"
     size="large"
-    onClick={() => handleNavigation("/")}
+    onClick={() => navigate("/")}
     sx={{ px: 6, py: 1.5, fontSize: "1.1rem" }}
   >
     Get Started
@@ -223,33 +207,36 @@ const LandingPage = () => {
       </Container>
 
     
-      <Container sx={{ py: 8 }}>
-  <Typography variant="h4" align="center" gutterBottom sx={{ mb: 6 }}>
-    How It Works
-  </Typography>
+      <Box sx={{ py: 12, bgcolor: 'background.paper' }}> {/* Full-width section */}
+  <Container>
+    <Typography variant="h3" align="center" gutterBottom sx={{ 
+      mb: 10, 
+      fontWeight: 800,
+      fontSize: '2.5rem'
+    }}>
+      How It Works
+    </Typography>
 
-  <Grid container spacing={6} alignItems="center" justifyContent="center">
-    <Grid item xs={12} md={8}> {/* Increased from md=6 to md=8 for wider image */}
-      <Box
-        component="img"
+    <Box sx={{
+      position: 'relative',
+      width: '100%',
+      maxWidth: 1400,
+      margin: '0 auto',
+      borderRadius: 4,
+      overflow: 'hidden'
+    }}>
+      <img
         src="/images/work cycle.png"
         alt="work cycle"
-        sx={{ 
-          width: '100%', 
+        style={{
+          width: '100%',
           height: 'auto',
-          maxWidth: '1000px', // Increased from 600px
-          display: 'block',
-          margin: '0 auto',
-          objectFit: 'contain',
-          '&:hover': {
-            transform: 'scale(1.02)',
-            transition: 'transform 0.3s ease'
-          }
+          objectFit: 'contain'
         }}
       />
-    </Grid>
-  </Grid>
-</Container>
+    </Box>
+  </Container>
+</Box>
 
       {/* Footer */}
      
