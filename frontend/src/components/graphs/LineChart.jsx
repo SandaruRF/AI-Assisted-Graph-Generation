@@ -1,110 +1,84 @@
 import React from "react";
 import Plot from "react-plotly.js";
 
-
-
-const type = "num_1_cat_0_temp_1";
+/*const type = "num_1_cat_1_temp_1"; 
 const Data = [
-  { date: "2023-01", value: 419.0 },
-  { date: "2023-02", value: 420.1 },
-  { date: "2023-03", value: 421.3 },
-  { date: "2023-04", value: 423.2 },
-  { date: "2023-05", value: 424.0 },
-  { date: "2023-06", value: 422.5 },
-  { date: "2023-07", value: 420.8 },
-  { date: "2023-08", value: 419.9 },
-  { date: "2023-09", value: 418.4 },
-  { date: "2023-10", value: 417.5 },
-  { date: "2023-11", value: 418.0 },
-  { date: "2023-12", value: 418.7 },
+  { month: "2024-01", city: "Colombo", temperature: 28 },
+  { month: "2024-01", city: "Kandy", temperature: 22 },
+  { month: "2024-02", city: "Colombo", temperature: 29 },
+  { month: "2024-02", city: "Kandy", temperature: 23 },
+  { month: "2024-03", city: "Colombo", temperature: 31 },
+  { month: "2024-03", city: "Kandy", temperature: 25 }
+]
+;*/
+
+const type = "num_1_cat_0_temp_1"; 
+
+const Data = [
+  { time: "2024-01", rainfall: 78 },
+  { time: "2024-02", rainfall: 65 },
+  { time: "2024-03", rainfall: 89 },
+  { time: "2024-04", rainfall: 102 },
+  { time: "2024-05", rainfall: 75 }
 ];
 
-/*const type = "num_1_cat_1_temp_1";
-const Data = [
-  { date: "2023-01", category: "Clothing", value: 27.1 },
-  { date: "2023-01", category: "Electronics", value: 92.3 },
-  { date: "2023-01", category: "Groceries", value: 71.5 },
+const LineChart = () => {
+  const sample = Data[0];
+  const keys = Object.keys(sample);
 
-  { date: "2023-02", category: "Clothing", value: 26.8 },
-  { date: "2023-02", category: "Furniture", value: 13.2 },
-  { date: "2023-02", category: "Groceries", value: 72.4 },
+  const isTimeString = (val) =>
+    typeof val === "string" && /^\d{4}-\d{2}(-\d{2})?$/.test(val);
 
-  { date: "2023-03", category: "Clothing", value: 28.5 },
-  { date: "2023-03", category: "Electronics", value: 95.1 },
+  const isNumeric = (val) => typeof val === "number";
 
-  { date: "2023-04", category: "Clothing", value: 29.2 },
-  { date: "2023-04", category: "Furniture", value: 14.4 },
-  { date: "2023-04", category: "Groceries", value: 75.2 },
+  let timeKey, categoryKey, valueKey;
+  for (let key of keys) {
+    const val = sample[key];
+    if (!timeKey && isTimeString(val)) timeKey = key;
+    else if (!valueKey && isNumeric(val)) valueKey = key;
+  }
 
-  { date: "2023-05", category: "Electronics", value: 96.7 },
-  { date: "2023-05", category: "Groceries", value: 76.1 },
+  categoryKey = keys.find((k) => k !== timeKey && k !== valueKey);
 
-  { date: "2023-06", category: "Furniture", value: 15.0 },
-  { date: "2023-06", category: "Clothing", value: 30.3 }
+  const layout = {
+    title: "Dynamic Time Series Line Chart",
+    xaxis: { title: timeKey, type: "date" },
+    yaxis: { title: valueKey },
+    width: 700,
+    height: 500,
+  };
 
-];*/
-
-const TimeSeriesChart = () => {
   let data = [];
-  let layout = {};
 
-  if (type === "num_1_cat_0_temp_1") {
-    data = [
-      {
-        x: Data.map((d) => `${d.date}-01`), 
-        y: Data.map((d) => d.value),
+  if (type === "num_1_cat_1_temp_1") {
+    const categories = [...new Set(Data.map((item) => item[categoryKey]))];
+
+    data = categories.map((cat) => {
+      const filtered = Data.filter((d) => d[categoryKey] === cat);
+      return {
+        x: filtered.map((d) => normalizeDate(d[timeKey])),
+        y: filtered.map((d) => d[valueKey]),
         type: "scatter",
         mode: "lines+markers",
-        line: { shape: "linear" },
+        name: cat,
+      };
+    });
+  } else if (type === "num_1_cat_0_temp_1") {
+    data = [
+      {
+        x: Data.map((d) => normalizeDate(d[timeKey])),
+        y: Data.map((d) => d[valueKey]),
+        type: "scatter",
+        mode: "lines+markers",
         name: "Value",
       },
     ];
-
-    layout = {
-      title: "Univariate Time Series Line Chart",
-      xaxis: {
-        title: "Date",
-        type: "date",
-      },
-      yaxis: {
-        title: "Value",
-      },
-      width: 700,
-      height: 500,
-    };
-  } else if (type === "num_1_cat_1_temp_1") {
-    const categories = [...new Set(Data.map((d) => d.category))];
-
-    data = categories.map((category) => {
-      const filtered = Data.filter((d) => d.category === category);
-      return {
-        x: filtered.map((d) => `${d.date}-01`), 
-        y: filtered.map((d) => d.value),
-        type: "scatter",
-        mode: "lines+markers",
-        name: category,
-      };
-    });
-
-    layout = {
-      title: "Grouped Time Series Line Chart by Category",
-      xaxis: {
-        title: "Date",
-        type: "date",
-      },
-      yaxis: {
-        title: "Value",
-      },
-      width: 700,
-      height: 500,
-    };
   }
 
-  return (
-    <div>
-      <Plot data={data} layout={layout} />
-    </div>
-  );
+  return <Plot data={data} layout={layout} />;
 };
 
-export default TimeSeriesChart;
+const normalizeDate = (val) =>
+  /^\d{4}-\d{2}$/.test(val) ? `${val}-01` : val;
+
+export default LineChart;
