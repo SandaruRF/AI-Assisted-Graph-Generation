@@ -54,9 +54,31 @@ const ExistingDatabaseConnection = () => {
       conn?.name?.toLowerCase()?.includes(searchQuery.toLowerCase())
     ) || [];
 
-  const handleConnectClick = () => {
-    setSuccess("Database connected successfully!");
-  };
+
+    const handleConnectClick = async (connectionId) => {
+      if (!connectionId) {
+        setError("Connection ID is missing.");
+        return;
+      }
+    
+      try {
+        const response = await fetch(`http://localhost:8000/sql/connect_database/${connectionId}`, {
+          method: "POST",
+        });
+    
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "Failed to connect to the database.");
+        }
+    
+        const data = await response.json();
+        setSuccess(`Connected! Tables: ${data.tables.join(", ")}`);
+        // Optional: Store data.connection_string or data.tables for UI or later use
+      } catch (err) {
+        setError("Error Connecting: " + err.message);
+      }
+    };
+    
 
   const handleDeleteClick = (connectionId) => {
     if (!connectionId) {
@@ -197,7 +219,7 @@ const ExistingDatabaseConnection = () => {
                       opacity: 0.9,
                     },
                   }}
-                  onClick={handleConnectClick}
+                  onClick={() => handleConnectClick(connection._id)}
                 >
                   Connect Database
                 </Button>
