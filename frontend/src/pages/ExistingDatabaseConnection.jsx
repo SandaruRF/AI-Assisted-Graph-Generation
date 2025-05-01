@@ -72,7 +72,7 @@ const ExistingDatabaseConnection = () => {
         }
     
         const data = await response.json();
-        setSuccess(`Connected! Tables: ${data.tables.join(", ")}`);
+        setSuccess(`Connected! sessionid:  ${data}`);
         // Optional: Store data.connection_string or data.tables for UI or later use
       } catch (err) {
         setError("Error Connecting: " + err.message);
