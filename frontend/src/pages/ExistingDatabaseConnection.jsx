@@ -14,8 +14,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
+import { fetchConnections, connectToDatabase, deleteConnection } from "../services/api";
 
 const ExistingDatabaseConnection = () => {
   const navigate = useNavigate();
@@ -28,27 +27,7 @@ const ExistingDatabaseConnection = () => {
   // Fetch from backend
   useEffect(() => {
     setIsLoading(true);
-    fetch(`${API_BASE_URL}/api/connections`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch connections");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setConnections(data);
-        } else if (Array.isArray(data.connections)) {
-          setConnections(data.connections);
-        } else {
-          throw new Error("Unexpected response structure");
-        }
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setError("Error loading connections: " + err.message);
-        setIsLoading(false);
-      });
+    fetchConnections(setConnections, setIsLoading, setError); // Fetch connections from the backend
   }, []);
 
   const filteredConnections =
@@ -56,31 +35,20 @@ const ExistingDatabaseConnection = () => {
       conn?.name?.toLowerCase()?.includes(searchQuery.toLowerCase())
     ) || [];
 
+  const handleConnectClick = async (connectionId) => {
+    if (!connectionId) {
+      setError("Connection ID is missing.");
+      return;
+    }
 
-    const handleConnectClick = async (connectionId) => {
-      if (!connectionId) {
-        setError("Connection ID is missing.");
-        return;
-      }
-    
-      try {
-        const response = await fetch(`${API_BASE_URL}/sql/connect_database/${connectionId}`, {
-          method: "POST",
-        });
-    
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || "Failed to connect to the database.");
-        }
-    
-        const data = await response.json();
-        setSuccess(`Connected! sessionid:  ${data}`);
-        // Optional: Store data.connection_string or data.tables for UI or later use
-      } catch (err) {
-        setError("Error Connecting: " + err.message);
-      }
-    };
-    
+    try {
+      const data = await connectToDatabase(connectionId); // Call the connect API and get the parsed data
+      setSuccess(`Connected! sessionid: ${data.session_id}`); // Use the response data
+      // Optional: Store data.connection_string or data.tables for UI or later use
+    } catch (err) {
+      setError("Error Connecting: " + err.message);
+    }
+  };
 
   const handleDeleteClick = (connectionId) => {
     if (!connectionId) {
@@ -89,20 +57,7 @@ const ExistingDatabaseConnection = () => {
     }
 
     // Make a delete API call
-    fetch(`http://localhost:8000/api/connections/${connectionId}`, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to delete connection");
-        }
-        // Update the connections list after deletion
-        setConnections(connections.filter((c) => c._id !== connectionId));
-        setSuccess("Connection deleted successfully!");
-      })
-      .catch((err) => {
-        setError("Error deleting connection: " + err.message);
-      });
+    deleteConnection(connectionId, connections, setConnections, setSuccess, setError);
   };
 
   return (
