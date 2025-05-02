@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
+
 const ExistingDatabaseConnection = () => {
   const navigate = useNavigate();
   const [connections, setConnections] = useState([]);
@@ -26,7 +28,7 @@ const ExistingDatabaseConnection = () => {
   // Fetch from backend
   useEffect(() => {
     setIsLoading(true);
-    fetch("http://localhost:8000/api/connections")
+    fetch(`${API_BASE_URL}/api/connections`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch connections");
@@ -62,7 +64,7 @@ const ExistingDatabaseConnection = () => {
       }
     
       try {
-        const response = await fetch(`http://localhost:8000/sql/connect_database/${connectionId}`, {
+        const response = await fetch(`${API_BASE_URL}/sql/connect_database/${connectionId}`, {
           method: "POST",
         });
     

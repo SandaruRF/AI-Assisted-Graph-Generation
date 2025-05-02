@@ -34,13 +34,6 @@ class Database(BaseModel):
     remember: bool
 
 
-    def set_default_port(self):
-        """Automatically sets the default port based on the first database type."""
-        if not self.port and self.type:
-            self.port = DEFAULT_PORTS.get(self.type[0], 0) 
-
-    def __init__(self, **data):
-        super().__init__(**data)
-        self.set_default_port()
+    
     
     
