@@ -49,13 +49,15 @@ const mockData2 = [
 
 // num_1_cat_0_temp_0  --  mockData1
 // num_1_cat_1_temp_0  --  mockData2
-const type = "num_1_cat_1_temp_0";
-const mockData = mockData2;
+const type = "num_1_cat_0_temp_0";
+const mockData = mockData1;
 
 const Histogram = () => {
   if (!mockData || mockData.length === 0) return null;
 
-  let data = [];
+  const charts = [];
+  let data,
+    data1 = [];
   let title,
     barmode,
     xKey,
@@ -72,8 +74,25 @@ const Histogram = () => {
         type: "histogram",
       },
     ];
+    data1 = [
+      {
+        y: mockData.map((item) => item[xKey]),
+        type: "histogram",
+      },
+    ];
 
     title = "Basic Histogram";
+
+    charts.push({
+      data: data,
+      title: title,
+      xKey: xKey,
+    });
+    charts.push({
+      data: data1,
+      title: title,
+      yKey: xKey,
+    });
   } else if (type === "num_1_cat_1_temp_0") {
     [xKey, categoryKey] = Object.keys(mockData[0]);
     const categories = [...new Set(mockData.map((item) => item[categoryKey]))];
@@ -91,21 +110,55 @@ const Histogram = () => {
         ...(i === 0 && { legendgrouptitle: { text: categoryKey } }),
       };
     });
+    data1 = categories.map((category, i) => {
+      const filtered = mockData.filter(
+        (item) => item[categoryKey] === category
+      );
+      return {
+        y: filtered.map((item) => item[xKey]),
+        type: "histogram",
+        opacity: 0.6,
+        name: category,
+        showlegend: true,
+        ...(i === 0 && { legendgrouptitle: { text: categoryKey } }),
+      };
+    });
 
     title = "Grouped Histogram";
     barmode = "overlay";
+
+    charts.push({
+      data: data,
+      title: title,
+      barmode: barmode,
+      xKey: xKey,
+    });
+    charts.push({
+      data: data1,
+      title: title,
+      barmode: barmode,
+      yKey: xKey,
+    });
   }
 
-  const layout = {
-    width: 640,
-    height: 480,
-    title: { text: title },
-    xaxis: { title: { text: xKey } },
-    yaxis: { title: { text: yKey } },
-    barmode: barmode,
-  };
-
-  return <Plot data={data} layout={layout} />;
+  return (
+    <div>
+      {charts.map((chart, index) => (
+        <Plot
+          key={index}
+          data={chart.data}
+          layout={{
+            width: 640,
+            height: 480,
+            title: { text: chart.title },
+            xaxis: { title: { text: chart.xKey } },
+            yaxis: { title: { text: chart.yKey } },
+            barmode: chart.barmode,
+          }}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default Histogram;
