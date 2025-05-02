@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import { motion } from 'framer-motion'
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -100,11 +101,10 @@ const LandingPage = () => {
         </Grid>
       </Container>
       </Box>
-
-            {/* Database Carousel Section */}
-            <Container sx={{ py: 8 }}>
-  <Typography variant="h4" align="center" gutterBottom sx={{ mb: 6 }}>
-  Connect Seamlessly to Your Favorite Databases
+{/* Database Carousel Section */}
+<Container sx={{ py: 8 }}>
+  <Typography variant="h4" align="center" gutterBottom sx={{ mb: 6, fontWeight: 700 }}>
+    Connect Seamlessly to Your Favorite Databases
   </Typography>
 
   <Box sx={{ position: "relative", width: "100%", overflow: "hidden" }}>
@@ -130,114 +130,272 @@ const LandingPage = () => {
       ))}
     </Box>
 
-          <IconButton
-            onClick={handlePrev}
-            sx={{
-              position: "absolute",
-              left: 16,
-              top: "50%",
-              transform: "translateY(-50%)",
-              bgcolor: "background.paper",
-              boxShadow: 2,
-              "&:hover": { bgcolor: "primary.main", color: "white" },
-            }}
-          >
-            <ChevronLeft fontSize="large" />
-          </IconButton>
+    {/* Auto-rotate functionality */}
+    {useEffect(() => {
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev < databaseLogos.length - 1 ? prev + 1 : 0));
+      }, 1000);
+      return () => clearInterval(interval);
+    }, [])}
 
-          <IconButton
-            onClick={handleNext}
-            sx={{
-              position: "absolute",
-              right: 16,
-              top: "50%",
-              transform: "translateY(-50%)",
-              bgcolor: "background.paper",
-              boxShadow: 2,
-              "&:hover": { bgcolor: "primary.main", color: "white" },
-            }}
-          >
-            <ChevronRight fontSize="large" />
-          </IconButton>
+    <IconButton
+      onClick={handlePrev}
+      sx={{
+        position: "absolute",
+        left: 16,
+        top: "50%",
+        transform: "translateY(-50%)",
+        bgcolor: "background.paper",
+        boxShadow: 2,
+        "&:hover": { bgcolor: "primary.main", color: "white" },
+      }}
+    >
+      <ChevronLeft fontSize="large" />
+    </IconButton>
 
-          <Box sx={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 1 }}>
-            {databaseLogos.map((_, index) => (
-              <Box
-                key={index}
-                onClick={() => handleDotClick(index)}
-                sx={{
-                  width: 10,
-                  height: 1,
-                  borderRadius: "50%",
-                  bgcolor: currentIndex === index ? "primary.main" : "action.selected",
-                  cursor: "pointer",
-                  transition: "background-color 0.3s",
-                  "&:hover": { bgcolor: "primary.dark" },
-                }}
-              />
-            ))}
-          </Box>
-        </Box>
-      </Container>
+    <IconButton
+      onClick={handleNext}
+      sx={{
+        position: "absolute",
+        right: 16,
+        top: "50%",
+        transform: "translateY(-50%)",
+        bgcolor: "background.paper",
+        boxShadow: 2,
+        "&:hover": { bgcolor: "primary.main", color: "white" },
+      }}
+    >
+      <ChevronRight fontSize="large" />
+    </IconButton>
+
+    <Box sx={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 1 }}>
+      {databaseLogos.map((_, index) => (
+        <Box
+          key={index}
+          onClick={() => handleDotClick(index)}
+          sx={{
+            width: 10,
+            height: 1,
+            borderRadius: "50%",
+            bgcolor: currentIndex === index ? "primary.main" : "action.selected",
+            cursor: "pointer",
+            transition: "background-color 0.3s",
+            "&:hover": { bgcolor: "primary.dark" },
+          }}
+        />
+      ))}
+    </Box>
+  </Box>
+</Container>
 
 
       {/* Features Section */}
-      <Container sx={{ py: 8 }}>
-        <Typography variant="h4" align="center" gutterBottom sx={{ mb: 6 }}>
-          Transform data into visuals with AI graphs
+                 
+      <Container sx={{ py: 10}}>
+
+        <Typography variant="h4" align="center" gutterBottom sx={{ mb: 6, fontWeight: 700 }}>
+          Transform Data with Powerful AI Features
         </Typography>
-        <FeatureSection
-          title="AI Diagram Generator"
-          description="Instantly convert your raw data into sleek, interactive graphs. From brainstorming sessions to client presentations, achieve professional results without the hassle of manual creation. All you need are a few simple prompts"
-          image="/images/ai.png"
-        />
 
-        <FeatureSection
-          title="Seamless Multi-Database Compatibility"
-          description="Effortlessly connect with SQLite, MySQL, and PostgreSQL for flexible and scalable data management. Whether you need lightweight local storage, high-speed transactions, or advanced data handling, our platform adapts to your needs—powering your data like never before!"
-          image="/images/db-compatibility.png"
-          reverse
-        />
-
-        <FeatureSection
-          title="Fortified Data Protection"
-          description="Your data’s security is our top priority! With bank-grade encryption, multi-layer authentication, and proactive threat monitoring, we ensure your information remains safe, private, and uncompromised."
-          image="/images/security.png"
-        />
+        <Grid container spacing={4}>
+          {[
+            {
+              title: "AI Diagram Generator",
+              description:
+                "Convert your raw data into sleek, interactive graphs with a few simple prompts. Skip the design struggle and get polished visuals instantly.",
+              image: "/images/ai.png",
+            },
+            {
+              title: "Multi-Database Compatibility",
+              description:
+                "Connect easily with SQLite, MySQL, PostgreSQL, and more for flexible, secure, and scalable data integration across any environment.",
+              image: "/images/db-compatibility.png",
+            },
+            {
+              title: "Advanced Data Protection",
+              description:
+                "Your data is safe with bank-grade encryption, multi-layer authentication, and real-time threat detection ensuring complete privacy.",
+              image: "/images/security.png",
+            },
+          ].map((feature, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <Box
+                sx={{
+                  borderRadius: 4,
+                  boxShadow: 3,
+                  p: 4,
+                  textAlign: "center",
+                  transition: "all 0.3s ease",
+                  height: "100%",
+                  backgroundColor: "#f0f8ff",
+                  "&:hover": {
+                    transform: "translateY(-6px)",
+                    boxShadow: 6,
+                    bgcolor: "#cce5ff",
+                  },
+                }}
+              >
+                <Box
+                  component="img"
+                  src={feature.image}
+                  alt={feature.title}
+                  sx={{
+                    height: 120,
+                    width: "auto",
+                    mb: 3,
+                    objectFit: "contain",
+                    
+                  }}
+                />
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                  {feature.title}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  {feature.description}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
       </Container>
-
-    
-      <Box sx={{ py: 12, bgcolor: 'background.paper' }}> {/* Full-width section */}
+        
+{/* How It Works Section */}
+<Box sx={{ 
+  py: 12, 
+  bgcolor: 'background.paper',
+  position: 'relative',
+  overflow: 'hidden'
+}}>
   <Container>
-    <Typography variant="h3" align="center" gutterBottom sx={{ 
-      mb: 10, 
-      fontWeight: 800,
-      fontSize: '2.5rem'
-    }}>
-      How It Works
-    </Typography>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <Typography variant="h3" align="center" gutterBottom sx={{ 
+        mb: 8,
+        fontWeight: 800,
+        fontSize: '2.5rem',
+        position: 'relative',
+        '&:after': {
+          content: '""',
+          display: 'block',
+          width: '60px',
+          height: '4px',
+          backgroundColor: 'primary.main',
+          margin: '2rem auto 0'
+        }
+      }}>
+        How It Works
+      </Typography>
+    </motion.div>
 
-    <Box sx={{
-      position: 'relative',
-      width: '100%',
-      maxWidth: 1400,
-      margin: '0 auto',
-      borderRadius: 4,
-      overflow: 'hidden'
-    }}>
-      <img
-        src="/images/work cycle.png"
-        alt="work cycle"
-        style={{
-          width: '100%',
-          height: 'auto',
-          objectFit: 'contain'
-        }}
-      />
-    </Box>
+    <Grid container spacing={6} justifyContent="center" sx={{ position: 'relative' }}>
+      <Box sx={{
+        position: 'absolute',
+        top: '40%',
+        left: 0,
+        right: 0,
+        height: '3px',
+        backgroundColor: 'primary.light',
+        display: { xs: 'none', md: 'block' }
+      }} />
+
+      {[
+        { 
+          icon: '👤', 
+          title: "Create Account", 
+          description: "Set up your personalized account in less than 2 minutes with email verification"
+          
+        },
+        { 
+        
+          icon: '🔗',
+          title: "Connect Your Database",
+          description: "Securely integrate your database with our platform using industry-standard protocols"
+  
+        },
+        
+        { 
+        
+          icon: '💬',
+          title: "Chat with It", 
+          description: "Interact naturally with our AI assistant to generate and refine your visualizations"
+        }
+      ].map((step, index) => (
+        <Grid item xs={12} md={4} key={index} sx={{ position: 'relative' }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: index * 0.2 }}
+          >
+            <Box sx={{
+              p: 4,
+              borderRadius: 4,
+              textAlign: 'center',
+              position: 'relative',
+              bgcolor: 'background.paper',
+              boxShadow: 3,
+              transition: 'all 0.3s ease',
+              minHeight: 300,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              '&:hover': {
+                transform: 'translateY(-10px)',
+                boxShadow: 6,
+                '& .step-number': {
+                  transform: 'scale(1.2)',
+                  bgcolor: 'primary.dark'
+                }
+              }
+            }}>
+              
+              
+              <motion.div
+                animate={{ 
+                  y: [-5, 5, -5],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ 
+                  duration: 1, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              >
+                <Typography variant="h2" sx={{ 
+                  fontSize: '3rem', 
+                  mb: 2,
+                  lineHeight: 1,
+                  opacity: 0.8
+                }}>
+                  {step.icon}
+                </Typography>
+              </motion.div>
+              
+              <Typography variant="h5" sx={{ 
+                fontWeight: 600,
+                mb: 2,
+                color: 'text.primary'
+              }}>
+                {step.title}
+              </Typography>
+              
+              <Typography variant="body1" sx={{ 
+                color: 'text.secondary',
+                maxWidth: 300,
+                mx: 'auto'
+              }}>
+                {step.description}
+              </Typography>
+            </Box>
+          </motion.div>
+        </Grid>
+      ))}
+    </Grid>
   </Container>
 </Box>
-
       {/* Footer */}
      
 <Box component="footer" sx={{ mt: 8, py: 6, bgcolor: "grey.100" }}>
