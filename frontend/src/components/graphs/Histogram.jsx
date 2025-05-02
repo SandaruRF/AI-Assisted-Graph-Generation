@@ -47,10 +47,59 @@ const mockData2 = [
   { Salary: 49000, Gender: "Other" },
 ];
 
+const mockData3 = [
+  { Sales: 120, Date: "2023-01-05" },
+  { Sales: 150, Date: "2023-01-12" },
+  { Sales: 170, Date: "2023-01-22" },
+  { Sales: 180, Date: "2023-02-03" },
+  { Sales: 160, Date: "2023-02-10" },
+  { Sales: 200, Date: "2023-02-25" },
+  { Sales: 220, Date: "2023-03-04" },
+  { Sales: 210, Date: "2023-03-15" },
+  { Sales: 230, Date: "2023-03-20" },
+  { Sales: 250, Date: "2023-03-28" },
+  { Sales: 270, Date: "2023-04-05" },
+  { Sales: 300, Date: "2023-04-18" },
+  { Sales: 310, Date: "2023-04-27" },
+  { Sales: 280, Date: "2023-05-03" },
+  { Sales: 260, Date: "2023-05-11" },
+  { Sales: 290, Date: "2023-05-20" },
+  { Sales: 305, Date: "2023-05-29" },
+  { Sales: 330, Date: "2023-06-02" },
+  { Sales: 340, Date: "2023-06-10" },
+  { Sales: 360, Date: "2023-06-18" },
+  { Sales: 370, Date: "2023-06-25" },
+];
+
+const mockData4 = [
+  { ClassA: 78, ClassB: 81 },
+  { ClassA: 85, ClassB: 79 },
+  { ClassA: 90, ClassB: 84 },
+  { ClassA: 88, ClassB: 82 },
+  { ClassA: 76, ClassB: 77 },
+  { ClassA: 92, ClassB: 88 },
+  { ClassA: 81, ClassB: 85 },
+  { ClassA: 87, ClassB: 83 },
+  { ClassA: 74, ClassB: 76 },
+  { ClassA: 95, ClassB: 90 },
+  { ClassA: 89, ClassB: 86 },
+  { ClassA: 84, ClassB: 80 },
+  { ClassA: 77, ClassB: 78 },
+  { ClassA: 82, ClassB: 81 },
+  { ClassA: 91, ClassB: 87 },
+  { ClassA: 80, ClassB: 79 },
+  { ClassA: 86, ClassB: 84 },
+  { ClassA: 93, ClassB: 89 },
+  { ClassA: 75, ClassB: 77 },
+  { ClassA: 79, ClassB: 80 },
+];
+
 // num_1_cat_0_temp_0  --  mockData1
 // num_1_cat_1_temp_0  --  mockData2
-const type = "num_1_cat_0_temp_0";
-const mockData = mockData1;
+// num_1_cat_0_temp_1  --  mockData3
+// num_n_cat_0_temp_0  --  mockData4
+const type = "num_n_cat_0_temp_0";
+const mockData = mockData4;
 
 const Histogram = () => {
   if (!mockData || mockData.length === 0) return null;
@@ -68,6 +117,7 @@ const Histogram = () => {
 
   if (type === "num_1_cat_0_temp_0") {
     [xKey] = Object.keys(mockData[0]);
+    yKey = "Frequency";
     data = [
       {
         x: mockData.map((item) => item[xKey]),
@@ -87,14 +137,17 @@ const Histogram = () => {
       data: data,
       title: title,
       xKey: xKey,
+      yKey: yKey,
     });
     charts.push({
       data: data1,
       title: title,
       yKey: xKey,
+      xKey: yKey,
     });
   } else if (type === "num_1_cat_1_temp_0") {
     [xKey, categoryKey] = Object.keys(mockData[0]);
+    yKey = "Frequency";
     const categories = [...new Set(mockData.map((item) => item[categoryKey]))];
 
     data = categories.map((category, i) => {
@@ -132,12 +185,79 @@ const Histogram = () => {
       title: title,
       barmode: barmode,
       xKey: xKey,
+      yKey: yKey,
     });
     charts.push({
       data: data1,
       title: title,
       barmode: barmode,
       yKey: xKey,
+      xKey: yKey,
+    });
+  } else if (type === "num_1_cat_0_temp_1") {
+    [yKey, xKey] = Object.keys(mockData[0]);
+    data = [
+      {
+        x: mockData.map((item) => item[xKey]),
+        y: mockData.map((item) => item[yKey]),
+        type: "bar",
+        histfunc: "sum",
+      },
+    ];
+
+    title = "Time-Based Histogram";
+
+    charts.push({
+      data: data,
+      title: title,
+      xKey: xKey,
+      yKey: yKey,
+    });
+  } else if (type === "num_n_cat_0_temp_0") {
+    const numerics = Object.keys(mockData[0]);
+    yKey = "Frequency";
+
+    data = numerics.map((numeric, i) => {
+      return {
+        x: mockData.map((item) => item[numeric]),
+        type: "histogram",
+        opacity: 0.6,
+        name: numeric,
+        showlegend: true,
+        ...(i === 0 && {
+          legendgrouptitle: { text: "Numeric Fields" },
+        }),
+      };
+    });
+    data1 = numerics.map((numeric, i) => {
+      return {
+        y: mockData.map((item) => item[numeric]),
+        type: "histogram",
+        opacity: 0.6,
+        name: numeric,
+        showlegend: true,
+        ...(i === 0 && {
+          legendgrouptitle: { text: "Numeric Fields" },
+        }),
+      };
+    });
+
+    title = "Multi-Numeric Series Histogram";
+    barmode = "overlay";
+
+    charts.push({
+      data: data,
+      title: title,
+      barmode: barmode,
+      xKey: "Value",
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title,
+      barmode: barmode,
+      xKey: yKey,
+      yKey: "Value",
     });
   }
 
