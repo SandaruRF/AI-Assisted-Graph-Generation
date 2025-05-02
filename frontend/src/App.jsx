@@ -13,6 +13,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import LineChart from "./components/graphs/LineChart";
 import BarChart from "./components/graphs/BarChart";
 import ScatterPlot from "./components/graphs/ScatterPlot";
+import Histogram from "./components/graphs/Histogram";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -54,6 +55,7 @@ function App() {
               <Route path="/line-chart" element={<LineChart />} />
               <Route path="/bar-chart" element={<BarChart />} />
               <Route path="/scatter-plot" element={<ScatterPlot />} />
+              <Route path="/histogram" element={<Histogram />} />
             </Routes>
           </Router>
         </div>
