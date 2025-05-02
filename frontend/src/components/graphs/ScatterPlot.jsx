@@ -227,12 +227,12 @@ const mockData9 = [
 // num_2_cat_0_temp_0  --  mockData1
 // num_2_cat_1_temp_0  --  mockData2
 // num_2_cat_0_temp_1  --  mockData3
-// num_2_cat_1_temp_1  --  mockData4   ***8 categories only***
+// num_2_cat_1_temp_1  --  mockData4   ***8 unique categories only***
 // num_3_cat_0_temp_0  --  mockData5
 // num_3_cat_1_temp_0  --  mockData6
 // num_1_cat_0_temp_1  --  mockData7
-// num_2_cat_2_temp_0  --  mockData8
-// num_3_cat_2_temp_0  --  mockData9
+// num_2_cat_2_temp_0  --  mockData8   ***8 unique categories only***
+// num_3_cat_2_temp_0  --  mockData9   ***8 unique categories only***
 const type = "num_3_cat_2_temp_0";
 const mockData = mockData9;
 
