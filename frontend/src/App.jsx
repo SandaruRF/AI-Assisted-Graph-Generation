@@ -15,6 +15,7 @@ import BarChart from "./components/graphs/BarChart";
 import ScatterPlot from "./components/graphs/ScatterPlot";
 import Histogram from "./components/graphs/Histogram";
 import CandlestickChart from "./components/graphs/CandlestickChart";
+import PieChart from "./components/graphs/PieChart";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -58,6 +59,7 @@ function App() {
               <Route path="/scatter-plot" element={<ScatterPlot />} />
               <Route path="/histogram" element={<Histogram />} />
               <Route path="/candlestick-chart" element={<CandlestickChart />} />
+              <Route path="/pie-chart" element={<PieChart />} />
             </Routes>
           </Router>
         </div>

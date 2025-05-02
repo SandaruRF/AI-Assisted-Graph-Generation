@@ -284,7 +284,6 @@ const CandlestickChart = () => {
     low,
     close,
     categoryKey,
-    categoryKey1,
     timeKey = "";
 
   if (type === "num_4_cat_0_temp_1") {
