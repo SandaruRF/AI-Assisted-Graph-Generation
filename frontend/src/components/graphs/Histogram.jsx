@@ -72,45 +72,70 @@ const mockData3 = [
 ];
 
 const mockData4 = [
-  { ClassA: 78, ClassB: 81 },
-  { ClassA: 85, ClassB: 79 },
-  { ClassA: 90, ClassB: 84 },
-  { ClassA: 88, ClassB: 82 },
-  { ClassA: 76, ClassB: 77 },
-  { ClassA: 92, ClassB: 88 },
-  { ClassA: 81, ClassB: 85 },
-  { ClassA: 87, ClassB: 83 },
-  { ClassA: 74, ClassB: 76 },
-  { ClassA: 95, ClassB: 90 },
-  { ClassA: 89, ClassB: 86 },
-  { ClassA: 84, ClassB: 80 },
-  { ClassA: 77, ClassB: 78 },
-  { ClassA: 82, ClassB: 81 },
-  { ClassA: 91, ClassB: 87 },
-  { ClassA: 80, ClassB: 79 },
-  { ClassA: 86, ClassB: 84 },
-  { ClassA: 93, ClassB: 89 },
-  { ClassA: 75, ClassB: 77 },
-  { ClassA: 79, ClassB: 80 },
+  { ClassA: 78, ClassB: 81, ClassC: 85, ClassD: 90 },
+  { ClassA: 85, ClassB: 79, ClassC: 88, ClassD: 84 },
+  { ClassA: 90, ClassB: 84, ClassC: 92, ClassD: 89 },
+  { ClassA: 88, ClassB: 82, ClassC: 86, ClassD: 87 },
+  { ClassA: 76, ClassB: 77, ClassC: 80, ClassD: 81 },
+  { ClassA: 92, ClassB: 88, ClassC: 91, ClassD: 93 },
+  { ClassA: 81, ClassB: 85, ClassC: 83, ClassD: 86 },
+  { ClassA: 87, ClassB: 83, ClassC: 85, ClassD: 88 },
+  { ClassA: 74, ClassB: 76, ClassC: 79, ClassD: 80 },
+  { ClassA: 95, ClassB: 90, ClassC: 97, ClassD: 94 },
+  { ClassA: 89, ClassB: 86, ClassC: 90, ClassD: 93 },
+  { ClassA: 84, ClassB: 80, ClassC: 82, ClassD: 85 },
+  { ClassA: 77, ClassB: 78, ClassC: 76, ClassD: 79 },
+  { ClassA: 82, ClassB: 81, ClassC: 83, ClassD: 84 },
+  { ClassA: 91, ClassB: 87, ClassC: 90, ClassD: 92 },
+  { ClassA: 80, ClassB: 79, ClassC: 78, ClassD: 80 },
+  { ClassA: 86, ClassB: 84, ClassC: 88, ClassD: 87 },
+  { ClassA: 93, ClassB: 89, ClassC: 94, ClassD: 92 },
+  { ClassA: 75, ClassB: 77, ClassC: 76, ClassD: 78 },
+  { ClassA: 79, ClassB: 80, ClassC: 81, ClassD: 85 },
+];
+
+const mockData5 = [
+  { Country: "USA" },
+  { Country: "USA" },
+  { Country: "Canada" },
+  { Country: "USA" },
+  { Country: "UK" },
+  { Country: "Germany" },
+  { Country: "Canada" },
+  { Country: "UK" },
+  { Country: "Germany" },
+  { Country: "Canada" },
+  { Country: "India" },
+  { Country: "India" },
+  { Country: "USA" },
+  { Country: "Canada" },
+  { Country: "UK" },
 ];
 
 // num_1_cat_0_temp_0  --  mockData1
 // num_1_cat_1_temp_0  --  mockData2
 // num_1_cat_0_temp_1  --  mockData3
 // num_n_cat_0_temp_0  --  mockData4
-const type = "num_n_cat_0_temp_0";
-const mockData = mockData4;
+// num_0_cat_1_temp_0  --  mockData5
+const type = "num_0_cat_1_temp_0";
+const mockData = mockData5;
 
 const Histogram = () => {
   if (!mockData || mockData.length === 0) return null;
 
   const charts = [];
+  const opacity = 0.7;
   let data,
-    data1 = [];
+    data1,
+    data2,
+    data3 = [];
   let title,
+    title1,
     barmode,
+    barmode1,
     xKey,
     yKey,
+    yKey1,
     categoryKey,
     categoryKey1,
     timeKey = "";
@@ -118,20 +143,42 @@ const Histogram = () => {
   if (type === "num_1_cat_0_temp_0") {
     [xKey] = Object.keys(mockData[0]);
     yKey = "Frequency";
+    yKey1 = "Probability";
+    const totalItems = mockData.length;
+
     data = [
       {
         x: mockData.map((item) => item[xKey]),
         type: "histogram",
+        opacity: opacity,
       },
     ];
     data1 = [
       {
         y: mockData.map((item) => item[xKey]),
         type: "histogram",
+        opacity: opacity,
+      },
+    ];
+    data2 = [
+      {
+        x: mockData.map((item) => item[xKey]),
+        type: "histogram",
+        opacity: opacity,
+        histnorm: "probability",
+      },
+    ];
+    data3 = [
+      {
+        y: mockData.map((item) => item[xKey]),
+        type: "histogram",
+        opacity: opacity,
+        histnorm: "probability",
       },
     ];
 
     title = "Basic Histogram";
+    title1 = "Normalized Histogram";
 
     charts.push({
       data: data,
@@ -144,6 +191,18 @@ const Histogram = () => {
       title: title,
       yKey: xKey,
       xKey: yKey,
+    });
+    charts.push({
+      data: data2,
+      title: title1,
+      xKey: xKey,
+      yKey: yKey1,
+    });
+    charts.push({
+      data: data3,
+      title: title1,
+      yKey: xKey,
+      xKey: yKey1,
     });
   } else if (type === "num_1_cat_1_temp_0") {
     [xKey, categoryKey] = Object.keys(mockData[0]);
@@ -178,7 +237,9 @@ const Histogram = () => {
     });
 
     title = "Grouped Histogram";
+    title1 = "Grouped Stacked Histogram";
     barmode = "overlay";
+    barmode1 = "stack";
 
     charts.push({
       data: data,
@@ -194,6 +255,20 @@ const Histogram = () => {
       yKey: xKey,
       xKey: yKey,
     });
+    charts.push({
+      data: data,
+      title: title1,
+      barmode: barmode1,
+      xKey: xKey,
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title1,
+      barmode: barmode1,
+      yKey: xKey,
+      xKey: yKey,
+    });
   } else if (type === "num_1_cat_0_temp_1") {
     [yKey, xKey] = Object.keys(mockData[0]);
     data = [
@@ -201,6 +276,7 @@ const Histogram = () => {
         x: mockData.map((item) => item[xKey]),
         y: mockData.map((item) => item[yKey]),
         type: "bar",
+        opacity: opacity,
         histfunc: "sum",
       },
     ];
@@ -243,7 +319,9 @@ const Histogram = () => {
     });
 
     title = "Multi-Numeric Series Histogram";
+    title1 = "Multi-Numeric Series Stacked Histogram";
     barmode = "overlay";
+    barmode1 = "stack";
 
     charts.push({
       data: data,
@@ -258,6 +336,67 @@ const Histogram = () => {
       barmode: barmode,
       xKey: yKey,
       yKey: "Value",
+    });
+    charts.push({
+      data: data,
+      title: title1,
+      barmode: barmode1,
+      xKey: "Value",
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title1,
+      barmode: barmode1,
+      xKey: yKey,
+      yKey: "Value",
+    });
+  } else if (type === "num_0_cat_1_temp_0") {
+    [categoryKey] = Object.keys(mockData[0]);
+    yKey = "Count";
+    const categories = [...new Set(mockData.map((item) => item[categoryKey]))];
+
+    data = categories.map((category, i) => {
+      const filtered = mockData.filter(
+        (item) => item[categoryKey] === category
+      );
+      return {
+        x: filtered.map((item) => item[categoryKey]),
+        type: "histogram",
+        name: category,
+        showlegend: false,
+        opacity: opacity,
+      };
+    });
+    data1 = categories.map((category, i) => {
+      const filtered = mockData.filter(
+        (item) => item[categoryKey] === category
+      );
+      return {
+        y: filtered.map((item) => item[categoryKey]),
+        type: "histogram",
+        name: category,
+        showlegend: false,
+        opacity: opacity,
+      };
+    });
+
+    title = "Categorical Count Histogram";
+    barmode = "overlay";
+
+    charts.push({
+      data: data,
+      title: title,
+      barmode: barmode,
+      xKey: categoryKey,
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title,
+      barmode: barmode,
+      yKey: categoryKey,
+      xKey: yKey,
     });
   }
 
