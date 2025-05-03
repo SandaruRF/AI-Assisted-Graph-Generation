@@ -1,11 +1,12 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from models.connection_form import ConnectionData, ConnectionStringData
 from config import settings
 from pymongo import MongoClient
 from bson import ObjectId
 from typing import  Union
 from utils.logging import logger
-from sqlalchemy import create_engine, MetaData
+from utils.auth import get_current_user
+
 
 
 
@@ -15,13 +16,20 @@ client = MongoClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
 connections_collection = db["DatabaseDetails"]
 
+
+
 router = APIRouter()
 
+
+
+
+#insert database connection details into the database
 @router.post("/connections")
-async def save_connection_form(connection: ConnectionData):
+async def save_connection_form(connection: ConnectionData, usr_email: str = Depends(get_current_user)):
     try:
         data = connection.dict()
         data["form_type"] = "detailed_form"
+        data["email"] = usr_email
         result = connections_collection.insert_one(data)
         return {
             "status": "success",
@@ -51,11 +59,12 @@ async def save_connection_string_form(data: ConnectionStringData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@router.get("/connections")
-async def get_connections():
+#take current saved database details from the database
+@router.get("/connections/")
+async def get_connections(usr_email: str = Depends(get_current_user)):
+    logger.info(f"Fetching connections for user: {usr_email}")
     try:
-        connections = list(connections_collection.find())
+        connections = list(connections_collection.find({"email": usr_email}))
         for conn in connections:
             conn["_id"] = str(conn["_id"])
         return connections
