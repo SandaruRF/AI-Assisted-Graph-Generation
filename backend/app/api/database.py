@@ -42,13 +42,14 @@ async def save_connection_form(connection: ConnectionData, usr_email: str = Depe
 
 
 @router.post("/connection-strings")  # Adjusted to avoid duplicate prefix
-async def save_connection_string_form(data: ConnectionStringData):
+async def save_connection_string_form(data: ConnectionStringData, usr_email: str = Depends(get_current_user)):
     try:
         data_dict = data.dict()
         logger.info(f"Received connection string data: {data_dict}")
         if not data_dict.get("ssl"):
             data_dict["ssl"] = False
         data_dict["form_type"] = "connection_string_form"
+        data_dict["email"] = usr_email
         result = connections_collection.insert_one(data_dict)
         return {
             "status": "success",
