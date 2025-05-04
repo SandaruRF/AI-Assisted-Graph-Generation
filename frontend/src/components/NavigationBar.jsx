@@ -37,7 +37,7 @@ const NavigationBar = () => {
           
           <Box sx={{ display: "flex", gap: 4, alignItems: "center" }}>
   <Button 
-    onClick={() => handleNavigation("/")}
+    onClick={() => navigate('/LandingPage')}
     sx={{ 
       textTransform: "none", 
       fontWeight: 600,
@@ -54,7 +54,7 @@ const NavigationBar = () => {
     Home
   </Button>
   <Button 
-    onClick={() => handleNavigation("/chat")}
+   onClick={() => navigate('/graph-visualization')}
     sx={{ 
       textTransform: "none", 
       fontWeight: 600,
@@ -91,7 +91,7 @@ const NavigationBar = () => {
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button 
               variant="outlined" 
-              onClick={() => handleNavigation("/login")}
+              onClick={() => navigate('/')}
               sx={{ 
                 textTransform: "none",
                 borderRadius: "25px",
@@ -105,7 +105,7 @@ const NavigationBar = () => {
             </Button>
             <Button 
               variant="contained" 
-              onClick={() => handleNavigation("/signup")}
+              onClick={() => navigate('/sign-up')}
               sx={{ 
                 textTransform: "none", 
                 borderRadius: "25px",

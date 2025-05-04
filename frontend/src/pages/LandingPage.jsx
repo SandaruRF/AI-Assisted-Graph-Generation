@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useInView } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -20,6 +20,7 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 const LandingPage = () => {
   
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const { scrollYProgress } = useScroll();
@@ -36,6 +37,7 @@ const LandingPage = () => {
     { src: "/images/oracle.png", alt: "Oracle" },
     { src: "/images/SQLite.png", alt: "SQLite" },
   ];
+  
 
   // Auto-rotation and touch handlers
   useEffect(() => {
@@ -52,9 +54,15 @@ const LandingPage = () => {
     if (touchStart - touchEnd < -50) handlePrev();
   };
 
-  const handlePrev = () => setCurrentIndex(prev => prev > 0 ? prev - 1 : databaseLogos.length - 1);
-  const handleNext = () => setCurrentIndex(prev => prev < databaseLogos.length - 1 ? prev + 1 : 0);
-  const handleDotClick = (index) => setCurrentIndex(index);
+  const handlePrev = () => {
+    setCurrentIndex(prev => (prev > 0 ? prev - 1 : databaseLogos.length - 1));
+  };
+  const handleNext = () => {
+    setCurrentIndex(prev => (prev < databaseLogos.length - 1 ? prev + 1 : 0));
+  };
+  const handleDotClick = (index) => {
+    setCurrentIndex(index);
+  };
 
   const FeatureSection = ({ title, description, image, reverse = false }) => {
     const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -170,7 +178,7 @@ const LandingPage = () => {
       <Button
   variant="contained"
   size="large"
-  onClick={() => navigate("/get-started")}
+  onClick={() => navigate('/')}
   startIcon={<RocketLaunchIcon />} // Add icon from @mui/icons-material
   sx={{ 
     px: 3,
@@ -276,23 +284,25 @@ const LandingPage = () => {
 
 
  {/* Features Section */}
-                 
- <Container sx={{ py: 10,}}>
- <Typography
-  variant="h4"
-  align="center"
-  color="#045D9F"
-  sx={{
-    mb: 6,
-    fontWeight: 700,
-    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-  }}
->
-Unlock the Power of AI-Driven Data Visualization
-</Typography>
+<Container sx={{ py: 10 }}>
+  <Typography
+    variant="h4"
+    align="center"
+    sx={{
+      mb: 6,
+      fontWeight: 700,
+      background: 'linear-gradient(45deg, #045D9F 30%, #078DEB 90%)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
+    }}
+  >
+    Unlock the Power of AI-Driven Data Visualization
+  </Typography>
 
   <Grid container spacing={4}>
     {[
+      // ... your features array
       {
         title: "AI Diagram Generator",
         description:
@@ -311,22 +321,25 @@ Unlock the Power of AI-Driven Data Visualization
           "Your data is safe with bank-grade encryption, multi-layer authentication, and real-time threat detection ensuring complete privacy.",
         image: "/images/security.png",
       },
+
     ].map((feature, index) => (
       <Grid item xs={12} md={4} key={index}>
         <Box
           sx={{
+            boxShadow: 3 ,
             borderRadius: 4,
             p: 4,
             textAlign: "center",
             transition: "all 0.3s ease",
             height: "100%",
-            backgroundColor: "#112240",
-            opacity: 0.3,
+            backgroundColor: '#EAF2F8', // Light blue base color
             '&:hover': {
-              opacity: 1,
               transform: "translateY(-8px)",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
-              backgroundColor: "#1c2b45",
+              boxShadow: "0 8px 24px rgba(4, 93, 159, 0.2)",
+              backgroundColor: '#001F3F', // Darker blue on hover
+              '& h6, & p': {
+                color: 'white'
+              }
             },
           }}
         >
@@ -339,17 +352,24 @@ Unlock the Power of AI-Driven Data Visualization
               width: "auto",
               mb: 3,
               objectFit: "contain",
-              filter: "brightness(0.8)",
+              filter: "brightness(1)",
               transition: "filter 0.3s ease",
               '&:hover': {
-                filter: "brightness(1)",
+                filter: "brightness(1.1)",
               },
             }}
           />
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: "#ffffff" }}>
+          <Typography variant="h6" sx={{ 
+            fontWeight: 600, 
+            mb: 1, 
+            color: '#0d47a1' // Dark blue text
+          }}>
             {feature.title}
           </Typography>
-          <Typography variant="body2" sx={{ color: "#cccccc" }}>
+          <Typography variant="body2" sx={{ 
+            color: '#191970', // Medium blue text
+            lineHeight: 1.6 
+          }}>
             {feature.description}
           </Typography>
         </Box>
@@ -358,8 +378,8 @@ Unlock the Power of AI-Driven Data Visualization
   </Grid>
 </Container>
 
-
-     <Container sx={{ py: 8, position: 'relative' }}>
+{/*image carousel*/}
+<Container sx={{ py: 8, position: 'relative', overflow: 'hidden' }}>
   <Typography variant="h4" align="center" sx={{
     mb: 6,
     fontWeight: 700,
@@ -371,96 +391,107 @@ Unlock the Power of AI-Driven Data Visualization
     Effortless Database Connections
   </Typography>
 
-  <Box sx={{ 
-    position: 'relative',
-    maxWidth: 1200,
-    margin: '0 auto',
-    px: { xs: 0, md: 4 },
-    '&:hover .carousel-arrow': {
-      opacity: 1
-    }
-  }}>
-    {/* Carousel Items */}
-    <Box sx={{
-      display: 'flex',
-      gap: 4,
-      scrollSnapType: 'x mandatory',
-      overflowX: 'auto',
-      scrollBehavior: 'smooth',
-      py: 4,
-      '&::-webkit-scrollbar': { display: 'none' }
-    }}>
-      {databaseLogos.map((db, index) => (
-        <motion.div 
-          key={db.alt}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ delay: index * 0.1 }}
-          sx={{
-            flex: '0 0 calc(33.333% - 32px)',
-            scrollSnapAlign: 'center',
-            minWidth: { xs: '70%', sm: '40%', md: '30%' },
-            px: 2,
-            position: 'relative'
-          }}
-        >
-          <Box sx={{
-            bgcolor: 'background.paper',
-            borderRadius: 4,
-            p: 4,
-            boxShadow: 3,
-            transition: 'transform 0.3s',
-            '&:hover': {
-              transform: 'translateY(-8px)',
-              boxShadow: 6
-            }
-          }}>
+  <Box 
+    sx={{ 
+      position: 'relative',
+      width: '100%',
+      height: 300,
+      maxWidth: 1200,
+      mx: 'auto',
+      '&:hover .carousel-arrow': { opacity: 1 }
+    }}
+    onMouseEnter={() => setIsHovered(true)}
+    onMouseLeave={() => setIsHovered(false)}
+  >
+    <AnimatePresence initial={false}>
+      <motion.div
+        key={currentIndex}
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -100 }}
+        transition={{ duration: 0.5 }}
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Box sx={{
+          position: 'relative',
+          width: '90%', // Increased width
+          maxWidth: 400,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 2, // Added padding
+          border: '2px solid',
+          borderColor: "#D6E6F2",
+          borderRadius: 2,
+          boxShadow: 3 // Added box shadow
+        }}>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
             <Box
               component="img"
-              src={db.src}
-              alt={db.alt}
+              src={databaseLogos[currentIndex].src}
+              alt={databaseLogos[currentIndex].alt}
               sx={{
-                height: 80,
+                height: 120,
                 width: 'auto',
                 maxWidth: '100%',
                 objectFit: 'contain',
-                filter: 'grayscale(100%)',
-                transition: 'filter 0.3s',
-                '&:hover': {
-                  filter: 'grayscale(0%)'
-                }
+                filter: 'drop-shadow(0 8px 16px rgba(4, 93, 159, 0.3))', // Stronger shadow
+                transition: 'filter 0.3s'
               }}
             />
-            <Typography variant="subtitle1" align="center" sx={{ 
-              mt: 2,
-              fontWeight: 600,
-              color: 'text.primary'
-            }}>
-              {db.alt}
-            </Typography>
-          </Box>
-        </motion.div>
-      ))}
-    </Box>
+          </motion.div>
+          <Typography
+  variant="h6"
+  sx={{
+    mt: 3,
+    fontWeight: 700,
+    textAlign: 'center',
+    fontSize: '1.25rem',
+    background: 'linear-gradient(90deg, #0288D1, #26C6DA)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    transition: 'transform 0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.05)',
+    },
+  }}
+>
+  {databaseLogos[currentIndex].alt}
+</Typography>
 
-    {/* Navigation Arrows */}
+        </Box>
+      </motion.div>
+    </AnimatePresence>
+
+    {/* Navigation Arrows - Reduced spacing */}
     <IconButton
       className="carousel-arrow"
-      onClick={handlePrev}
+      onClick={handleNext}
       sx={{
         position: 'absolute',
-        left: -40,
+        left: 8, // Reduced from 16
         top: '50%',
         transform: 'translateY(-50%)',
         bgcolor: 'background.paper',
         boxShadow: 3,
         opacity: 0,
         transition: 'opacity 0.3s',
-        display: { xs: 'none', md: 'flex' }
+        '&:hover': { bgcolor: 'primary.main', color: 'white' },
       }}
     >
-      <ChevronLeft fontSize="large" sx={{ color: 'primary.main' }} />
+      <ChevronLeft fontSize="large" />
     </IconButton>
 
     <IconButton
@@ -468,72 +499,30 @@ Unlock the Power of AI-Driven Data Visualization
       onClick={handleNext}
       sx={{
         position: 'absolute',
-        right: -40,
+        right: 8, // Reduced from 16
         top: '50%',
         transform: 'translateY(-50%)',
         bgcolor: 'background.paper',
         boxShadow: 3,
         opacity: 0,
         transition: 'opacity 0.3s',
-        display: { xs: 'none', md: 'flex' }
+        '&:hover': { bgcolor: 'primary.main', color: 'white' },
       }}
     >
-      <ChevronRight fontSize="large" sx={{ color: 'primary.main' }} />
+      <ChevronRight fontSize="large" />
     </IconButton>
-
-    {/* Pagination Dots */}
-    <Box sx={{ 
-      display: 'flex',
-      justifyContent: 'center',
-      gap: 1.5,
-      mt: 4
-    }}>
-      {databaseLogos.map((_, index) => (
-        <Box
-          key={index}
-          onClick={() => handleDotClick(index)}
-          sx={{
-            width: 12,
-            height: 12,
-            borderRadius: '50%',
-            bgcolor: currentIndex === index ? 'primary.main' : 'action.disabledBackground',
-            cursor: 'pointer',
-            transition: 'all 0.3s',
-            '&:hover': {
-              transform: 'scale(1.2)',
-              bgcolor: 'primary.dark'
-            }
-          }}
-        />
-      ))}
-    </Box>
-
-    {/* Auto-rotate with pause on hover */}
-    {useEffect(() => {
-      const container = document.getElementById('carousel-container');
-      let interval;
-      
-      const startInterval = () => {
-        interval = setInterval(() => {
-          setCurrentIndex(prev => (prev < databaseLogos.length - 1 ? prev + 1 : 0));
-        }, 3000);
-      };
-      
-      startInterval();
-      
-      container?.addEventListener('mouseenter', () => clearInterval(interval));
-      container?.addEventListener('mouseleave', startInterval);
-      
-      return () => {
-        clearInterval(interval);
-        container?.removeEventListener('mouseenter', () => clearInterval(interval));
-        container?.removeEventListener('mouseleave', startInterval);
-      };
-    }, [])}
   </Box>
+
+  {/* Auto-rotate */}
+  {useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isHovered) {
+        setCurrentIndex(prev => (prev < databaseLogos.length - 1 ? prev + 1 : 0));
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isHovered])}
 </Container>
-
-
       
 {/* How It Works Section */}
 <Box sx={{ py: 12, background: "linear-gradient(to bottom, #f8fbff, #ffffff)" }}>
