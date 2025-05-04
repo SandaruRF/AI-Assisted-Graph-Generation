@@ -1,6 +1,7 @@
+// NavigationBar.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Container } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 
 const NavigationBar = () => {
   const navigate = useNavigate();
@@ -8,62 +9,110 @@ const NavigationBar = () => {
   const handleNavigation = (path) => navigate(path);
 
   return (
+    
     <Box component="header" sx={{ 
       position: "sticky", 
       top: 0, 
       zIndex: 1000, 
-      boxShadow: 3, 
-      bgcolor: "background.paper", 
-      backgroundColor: "#f0f8ff",
-      py: 2
+     backgroundColor: "#F8F9FD",
+      py: 2,
+      borderBottom: "1px solid #e0e0e0"
     }}>
-      <Container>
+      <Container maxWidth="xl">
         <Box sx={{ 
           display: "flex", 
           justifyContent: "space-between", 
           alignItems: "center",
-          color: "text.primary"
+          gap: 4
         }}>
-          <img 
-            src="/images/logo.png" 
-            alt="Logo" 
-            style={{ height: 40, cursor: "pointer" }}
-            onClick={() => handleNavigation("/LandingPage")}
-          />
-          
-          <Box sx={{ display: "flex", gap: 4 }}>
-            <Button 
-              onClick={() => handleNavigation("/LandingPage")}
-              sx={{ textTransform: "none", fontWeight: 600 }}
-            >
-              Home
-            </Button>
-            <Button 
-              onClick={() => handleNavigation("/graph-visualization")}
-              sx={{ textTransform: "none", fontWeight: 600 }}
-            >
-              Chat
-            </Button>
-            <Button 
-              onClick={() => handleNavigation("/docs")}
-              sx={{ textTransform: "none", fontWeight: 600 }}
-            >
-              Docs
-            </Button>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <img 
+              src="/images/logo.png" 
+              alt="VizGen Logo" 
+              style={{ height: 40, cursor: "pointer" }}
+              onClick={() => handleNavigation("/")}
+            />
+            
           </Box>
           
+          <Box sx={{ display: "flex", gap: 4, alignItems: "center" }}>
+  <Button 
+    onClick={() => handleNavigation("/")}
+    sx={{ 
+      textTransform: "none", 
+      fontWeight: 600,
+      color: "#045D9F",
+      fontSize: "1.1rem", // Increased font size
+      transition: "all 0.3s ease",
+      '&:hover': { 
+        color: "#034A7F",
+        textDecoration: "underline",
+        textUnderlineOffset: "4px"
+      }
+    }}
+  >
+    Home
+  </Button>
+  <Button 
+    onClick={() => handleNavigation("/chat")}
+    sx={{ 
+      textTransform: "none", 
+      fontWeight: 600,
+      color: "#045D9F",
+      fontSize: "1.1rem", // Increased font size
+      transition: "all 0.3s ease",
+      '&:hover': { 
+        color: "#034A7F",
+        textDecoration: "underline",
+        textUnderlineOffset: "4px"
+      }
+    }}
+  >
+    Chat
+  </Button>
+  <Button 
+    onClick={() => handleNavigation("/docs")}
+    sx={{ 
+      textTransform: "none", 
+      fontWeight: 600,
+      color: "#045D9F",
+      fontSize: "1.1rem", // Increased font size
+      transition: "all 0.3s ease",
+      '&:hover': { 
+        color: "#034A7F",
+        textDecoration: "underline",
+        textUnderlineOffset: "4px"
+      }
+    }}
+  >
+    Docs
+  </Button>
+</Box>
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button 
               variant="outlined" 
-              onClick={() => handleNavigation("/")}
-              sx={{ textTransform: "none" }}
+              onClick={() => handleNavigation("/login")}
+              sx={{ 
+                textTransform: "none",
+                borderRadius: "25px",
+                px: 3,
+                borderColor:  "#045D9F",
+                color:  "#045D9F"
+               
+              }}
             >
               Login
             </Button>
             <Button 
               variant="contained" 
-              onClick={() => handleNavigation("/sign-up")}
-              sx={{ textTransform: "none", bgcolor: "primary.main" }}
+              onClick={() => handleNavigation("/signup")}
+              sx={{ 
+                textTransform: "none", 
+                borderRadius: "25px",
+                px: 3,
+                bgcolor:  "#045D9F",
+                '&:hover': { bgcolor: "#0773c5" }
+              }}
             >
               Sign Up
             </Button>

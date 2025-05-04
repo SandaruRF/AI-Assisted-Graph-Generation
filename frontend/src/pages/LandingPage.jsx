@@ -12,14 +12,21 @@ import {
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import ChevronRight from "@mui/icons-material/ChevronRight";
 import NavigationBar from "../components/NavigationBar";
+import AnimationComponent from '../components/AnimationComponent';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+
+
 
 const LandingPage = () => {
-  const navigate = useNavigate();
+  
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const { scrollYProgress } = useScroll();
   const constraintsRef = useRef(null);
+
+  const navigate = useNavigate();
+  
 
   const databaseLogos = [
     { src: "/images/mysql.png", alt: "MySQL" },
@@ -90,409 +97,721 @@ const LandingPage = () => {
       </motion.div>
     );
   };
-
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
-      {/* Scroll Progress Indicator */}
-      <motion.div
-        style={{
-          scaleX: scrollYProgress,
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 4,
-          background: "primary.main",
-          zIndex: 9999
-        }}
-      />
-
-      <Box sx={{ backgroundColor: "#f0f8ff" }}>  
-        <NavigationBar />
-
-        {/* Hero Section */}
-        <Container sx={{ py: 8 }}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Grid container spacing={4} alignItems="center">
-              <Grid item xs={12} md={6}>
-                <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-                  AI Assisted
-                  <Box component="span" sx={{ color: "primary.main" }}> Graph Generator</Box>
-                </Typography>
-                <Typography variant="h6" sx={{ mb: 4, color: "text.secondary" }}>
-                  Transform data into easy-to-understand visuals effortlessly with our AI-powered graph generator, designed for impactful data communication. No design skills needed.
-                </Typography>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    onClick={() => navigate("/")}
-                    sx={{ px: 6, py: 1.5, fontSize: "1.1rem" }}
-                  >
-                    Get Started
-                  </Button>
-                </motion.div>
-              </Grid>
-              
-              <Grid item xs={12} md={6}>
-                <motion.div
-                  animate={{ y: [-5, 5, -5] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  <img
-                    src="/images/hero-graph.png"
-                    alt="AI Generated Graph"
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                </motion.div>
-              </Grid>
-            </Grid>
-          </motion.div>
-        </Container>
-      </Box>
-
-      <Container sx={{ py: 8 }}>
-  <Typography variant="h4" align="center" gutterBottom sx={{ mb: 6, fontWeight: 700 }}>
-    Connect Seamlessly to Your Favorite Databases
-  </Typography>
-
-  <Box sx={{ position: "relative", width: "100%", overflow: "hidden" }}>
     <Box sx={{ 
-      display: "flex", 
-      transition: "transform 0.3s", 
-      transform: `translateX(-${currentIndex * 100}%)`
+      backgroundColor: "#F8F9FD",
+      minHeight: "100vh",
+      overflow: "hidden"
     }}>
-      {databaseLogos.map((db) => (
-        <Box key={db.alt} sx={{ flex: "0 0 100%", minWidth: "100%", p: 2, textAlign: "center" }}>
+      <NavigationBar />
+      <Container 
+  maxWidth="lg" // Increased to "lg" for better content spread
+  sx={{ 
+    pt: { xs: 4, md: 8 },
+    pb: { xs: 2, md: 4 },
+    display: "flex",
+    flexDirection: { xs: "column-reverse", md: "row" }, // Reverse column for better mobile flow
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: { xs: 4, md: 8 },
+    minHeight: { md: "60vh" } // Ensure minimum height for desktop
+  }}
+>
+  {/* Left Content Section */}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8 }}
+    style={{
+      flex: 1,
+      maxWidth: { md: "45%" }, // Slightly less than 50% for better spacing
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center"
+    }}
+  >
+    <Typography 
+      variant="h1" 
+      sx={{ 
+        fontWeight: 800,
+        fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem', lg: '3.5rem' },
+        lineHeight: 1.2,
+        mb: 3,
+        textAlign: { xs: "center", md: "left" },
+        background: "linear-gradient(90deg, #045D9F, #00B4DB)",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent"
+      }}
+    >
+      AI Assisted Graph Generator
+    </Typography>
+
+    <Typography 
+      variant="body1" 
+      sx={{ 
+        mb: 3,
+        color: "text.secondary",
+        fontSize: { xs: '1rem', md: '1.1rem' },
+        lineHeight: 1.7,
+        maxWidth: 520,
+        mx: { xs: "auto", md: 0 },
+        textAlign: { xs: "center", md: "left" }
+      }}
+    >
+      Transform data into easy-to-understand visuals effortlessly with our AI-powered 
+      graph generator, designed for impactful data communication. No design skills needed.
+    </Typography>
+
+    <Box sx={{ 
+      textAlign: { xs: "center", md: "left" },
+      mt: 2 
+    }}>
+      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      <Button
+  variant="contained"
+  size="large"
+  onClick={() => navigate("/get-started")}
+  startIcon={<RocketLaunchIcon />} // Add icon from @mui/icons-material
+  sx={{ 
+    px: 3,
+    py: 1,
+    fontSize: "1.1rem",
+    fontWeight: 600,
+    borderRadius: "12px",
+    letterSpacing: "0.5px",
+    bgcolor: "primary.main",
+    color: "white",
+    textTransform: "none",
+    boxShadow: (theme) => theme.shadows[4],
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    '&:hover': { 
+      bgcolor: "primary.dark",
+      transform: "translateY(-2px) scale(1.05)",
+      boxShadow: (theme) => theme.shadows[6],
+    },
+    '&:active': {
+      transform: "translateY(1px) scale(0.98)",
+      boxShadow: (theme) => theme.shadows[2],
+    },
+    '& .MuiButton-startIcon': {
+      mr: 1,
+      '& svg': {
+        fontSize: "1.4rem",
+        transition: "transform 0.3s ease",
+      }
+    },
+    '&:hover .MuiButton-startIcon svg': {
+      transform: "rotate(-45deg)"
+    }
+  }}
+>
+  Get Started
+</Button>
+      </motion.div>
+    </Box>
+  </motion.div>
+
+  {/* Right Animation Section with Shadow Effect */}
+<motion.div
+  initial={{ opacity: 0, x: 20 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.8 }}
+  whileHover={{ scale: 1.05 }}
+  style={{
+    flex: 1,
+    maxWidth: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    height: "100%",
+  }}
+>
+  {/* Animated Background Shadow */}
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    whileHover={{ 
+      opacity: 0.4,
+      scale: 1.02,
+      filter: "blur(15px)",
+    }}
+    transition={{ 
+      duration: 0.3,
+      ease: "easeOut"
+    }}
+    style={{
+      position: "absolute",
+      width: "95%",
+      height: "95%",
+      borderRadius: 16,
+      backgroundColor: "rgba(0, 0, 0, 0.2)",
+      zIndex: 0,
+    }}
+  />
+
+  <Box
+    sx={{
+      width: "100%",
+      maxWidth: 600,
+      height: { xs: 300, md: 400 },
+      position: "relative",
+      borderRadius: 2,
+      overflow: "hidden",
+      zIndex: 1,
+      '&:hover': {
+        boxShadow: 6,
+      },
+    }}
+  >
+    <AnimationComponent
+      sx={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+      }}
+    />
+  </Box>
+</motion.div>
+</Container>
+
+
+ {/* Features Section */}
+                 
+ <Container sx={{ py: 10,}}>
+ <Typography
+  variant="h4"
+  align="center"
+  color="#045D9F"
+  sx={{
+    mb: 6,
+    fontWeight: 700,
+    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
+  }}
+>
+Unlock the Power of AI-Driven Data Visualization
+</Typography>
+
+  <Grid container spacing={4}>
+    {[
+      {
+        title: "AI Diagram Generator",
+        description:
+          "Convert your raw data into sleek, interactive graphs with a few simple prompts. Skip the design struggle and get polished visuals instantly.",
+        image: "/images/ai.png",
+      },
+      {
+        title: "Multi-Database Compatibility",
+        description:
+          "Connect easily with SQLite, MySQL, PostgreSQL, and more for flexible, secure, and scalable data integration across any environment.",
+        image: "/images/db-compatibility.png",
+      },
+      {
+        title: "Advanced Data Protection",
+        description:
+          "Your data is safe with bank-grade encryption, multi-layer authentication, and real-time threat detection ensuring complete privacy.",
+        image: "/images/security.png",
+      },
+    ].map((feature, index) => (
+      <Grid item xs={12} md={4} key={index}>
+        <Box
+          sx={{
+            borderRadius: 4,
+            p: 4,
+            textAlign: "center",
+            transition: "all 0.3s ease",
+            height: "100%",
+            backgroundColor: "#112240",
+            opacity: 0.3,
+            '&:hover': {
+              opacity: 1,
+              transform: "translateY(-8px)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+              backgroundColor: "#1c2b45",
+            },
+          }}
+        >
           <Box
             component="img"
-            src={db.src}
-            alt={db.alt}
+            src={feature.image}
+            alt={feature.title}
             sx={{
               height: 120,
               width: "auto",
-              maxWidth: "100%",
+              mb: 3,
               objectFit: "contain",
-              transition: "transform 0.3s",
-              "&:hover": { 
-                transform: "scale(1.05)",
+              filter: "brightness(0.8)",
+              transition: "filter 0.3s ease",
+              '&:hover': {
+                filter: "brightness(1)",
               },
             }}
           />
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: "#ffffff" }}>
+            {feature.title}
+          </Typography>
+          <Typography variant="body2" sx={{ color: "#cccccc" }}>
+            {feature.description}
+          </Typography>
         </Box>
+      </Grid>
+    ))}
+  </Grid>
+</Container>
+
+
+     <Container sx={{ py: 8, position: 'relative' }}>
+  <Typography variant="h4" align="center" sx={{
+    mb: 6,
+    fontWeight: 700,
+    background: 'linear-gradient(45deg, #045D9F 30%, #078DEB 90%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
+  }}>
+    Effortless Database Connections
+  </Typography>
+
+  <Box sx={{ 
+    position: 'relative',
+    maxWidth: 1200,
+    margin: '0 auto',
+    px: { xs: 0, md: 4 },
+    '&:hover .carousel-arrow': {
+      opacity: 1
+    }
+  }}>
+    {/* Carousel Items */}
+    <Box sx={{
+      display: 'flex',
+      gap: 4,
+      scrollSnapType: 'x mandatory',
+      overflowX: 'auto',
+      scrollBehavior: 'smooth',
+      py: 4,
+      '&::-webkit-scrollbar': { display: 'none' }
+    }}>
+      {databaseLogos.map((db, index) => (
+        <motion.div 
+          key={db.alt}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ delay: index * 0.1 }}
+          sx={{
+            flex: '0 0 calc(33.333% - 32px)',
+            scrollSnapAlign: 'center',
+            minWidth: { xs: '70%', sm: '40%', md: '30%' },
+            px: 2,
+            position: 'relative'
+          }}
+        >
+          <Box sx={{
+            bgcolor: 'background.paper',
+            borderRadius: 4,
+            p: 4,
+            boxShadow: 3,
+            transition: 'transform 0.3s',
+            '&:hover': {
+              transform: 'translateY(-8px)',
+              boxShadow: 6
+            }
+          }}>
+            <Box
+              component="img"
+              src={db.src}
+              alt={db.alt}
+              sx={{
+                height: 80,
+                width: 'auto',
+                maxWidth: '100%',
+                objectFit: 'contain',
+                filter: 'grayscale(100%)',
+                transition: 'filter 0.3s',
+                '&:hover': {
+                  filter: 'grayscale(0%)'
+                }
+              }}
+            />
+            <Typography variant="subtitle1" align="center" sx={{ 
+              mt: 2,
+              fontWeight: 600,
+              color: 'text.primary'
+            }}>
+              {db.alt}
+            </Typography>
+          </Box>
+        </motion.div>
       ))}
     </Box>
 
-    {/* Auto-rotate functionality */}
-    {useEffect(() => {
-      const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev < databaseLogos.length - 1 ? prev + 1 : 0));
-      }, 1000);
-      return () => clearInterval(interval);
-    }, [])}
-
+    {/* Navigation Arrows */}
     <IconButton
+      className="carousel-arrow"
       onClick={handlePrev}
       sx={{
-        position: "absolute",
-        left: 16,
-        top: "50%",
-        transform: "translateY(-50%)",
-        bgcolor: "background.paper",
-        boxShadow: 2,
-        "&:hover": { bgcolor: "primary.main", color: "white" },
+        position: 'absolute',
+        left: -40,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        bgcolor: 'background.paper',
+        boxShadow: 3,
+        opacity: 0,
+        transition: 'opacity 0.3s',
+        display: { xs: 'none', md: 'flex' }
       }}
     >
-      <ChevronLeft fontSize="large" />
+      <ChevronLeft fontSize="large" sx={{ color: 'primary.main' }} />
     </IconButton>
 
     <IconButton
+      className="carousel-arrow"
       onClick={handleNext}
       sx={{
-        position: "absolute",
-        right: 16,
-        top: "50%",
-        transform: "translateY(-50%)",
-        bgcolor: "background.paper",
-        boxShadow: 2,
-        "&:hover": { bgcolor: "primary.main", color: "white" },
+        position: 'absolute',
+        right: -40,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        bgcolor: 'background.paper',
+        boxShadow: 3,
+        opacity: 0,
+        transition: 'opacity 0.3s',
+        display: { xs: 'none', md: 'flex' }
       }}
     >
-      <ChevronRight fontSize="large" />
+      <ChevronRight fontSize="large" sx={{ color: 'primary.main' }} />
     </IconButton>
 
-    <Box sx={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 1 }}>
+    {/* Pagination Dots */}
+    <Box sx={{ 
+      display: 'flex',
+      justifyContent: 'center',
+      gap: 1.5,
+      mt: 4
+    }}>
       {databaseLogos.map((_, index) => (
         <Box
           key={index}
           onClick={() => handleDotClick(index)}
           sx={{
-            width: 10,
-            height: 1,
-            borderRadius: "50%",
-            bgcolor: currentIndex === index ? "primary.main" : "action.selected",
-            cursor: "pointer",
-            transition: "background-color 0.3s",
-            "&:hover": { bgcolor: "primary.dark" },
+            width: 12,
+            height: 12,
+            borderRadius: '50%',
+            bgcolor: currentIndex === index ? 'primary.main' : 'action.disabledBackground',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+            '&:hover': {
+              transform: 'scale(1.2)',
+              bgcolor: 'primary.dark'
+            }
           }}
         />
       ))}
     </Box>
+
+    {/* Auto-rotate with pause on hover */}
+    {useEffect(() => {
+      const container = document.getElementById('carousel-container');
+      let interval;
+      
+      const startInterval = () => {
+        interval = setInterval(() => {
+          setCurrentIndex(prev => (prev < databaseLogos.length - 1 ? prev + 1 : 0));
+        }, 3000);
+      };
+      
+      startInterval();
+      
+      container?.addEventListener('mouseenter', () => clearInterval(interval));
+      container?.addEventListener('mouseleave', startInterval);
+      
+      return () => {
+        clearInterval(interval);
+        container?.removeEventListener('mouseenter', () => clearInterval(interval));
+        container?.removeEventListener('mouseleave', startInterval);
+      };
+    }, [])}
   </Box>
-  </Container>
+</Container>
 
 
-       {/* Features Section */}
-                 
-      <Container sx={{ py: 10}}>
+      
+{/* How It Works Section */}
+<Box sx={{ py: 12, background: "linear-gradient(to bottom, #f8fbff, #ffffff)" }}>
+  <Container maxWidth="lg">
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+    >
+        <Typography
+  variant="h4"
+  align="center"
+  color="#045D9F"
+  sx={{
+    mb: 6,
+    fontWeight: 700,
+    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
+  }}
+>
 
-        <Typography variant="h4" align="center" gutterBottom sx={{ mb: 6, fontWeight: 700 }}>
-          Transform Data with Powerful AI Features
-        </Typography>
+        How It Works
+      </Typography>
 
-        <Grid container spacing={4}>
-          {[
-            {
-              title: "AI Diagram Generator",
-              description:
-                "Convert your raw data into sleek, interactive graphs with a few simple prompts. Skip the design struggle and get polished visuals instantly.",
-              image: "/images/ai.png",
-            },
-            {
-              title: "Multi-Database Compatibility",
-              description:
-                "Connect easily with SQLite, MySQL, PostgreSQL, and more for flexible, secure, and scalable data integration across any environment.",
-              image: "/images/db-compatibility.png",
-            },
-            {
-              title: "Advanced Data Protection",
-              description:
-                "Your data is safe with bank-grade encryption, multi-layer authentication, and real-time threat detection ensuring complete privacy.",
-              image: "/images/security.png",
-            },
-          ].map((feature, index) => (
-            <Grid item xs={12} md={4} key={index}>
-              <Box
-                sx={{
-                  borderRadius: 4,
-                  boxShadow: 3,
-                  p: 4,
-                  textAlign: "center",
-                  transition: "all 0.3s ease",
-                  height: "100%",
-                  backgroundColor: "#f0f8ff",
-                  "&:hover": {
-                    transform: "translateY(-6px)",
-                    boxShadow: 6,
-                    bgcolor: "#cce5ff",
-                  },
-                }}
+      <Grid container spacing={6} justifyContent="center">
+        {[
+          // ... your step data array
+          {
+            title: "Create Account",
+            description: "Set up your personalized account in less than 2 minutes with email verification",
+            icon: '👤'
+          },
+          {
+            title: "Connect Your Database",
+            description: "Securely integrate your database with our platform using industry-standard protocols",
+            icon: '🔗'
+          },
+          {
+            title: "Chat with It", 
+            description: "Interact naturally with our AI assistant to generate and refine your visualizations",
+            icon: '💬'
+          }
+
+        ].map((step, index) => (
+          <Grid item xs={12} md={4} key={index}>
+            <Box sx={{ 
+              position: "relative",
+              px: 2,
+              "&:not(:last-child)::after": {
+                content: '""',
+                position: "absolute",
+                right: 0,
+                top: "20%",
+                height: "60%",
+                width: "1px",
+                background: "linear-gradient(to bottom, transparent 0%, #078DEB 50%, transparent 100%)",
+                "@media (max-width: 899px)": { display: "none" }
+              }
+            }}>
+              <motion.div
+                whileHover={{ y: -10 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                style={{ position: "relative" }}
               >
                 <Box
-                  component="img"
-                  src={feature.image}
-                  alt={feature.title}
                   sx={{
-                    height: 120,
-                    width: "auto",
-                    mb: 3,
-                    objectFit: "contain",
-                    
-                  }}
-                />
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                  {feature.title}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  {feature.description}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-
-      {/* How It Works Section */}
-      <Box sx={{ py: 12, bgcolor: 'background.paper' }}>
-        <Container maxWidth="lg">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            <Typography
-              variant="h4"
-              align="center"
-              gutterBottom
-              sx={{
-                fontWeight: 'bold',
-                mb: 8,
-                position: 'relative',
-                '&::after': {
-                  content: '""',
-                  display: 'block',
-                  width: 60,
-                  height: 4,
-                  bgcolor: 'primary.main',
-                  mx: 'auto',
-                  mt: 2,
-                }
-              }}
-            >
-              How It Works
-            </Typography>
-
-            <Grid container spacing={6} justifyContent="center">
-              {[
-                {
-                  title: "Create Account",
-                  description: "Set up your personalized account in less than 2 minutes with email verification",
-                  icon: '👤'
-                },
-                {
-                  title: "Connect Your Database",
-                  description: "Securely integrate your database with our platform using industry-standard protocols",
-                  icon: '🔗'
-                },
-                {
-                  title: "Chat with It", 
-                  description: "Interact naturally with our AI assistant to generate and refine your visualizations",
-                  icon: '💬'
-                }
-              ].map((step, index) => (
-                <Grid item xs={12} md={4} key={index}>
-                  <Box sx={{ 
-                    position: 'relative',
-                    px: 2,
-                    '&:not(:last-child)::after': {
+                    p: 4,
+                    background: "#ffffff",
+                    borderRadius: 4,
+                    boxShadow: "0 8px 32px rgba(4, 93, 159, 0.1)",
+                    transition: "all 0.3s ease",
+                    position: "relative",
+                    overflow: "hidden",
+                    "&:hover": {
+                      boxShadow: "0 12px 40px rgba(4, 93, 159, 0.2)",
+                      "&:before": {
+                        opacity: 1
+                      }
+                    },
+                    "&:before": {
                       content: '""',
-                      position: 'absolute',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
                       right: 0,
-                      top: '20%',
-                      height: '60%',
-                      width: '1px',
-                      bgcolor: 'divider',
-                      '@media (max-width: 899px)': { display: 'none' }
+                      height: "4px",
+                      background: "linear-gradient(90deg, #045D9F 0%, #078DEB 100%)",
+                      opacity: 0,
+                      transition: "opacity 0.3s ease"
                     }
-                  }}>
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 300 }}
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                    <motion.div 
+                      animate={{ y: [0, -8, 0] }}
+                      transition={{ 
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      whileHover={{ 
+                        scale: 1.1,
+                        rotate: [0, 15, -15, 0],
+                        transition: { duration: 0.5 } 
+                      }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                        <motion.div 
-                          whileHover={{ rotate: 15, scale: 1.1 }}
-                          transition={{ type: "spring" }}
-                        >
-                          <Box sx={{
-                            width: 48,
-                            height: 48,
-                            bgcolor: 'primary.main',
-                            borderRadius: '50%',
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: 24,
-                            mr: 2
-                          }}>
-                            {step.icon}
-                          </Box>
-                        </motion.div>
-                        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                          {step.title}
-                        </Typography>
-                      </Box>
-                      <Typography variant="body1" sx={{ 
-                        color: 'text.secondary',
-                        pl: 6,
-                        lineHeight: 1.6
-                      }}>
-                        {step.description}
-                      </Typography>
-                    </motion.div>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </motion.div>
-        </Container>
-      </Box>
-
-      {/* Footer */}
-      <Box component="footer" sx={{ mt: 8, py: 6, bgcolor: "grey.100" }}>
-        <Container>
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={3}>
-              <motion.div whileHover={{ rotate: [0, 10, -10, 0] }}>
-                <Box component="img" 
-                  src="/images/logo.png" 
-                  alt="Logo" 
-                  sx={{ height: 40, mb: 2 }}
-                />
-              </motion.div>
-            </Grid>
-
-            {[
-              { 
-                title: "Features",
-                items: ["Connect DB", "Chat"]
-              },
-              {
-                title: "Guides",
-                items: ["Docs", "FAQs", "Start Guides"]
-              },
-              {
-                title: "Company",
-                items: ["About Us", "Contact Us", "Privacy Policy"]
-              }
-            ].map((section, index) => (
-              <Grid item xs={6} md={3} key={index}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                  {section.title}
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {section.items.map((item, itemIndex) => (
-                    <motion.div key={itemIndex} whileHover={{ x: 5 }}>
-                      <Button 
-                        sx={{ 
-                          justifyContent: 'flex-start',
-                          color: 'text.primary',
-                          textTransform: 'none',
-                          px: 0,
-                          '&:hover': { 
-                            backgroundColor: 'transparent',
-                            color: 'primary.main'
-                          }
+                      <Box
+                        sx={{
+                          width: 64,
+                          height: 64,
+                          background: "linear-gradient(135deg, #045D9F 0%, #078DEB 100%)",
+                          borderRadius: "50%",
+                          color: "white",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 28,
+                          mr: 2,
+                          boxShadow: "0 4px 12px rgba(4, 93, 159, 0.3)"
                         }}
                       >
-                        {item}
-                      </Button>
+                        {step.icon}
+                      </Box>
                     </motion.div>
-                  ))}
+                    <Typography 
+                      variant="h5" 
+                      sx={{ 
+                        fontWeight: 700,
+                        background: "linear-gradient(45deg, #045D9F 30%, #078DEB 90%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent"
+                      }}
+                    >
+                      {step.title}
+                    </Typography>
+                  </Box>
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      color: "text.secondary",
+                      pl: 7,
+                      lineHeight: 1.7,
+                      fontSize: "1.05rem"
+                    }}
+                  >
+                    {step.description}
+                  </Typography>
+                  
+                  {/* Animated border effect */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: 4,
+                      border: "2px solid transparent",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        borderColor: "rgba(4, 93, 159, 0.1)"
+                      }
+                    }}
+                  />
                 </Box>
-              </Grid>
-            ))}
+              </motion.div>
+            </Box>
           </Grid>
+        ))}
+      </Grid>
+    </motion.div>
+  </Container>
+</Box>
+ {/* Footer */}
+<Box
+  component="footer"
+  sx={{
+    mt: 8,
+    py: 6,
+    bgcolor:"#002244",
+    color: "#DDE6ED",
+    borderTopLeftRadius: "30px",
+    borderTopRightRadius: "30px",
+    boxShadow: "inset 0 1px 10px rgba(255,255,255,0.05)",
+  }}
+>
+  <Container>
+    <Grid container spacing={4}>
+      {/* Logo Section */}
+      <Grid item xs={12} md={3}>
+        <motion.div whileHover={{ rotate: [0, 10, -10, 0] }}>
+          <Box
+            component="img"
+            src="/images/logo.png"
+            alt="Logo"
+            sx={{ height: 50, mb: 2 }}
+          />
+        </motion.div>
+        <Typography variant="body2" sx={{ color: "#ccc", mt: 1 }}>
+          Empowering your data with AI-driven insights.
+        </Typography>
+      </Grid>
 
-          <Typography 
-            variant="body2" 
-            align="center" 
-            sx={{ 
-              mt: 4, 
-              color: 'text.secondary',
-              fontSize: '0.875rem'
-            }}
+      {/* Footer Links */}
+      {[
+        {
+          title: "Features",
+          items: ["Connect DB", "Chat"],
+        },
+        {
+          title: "Guides",
+          items: ["Docs", "FAQs", "Start Guides"],
+        },
+        {
+          title: "Company",
+          items: ["About Us", "Contact Us", "Privacy Policy"],
+        },
+      ].map((section, index) => (
+        <Grid item xs={6} md={3} key={index}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ fontWeight: 700, color: "#ffffff" }}
           >
-            © 2025 VizeGen. All Rights Reserved
+            {section.title}
           </Typography>
-        </Container>
-      </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {section.items.map((item, itemIndex) => (
+              <motion.div key={itemIndex} whileHover={{ x: 6 }}>
+                <Button
+                  sx={{
+                    justifyContent: "flex-start",
+                    color: "#b0c4de",
+                    textTransform: "none",
+                    px: 0,
+                    '&:hover': {
+                      backgroundColor: "transparent",
+                      color: "#00BFFF",
+                    },
+                  }}
+                >
+                  {item}
+                </Button>
+              </motion.div>
+            ))}
+          </Box>
+        </Grid>
+      ))}
+    </Grid>
+
+    {/* Social Icons (optional) */}
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        mt: 4,
+        gap: 2,
+        color: "#ccc",
+      }}
+    >
+      <motion.div whileHover={{ scale: 1.2 }}>
+        <i className="fab fa-facebook-f" style={{ fontSize: 20 }} />
+      </motion.div>
+      <motion.div whileHover={{ scale: 1.2 }}>
+        <i className="fab fa-twitter" style={{ fontSize: 20 }} />
+      </motion.div>
+      <motion.div whileHover={{ scale: 1.2 }}>
+        <i className="fab fa-linkedin-in" style={{ fontSize: 20 }} />
+      </motion.div>
+    </Box>
+
+    {/* Bottom Text */}
+    <Typography
+      variant="body2"
+      align="center"
+      sx={{ mt: 4, color: "#A9A9A9", fontSize: "0.875rem" }}
+    >
+      © 2025 VizeGen. All Rights Reserved.
+    </Typography>
+  </Container>
+</Box>
+
     </Box>
   );
 };
