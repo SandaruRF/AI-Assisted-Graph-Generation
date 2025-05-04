@@ -1,15 +1,6 @@
 import React from "react";
 import Plot from "react-plotly.js";
 
- const type = "num_1_cat_0_temp_1"; // mockData1
-// const type = "num_1_cat_1_temp_1"; // mockData2
-// const type = "num_1_cat_2_temp_1"; // mockData3
-// const type = "num_2_cat_0_temp_1"; // mockData4
-// const type = "num_1_cat_0_nontemp_1"; // mockData5
-// const type = "num_1_cat_1_nontemp_1"; // mockData6
-//  const type = "num_2_cat_1_temp_1"; // mockData7
-
-
 const mockData1 = [
   { Month: "2025-01-01", Temperature: 4.2 },
   { Month: "2025-02-01", Temperature: 5.0 },
@@ -38,12 +29,42 @@ const mockData2 = [
 ];
 
 const mockData3 = [
-  { month: "2024-01", hospital: "City Hospital", department: "Cardiology", visits: 1200 },
-  { month: "2024-01", hospital: "Metro Care", department: "Orthopedics", visits: 950 },
-  { month: "2024-01", hospital: "HealthPlus", department: "Pediatrics", visits: 1100 },
-  { month: "2024-02", hospital: "City Hospital", department: "Cardiology", visits: 1250 },
-  { month: "2024-02", hospital: "Metro Care", department: "Orthopedics", visits: 970 },
-  { month: "2024-02", hospital: "HealthPlus", department: "Pediatrics", visits: 1150 },
+  {
+    month: "2024-01",
+    hospital: "City Hospital",
+    department: "Cardiology",
+    visits: 1200,
+  },
+  {
+    month: "2024-01",
+    hospital: "Metro Care",
+    department: "Orthopedics",
+    visits: 950,
+  },
+  {
+    month: "2024-01",
+    hospital: "HealthPlus",
+    department: "Pediatrics",
+    visits: 1100,
+  },
+  {
+    month: "2024-02",
+    hospital: "City Hospital",
+    department: "Cardiology",
+    visits: 1250,
+  },
+  {
+    month: "2024-02",
+    hospital: "Metro Care",
+    department: "Orthopedics",
+    visits: 970,
+  },
+  {
+    month: "2024-02",
+    hospital: "HealthPlus",
+    department: "Pediatrics",
+    visits: 1150,
+  },
 ];
 
 const mockData4 = [
@@ -63,9 +84,9 @@ const mockData4 = [
 
 const mockData5 = [
   { epoch: 1, accuracy: 0.45 },
-  { epoch: 2, accuracy: 0.50 },
+  { epoch: 2, accuracy: 0.5 },
   { epoch: 3, accuracy: 0.55 },
-  { epoch: 4, accuracy: 0.60 },
+  { epoch: 4, accuracy: 0.6 },
   { epoch: 5, accuracy: 0.64 },
   { epoch: 6, accuracy: 0.67 },
   { epoch: 7, accuracy: 0.69 },
@@ -90,27 +111,57 @@ const mockData6 = [
 ];
 
 const mockData7 = [
-  { month: "2025-01", region: "North America", visits: 12000, conversions: 480 },
+  {
+    month: "2025-01",
+    region: "North America",
+    visits: 12000,
+    conversions: 480,
+  },
   { month: "2025-01", region: "Europe", visits: 9500, conversions: 380 },
   { month: "2025-01", region: "Asia", visits: 15000, conversions: 510 },
-  { month: "2025-02", region: "North America", visits: 13000, conversions: 520 },
+  {
+    month: "2025-02",
+    region: "North America",
+    visits: 13000,
+    conversions: 520,
+  },
   { month: "2025-02", region: "Europe", visits: 9700, conversions: 390 },
   { month: "2025-02", region: "Asia", visits: 15800, conversions: 540 },
-  { month: "2025-03", region: "North America", visits: 12500, conversions: 510 },
+  {
+    month: "2025-03",
+    region: "North America",
+    visits: 12500,
+    conversions: 510,
+  },
   { month: "2025-03", region: "Europe", visits: 9400, conversions: 370 },
   { month: "2025-03", region: "Asia", visits: 16200, conversions: 560 },
-  { month: "2025-04", region: "North America", visits: 13500, conversions: 550 },
+  {
+    month: "2025-04",
+    region: "North America",
+    visits: 13500,
+    conversions: 550,
+  },
   { month: "2025-04", region: "Europe", visits: 9900, conversions: 400 },
   { month: "2025-04", region: "Asia", visits: 17000, conversions: 590 },
 ];
+
+// num_1_cat_0_temp_1 --  mockData1
+// num_1_cat_1_temp_1 --  mockData2
+// num_1_cat_2_temp_1 --  mockData3
+// num_2_cat_0_temp_1 --  mockData4
+// num_1_cat_0_temp_0 --  mockData5
+// num_1_cat_1_temp_0 --  mockData6
+// num_2_cat_1_temp_1 --  mockData7
+const type = "num_2_cat_1_temp_1";
+const mockData = mockData7;
 
 const LineChart = () => {
   let chart = null;
 
   if (type === "num_1_cat_0_temp_1") {
-    const [xKey, yKey] = Object.keys(mockData1[0]);
-    const x = mockData1.map((item) => item[xKey]);
-    const y = mockData1.map((item) => item[yKey]);
+    const [xKey, yKey] = Object.keys(mockData[0]);
+    const x = mockData.map((item) => item[xKey]);
+    const y = mockData.map((item) => item[yKey]);
 
     chart = {
       title: "Simple Univariate Time Series",
@@ -119,14 +170,14 @@ const LineChart = () => {
       data: [{ x, y, type: "scatter", mode: "lines+markers" }],
     };
   } else if (type === "num_1_cat_1_temp_1") {
-    const [xKey, catKey, yKey] = Object.keys(mockData2[0]);
-    const categories = [...new Set(mockData2.map((item) => item[catKey]))];
-    const dates = [...new Set(mockData2.map((item) => item[xKey]))];
+    const [xKey, catKey, yKey] = Object.keys(mockData[0]);
+    const categories = [...new Set(mockData.map((item) => item[catKey]))];
+    const dates = [...new Set(mockData.map((item) => item[xKey]))];
 
     const lineData = categories.map((category) => ({
       x: dates,
       y: dates.map((date) => {
-        const foundItem = mockData2.find(
+        const foundItem = mockData.find(
           (item) => item[xKey] === date && item[catKey] === category
         );
         return foundItem ? foundItem[yKey] : null;
@@ -143,10 +194,10 @@ const LineChart = () => {
       data: lineData,
     };
   } else if (type === "num_1_cat_2_temp_1") {
-    const [xKey, catKey1, catKey2, yKey] = Object.keys(mockData3[0]);
-    const categories1 = [...new Set(mockData3.map((item) => item[catKey1]))];
-    const categories2 = [...new Set(mockData3.map((item) => item[catKey2]))];
-    const dates = [...new Set(mockData3.map((item) => item[xKey]))];
+    const [xKey, catKey1, catKey2, yKey] = Object.keys(mockData[0]);
+    const categories1 = [...new Set(mockData.map((item) => item[catKey1]))];
+    const categories2 = [...new Set(mockData.map((item) => item[catKey2]))];
+    const dates = [...new Set(mockData.map((item) => item[xKey]))];
 
     const lineData = categories1.flatMap((cat1) =>
       categories2.map((cat2) => {
@@ -154,7 +205,7 @@ const LineChart = () => {
         return {
           x: dates,
           y: dates.map((date) => {
-            const foundItem = mockData3.find(
+            const foundItem = mockData.find(
               (item) =>
                 item[xKey] === date &&
                 item[catKey1] === cat1 &&
@@ -180,10 +231,10 @@ const LineChart = () => {
       data: validLineData,
     };
   } else if (type === "num_2_cat_0_temp_1") {
-    const [xKey, yKey1, yKey2] = Object.keys(mockData4[0]);
-    const x = mockData4.map((item) => item[xKey]);
-    const y1 = mockData4.map((item) => item[yKey1]);
-    const y2 = mockData4.map((item) => item[yKey2]);
+    const [xKey, yKey1, yKey2] = Object.keys(mockData[0]);
+    const x = mockData.map((item) => item[xKey]);
+    const y1 = mockData.map((item) => item[yKey1]);
+    const y2 = mockData.map((item) => item[yKey2]);
 
     chart = {
       title: "Dual-Axis Time Series",
@@ -209,10 +260,10 @@ const LineChart = () => {
         },
       ],
     };
-  } else if (type === "num_1_cat_0_nontemp_1") {
-    const [xKey, yKey] = Object.keys(mockData5[0]);
-    const x = mockData5.map((item) => item[xKey]);
-    const y = mockData5.map((item) => item[yKey]);
+  } else if (type === "num_1_cat_0_temp_0") {
+    const [xKey, yKey] = Object.keys(mockData[0]);
+    const x = mockData.map((item) => item[xKey]);
+    const y = mockData.map((item) => item[yKey]);
 
     chart = {
       title: "Sequentially Ordered Numeric (Non-Time)",
@@ -220,15 +271,15 @@ const LineChart = () => {
       yAxisTitle: yKey,
       data: [{ x, y, type: "scatter", mode: "lines+markers" }],
     };
-  } else if (type === "num_1_cat_1_nontemp_1") {
-    const [xKey, catKey, yKey] = Object.keys(mockData6[0]);
-    const categories = [...new Set(mockData6.map((item) => item[catKey]))];
-    const steps = [...new Set(mockData6.map((item) => item[xKey]))];
+  } else if (type === "num_1_cat_1_temp_0") {
+    const [xKey, catKey, yKey] = Object.keys(mockData[0]);
+    const categories = [...new Set(mockData.map((item) => item[catKey]))];
+    const steps = [...new Set(mockData.map((item) => item[xKey]))];
 
     const lineData = categories.map((category) => ({
       x: steps,
       y: steps.map((step) => {
-        const foundItem = mockData6.find(
+        const foundItem = mockData.find(
           (item) => item[xKey] === step && item[catKey] === category
         );
         return foundItem ? foundItem[yKey] : null;
@@ -245,15 +296,15 @@ const LineChart = () => {
       data: lineData,
     };
   } else if (type === "num_2_cat_1_temp_1") {
-    const [xKey, catKey, yKey1, yKey2] = Object.keys(mockData7[0]);
-    const categories = [...new Set(mockData7.map((item) => item[catKey]))];
-    const dates = [...new Set(mockData7.map((item) => item[xKey]))];
+    const [xKey, catKey, yKey1, yKey2] = Object.keys(mockData[0]);
+    const categories = [...new Set(mockData.map((item) => item[catKey]))];
+    const dates = [...new Set(mockData.map((item) => item[xKey]))];
 
     const lineData = categories.flatMap((category) => [
       {
         x: dates,
         y: dates.map((date) => {
-          const foundItem = mockData7.find(
+          const foundItem = mockData.find(
             (item) => item[xKey] === date && item[catKey] === category
           );
           return foundItem ? foundItem[yKey1] : null;
@@ -267,7 +318,7 @@ const LineChart = () => {
       {
         x: dates,
         y: dates.map((date) => {
-          const foundItem = mockData7.find(
+          const foundItem = mockData.find(
             (item) => item[xKey] === date && item[catKey] === category
           );
           return foundItem ? foundItem[yKey2] : null;
