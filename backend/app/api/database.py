@@ -1,10 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from models.connection_form import ConnectionData, ConnectionStringData
 from config import settings
 from pymongo import MongoClient
 from bson import ObjectId
 from typing import  Union
 from utils.logging import logger
+from utils.auth import get_current_user
+
+
+
 
 
 
@@ -12,13 +16,20 @@ client = MongoClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
 connections_collection = db["DatabaseDetails"]
 
+
+
 router = APIRouter()
 
+
+
+
+#insert database connection details into the database
 @router.post("/connections")
-async def save_connection_form(connection: ConnectionData):
+async def save_connection_form(connection: ConnectionData, usr_email: str = Depends(get_current_user)):
     try:
         data = connection.dict()
         data["form_type"] = "detailed_form"
+        data["email"] = usr_email
         result = connections_collection.insert_one(data)
         return {
             "status": "success",
@@ -31,13 +42,14 @@ async def save_connection_form(connection: ConnectionData):
 
 
 @router.post("/connection-strings")  # Adjusted to avoid duplicate prefix
-async def save_connection_string_form(data: ConnectionStringData):
+async def save_connection_string_form(data: ConnectionStringData, usr_email: str = Depends(get_current_user)):
     try:
         data_dict = data.dict()
         logger.info(f"Received connection string data: {data_dict}")
         if not data_dict.get("ssl"):
             data_dict["ssl"] = False
         data_dict["form_type"] = "connection_string_form"
+        data_dict["email"] = usr_email
         result = connections_collection.insert_one(data_dict)
         return {
             "status": "success",
@@ -48,11 +60,12 @@ async def save_connection_string_form(data: ConnectionStringData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@router.get("/connections")
-async def get_connections():
+#take current saved database details from the database
+@router.get("/connections/")
+async def get_connections(usr_email: str = Depends(get_current_user)):
+    logger.info(f"Fetching connections for user: {usr_email}")
     try:
-        connections = list(connections_collection.find())
+        connections = list(connections_collection.find({"email": usr_email}))
         for conn in connections:
             conn["_id"] = str(conn["_id"])
         return connections
@@ -124,56 +137,5 @@ async def delete_connection(connection_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-        
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker, close_all_sessions
-from sqlalchemy.exc import SQLAlchemyError
-from config import DATABASE_URL
-from utils.logging import logger
 
-
-def create_dynamic_engine(connection_string: str):
-    """Creates a new SQLAlchemy engine dynamically based on user input."""
-    if not connection_string:
-        logger.error("Connection string cannot be empty.")
-        raise ValueError("Invalid database connection string.")
-
-    try:
-        engine = create_engine(connection_string, pool_pre_ping=True)
-        logger.info("Database engine created successfully.")
-        return engine
-    except SQLAlchemyError as e:
-        logger.error(f"Error creating engine: {str(e)}")
-        raise RuntimeError("Error initializing database engine.")
-    
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-def get_metadata(*args):
-    try:
-        metadata = MetaData()
-        metadata.reflect(engine)
-        logger.info("Metadata retrieved successfully.")
-        return metadata
-    except SQLAlchemyError as e:
-        logger.error(f"Error reflecting metadata: {str(e)}")
-        raise RuntimeError("Error retrieving database metadata.")
-
-#DATABASE_URL = GLOBAL_CONNECTION_STRING
-if DATABASE_URL is None:
-    logger.error("DATABASE_URL environment variable is not set!")
-    raise ValueError("DATABASE_URL environment variable is not set!")
-
-logger.info(f"Using database URL: {DATABASE_URL}")
-
-# Close all previous database sessions to ensure no lingering connections
-close_all_sessions()
-
-engine = create_engine(DATABASE_URL)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

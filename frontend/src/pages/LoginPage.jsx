@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {handleSubmit} from "../services/api.js";
 import { 
   Box, 
   TextField, 
@@ -27,20 +27,8 @@ const LoginPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try{
-      const res = await axios.post("http://localhost:8000/api/login", {
-        email,
-        password,
-      });
-      console.log("Login successful:", res.data);
-      localStorage.setItem("token", res.data.token);
-      Navigate("/existing-connections");
-      
-    }catch(err){
-      setError("Invalid Credentials")
-    }
+  const handleFormSubmit = (e) => {
+    handleSubmit(e, Navigate, setError, email, password);
   };
 
   return (
@@ -60,7 +48,7 @@ const LoginPage = () => {
         <Typography component="h1" variant="h4" sx={{ mb: 4, color: '#0277bd', fontWeight: 'bold' }}>
           Log in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
+        <Box component="form" onSubmit={handleFormSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
           <Typography sx={{ mb: 1, color: '#0277bd' }}>Email</Typography>
           <TextField
             margin="normal"
