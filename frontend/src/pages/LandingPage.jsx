@@ -302,7 +302,6 @@ const LandingPage = () => {
 
   <Grid container spacing={4}>
     {[
-      // ... your features array
       {
         title: "AI Diagram Generator",
         description:
@@ -378,8 +377,15 @@ const LandingPage = () => {
   </Grid>
 </Container>
 
-{/*image carousel*/}
-<Container sx={{ py: 8, position: 'relative', overflow: 'hidden' }}>
+{/* Image Carousel Section */}
+<Container sx={{ 
+  py: 8, 
+  position: 'relative', 
+  overflow: 'hidden',
+  '&:hover .carousel-arrow': {
+    opacity: 1
+  }
+}}>
   <Typography variant="h4" align="center" sx={{
     mb: 6,
     fontWeight: 700,
@@ -392,136 +398,115 @@ const LandingPage = () => {
   </Typography>
 
   <Box 
-    sx={{ 
+    sx={{
       position: 'relative',
       width: '100%',
-      height: 300,
       maxWidth: 1200,
       mx: 'auto',
-      '&:hover .carousel-arrow': { opacity: 1 }
     }}
     onMouseEnter={() => setIsHovered(true)}
     onMouseLeave={() => setIsHovered(false)}
   >
-    <AnimatePresence initial={false}>
+    {/* Carousel Track */}
+    <Box sx={{
+      width: '100%',
+      overflow: 'hidden',
+      px: 2
+    }}>
       <motion.div
-        key={currentIndex}
-        initial={{ opacity: 0, x: 100 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -100 }}
-        transition={{ duration: 0.5 }}
         style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
+          willChange: 'transform'
+        }}
+        animate={{
+          x: ['0%', '-100%', '-200%'],
+          transition: {
+            duration: 30,
+            ease: 'linear',
+            repeat: Infinity,
+          }
         }}
       >
-        <Box sx={{
-          position: 'relative',
-          width: '90%', // Increased width
-          maxWidth: 400,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          p: 2, // Added padding
-          border: '2px solid',
-          borderColor: "#D6E6F2",
-          borderRadius: 2,
-          boxShadow: 3 // Added box shadow
-        }}>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: 'spring', stiffness: 300 }}
+        {[...databaseLogos, ...databaseLogos, ...databaseLogos].map((logo, index) => (
+          <Box
+            key={`${logo.alt}-${index}`}
+            sx={{
+              flex: '0 0 33.333%',
+              minWidth: '33.333%',
+              px: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
           >
-            <Box
-              component="img"
-              src={databaseLogos[currentIndex].src}
-              alt={databaseLogos[currentIndex].alt}
-              sx={{
-                height: 120,
-                width: 'auto',
-                maxWidth: '100%',
-                objectFit: 'contain',
-                filter: 'drop-shadow(0 8px 16px rgba(4, 93, 159, 0.3))', // Stronger shadow
-                transition: 'filter 0.3s'
-              }}
-            />
-          </motion.div>
-          <Typography
-  variant="h6"
-  sx={{
-    mt: 3,
-    fontWeight: 700,
-    textAlign: 'center',
-    fontSize: '1.25rem',
-    background: 'linear-gradient(90deg, #0288D1, #26C6DA)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    transition: 'transform 0.3s ease',
-    '&:hover': {
-      transform: 'scale(1.05)',
-    },
-  }}
->
-  {databaseLogos[currentIndex].alt}
-</Typography>
-
-        </Box>
+            <Box sx={{
+              width: '100%',
+              height: 200,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              p: 2,
+              border: '2px solid #D6E6F2',
+              borderRadius: 3,
+              bgcolor: 'background.paper',
+              boxShadow: 2,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-3px)',
+                boxShadow: 4
+              }
+            }}>
+              <Box
+                component="img"
+                src={logo.src}
+                alt={logo.alt}
+                sx={{
+                  height: 80,
+                  width: 'auto',
+                  maxWidth: '100%',
+                  objectFit: 'contain',
+                  filter: 'drop-shadow(0 4px 8px rgba(4, 93, 159, 0.2))'
+                }}
+              />
+              <Typography variant="subtitle1" sx={{
+                mt: 2,
+                fontWeight: 600,
+                textAlign: 'center',
+                color: "text.primary",
+                fontSize: '1rem'
+              }}>
+                {logo.alt}
+              </Typography>
+            </Box>
+          </Box>
+        ))}
       </motion.div>
-    </AnimatePresence>
+    </Box>
 
-    {/* Navigation Arrows - Reduced spacing */}
-    <IconButton
-      className="carousel-arrow"
-      onClick={handleNext}
-      sx={{
-        position: 'absolute',
-        left: 8, // Reduced from 16
-        top: '50%',
-        transform: 'translateY(-50%)',
-        bgcolor: 'background.paper',
-        boxShadow: 3,
-        opacity: 0,
-        transition: 'opacity 0.3s',
-        '&:hover': { bgcolor: 'primary.main', color: 'white' },
-      }}
-    >
-      <ChevronLeft fontSize="large" />
-    </IconButton>
-
-    <IconButton
-      className="carousel-arrow"
-      onClick={handleNext}
-      sx={{
-        position: 'absolute',
-        right: 8, // Reduced from 16
-        top: '50%',
-        transform: 'translateY(-50%)',
-        bgcolor: 'background.paper',
-        boxShadow: 3,
-        opacity: 0,
-        transition: 'opacity 0.3s',
-        '&:hover': { bgcolor: 'primary.main', color: 'white' },
-      }}
-    >
-      <ChevronRight fontSize="large" />
-    </IconButton>
+    {/* Edge Fades */}
+    <Box sx={{
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      width: 100,
+      background: 'linear-gradient(90deg, #F8F9FD 20%, transparent 100%)',
+      zIndex: 2,
+      pointerEvents: 'none'
+    }} />
+    <Box sx={{
+      position: 'absolute',
+      width: 'calc(10% + 150px)', // Compensate for fade overlap
+      mx: '-100px', // Center the extended width
+      top: 0,
+      bottom: 0,
+      right: 0,
+      background: 'linear-gradient(270deg, #F8F9FD 20%, transparent 100%)',
+      zIndex: 2,
+      pointerEvents: 'none'
+    }} />
   </Box>
-
-  {/* Auto-rotate */}
-  {useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isHovered) {
-        setCurrentIndex(prev => (prev < databaseLogos.length - 1 ? prev + 1 : 0));
-      }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [isHovered])}
 </Container>
       
 {/* How It Works Section */}
@@ -709,14 +694,12 @@ const LandingPage = () => {
     <Grid container spacing={4}>
       {/* Logo Section */}
       <Grid item xs={12} md={3}>
-        <motion.div whileHover={{ rotate: [0, 10, -10, 0] }}>
           <Box
             component="img"
             src="/images/logo.png"
             alt="Logo"
             sx={{ height: 50, mb: 2 }}
           />
-        </motion.div>
         <Typography variant="body2" sx={{ color: "#ccc", mt: 1 }}>
           Empowering your data with AI-driven insights.
         </Typography>
