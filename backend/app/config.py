@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     CLICK_SEND_API: str = os.getenv("CLICK_SEND_API")
     CLICK_SEND_USERNAME: str = os.getenv("CLICK_SEND_USERNAME")
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "mysql+pymysql://root:root@localhost/chinook")
+   
 
     
     # App Settings
@@ -42,4 +42,3 @@ settings = Settings()
 
 client = AsyncIOMotorClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
-DATABASE_URL = settings.DATABASE_URL

@@ -7,10 +7,13 @@ export const saveConnection = async (
   connectionData,
   endpoint = "/api/connections"
 ) => {
+  const token = localStorage.getItem("token")
   try {
+    
     const response = await axios.post(
       `${API_BASE_URL}${endpoint}`,
-      connectionData
+      connectionData,{headers: {
+        Authorization: `Bearer ${token}`}}
     );
     return response.data;
   } catch (error) {
@@ -48,3 +51,75 @@ export const updateConnection = async (connectionId, updatedConnectionData) => {
     );
   }
 };
+
+//fetch existing connections
+export const fetchConnections = (setConnections,setIsLoading,setError) => {
+  setIsLoading(true);
+  const token = localStorage.getItem("token")
+  axios.get(`${API_BASE_URL}/api/connections/`,  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then((res) => {
+      const data = res.data;
+      if (Array.isArray(data)) {
+        setConnections(data);
+      } else if (Array.isArray(data.connections)) {
+        setConnections(data.connections);
+      } else {
+        throw new Error("Unexpected response structure");
+      }
+      setIsLoading(false);
+    })
+    .catch((err) => {
+      setError("Error loading connections: " + err.message);
+      setIsLoading(false);
+    });
+};
+
+//connect to a database using the connection ID
+export const connectToDatabase = async (connectionId) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/sql/connect_database/${connectionId}`);
+    return response.data; // Directly return the parsed data
+  } catch (error) {
+    console.error("Error connecting to database:", error.message);
+    throw error; // optional: rethrow to handle elsewhere
+  }
+};
+
+// Delete a connection by ID
+export const deleteConnection = async (connectionId, connections, setConnections, setSuccess, setError) => {
+  try {
+    const response = await axios.delete(`http://localhost:8000/api/connections/${connectionId}`);
+    
+
+    // If successful, update the state
+    setConnections(connections.filter((c) => c._id !== connectionId));
+    setSuccess("Connection deleted successfully!");
+    return response
+  } catch (err) {
+    setError("Error deleting connection: " + err.message);
+  }
+};
+
+
+//Login form handler
+export const handleSubmit = async (e,Navigate,setError, email,password) => {
+  e.preventDefault();
+  try{
+    const res = await axios.post(`${API_BASE_URL}/api/login`, {
+      email,
+      password,
+    });
+    console.log("Login successful:", res.data);
+    localStorage.setItem("token", `${res.data.access_token}`);
+    
+    Navigate("/existing-connections");
+    
+  }catch(err){
+    setError("Invalid Credentials")
+  }
+};
+

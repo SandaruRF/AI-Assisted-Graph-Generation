@@ -1,14 +1,13 @@
 import google.generativeai as genai
 from sqlalchemy.orm import Session
-from agents.sql_agent.metadata import get_db_metadata
 import re
 from config import settings
 from utils.logging import logger
 
 client = genai.configure(api_key=settings.GEMINI_API_KEY)
 
-async def generate_sql_query(db: Session, nl_query):
-    schema_info = await get_db_metadata(db)
+async def generate_sql_query(metadata, nl_query):
+    schema_info = metadata
 
     prompt = f"""Convert the following natural language query into an optimized SQL query.
 

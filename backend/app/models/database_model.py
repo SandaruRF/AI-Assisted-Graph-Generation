@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from enum import Enum
 from typing import List, Dict
+from bson import ObjectId
 
 class DatabaseType(str, Enum):
     MYSQL = "mysql"
@@ -24,19 +25,15 @@ DEFAULT_PORTS: Dict[DatabaseType, int] = {
 
 class Database(BaseModel):
     type: List[DatabaseType]
-    host: str ="localhost"
-    port: int = Field(default=None)  
-    user: str = "root"
-    password: str = "root"
-    database: str = "chinook"
-    tls_ssl: bool = False  
-    remember: bool = False
+    host: str 
+    port: int 
+    user: str 
+    password: str 
+    database: str 
+    tls_ssl: bool  
+    remember: bool
 
-    def set_default_port(self):
-        """Automatically sets the default port based on the first database type."""
-        if not self.port and self.type:
-            self.port = DEFAULT_PORTS.get(self.type[0], 0)  # Default to 0 if not found
 
-    def __init__(self, **data):
-        super().__init__(**data)
-        self.set_default_port()
+    
+    
+    
