@@ -3,9 +3,9 @@ from langgraph.graph import StateGraph
 
 from state import State
 from agents.intent_agent.intent_classifier import IntentClassifier
-from agents.visualization_agent.graph_recommender import GraphModel
 from agents.system_agent.other_response import System
 from agents.sql_agent.sql_query import get_metadata
+from agents.sql_agent.sql_query_generator import SQLQueryGenerator
 
 # Nodes
 def intent_classifier(state: State):
@@ -21,8 +21,14 @@ def metadata_retreiver(state: State):
     state.metadata = get_metadata(state.session_id)
     return state
 
-# def sql_generator(state: State):
-#     """Generates an SQL query for retrieve data from the database."""
+def sql_generator(state: State):
+    """Generates an SQL query for retrieve data from the database."""
+    sql_query_generator = SQLQueryGenerator()
+    state.metadata = get_metadata(state.session_id)
+    sql_query = sql_query_generator.generate_sql_query(state.user_prompt, state.metadata, "MySQL")
+    state.sql_query = sql_query
+    state.response = sql_query
+    return state
 
 def response_generator(state: State):
     """Generate responses if intent classifier identifies intent as 'other'."""
@@ -92,6 +98,10 @@ def response_generator(state: State):
 def route_intent(state: State):
     if "metadata" in state.intents:
         return "metadata"
+    elif "visualization" in state.intents:
+        return "visualization"
+    elif "insight" in state.intents:
+        return "insight"
     elif "other" in state.intents:
         return "other"
 
@@ -135,6 +145,7 @@ def route_intent(state: State):
 builder = StateGraph(State)
 builder.add_node("intent_classifier", intent_classifier)
 builder.add_node("metadata_retreiver", metadata_retreiver)
+builder.add_node("sql_generator", sql_generator)
 builder.add_node("response_generator", response_generator)
 # builder.add_node("sql_agent", sql_agent.compile())
 # builder.add_node("analysis_agent", analysis_agent.compile())
@@ -148,10 +159,13 @@ builder.add_conditional_edges(
     route_intent, 
     {   # Name returned by route_intent : Name of next node to visit
         "metadata": "metadata_retreiver",
+        "visualization": "sql_generator",
+        "insight": "sql_generator",
         "other": "response_generator",
     },
 )
 builder.add_edge("metadata_retreiver", "response_generator")
+builder.add_edge("sql_generator", END)
 builder.add_edge("response_generator", END)
 # builder.add_edge("intent_classifier", "sql_agent")
 # builder.add_edge("sql_agent", "analysis_agent")

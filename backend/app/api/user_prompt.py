@@ -18,6 +18,7 @@ async def process_user_prompt(user_prompt: UserPrompt):
             user_prompt=user_prompt.user_prompt,
             intents=[],
             metadata=[],
+            sql_query="",
             response=""
         )
         

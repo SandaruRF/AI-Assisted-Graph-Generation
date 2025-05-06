@@ -6,4 +6,5 @@ class State(BaseModel):
     user_prompt: str
     intents: List[str]
     metadata: List[dict]
+    sql_query: str
     response: str
