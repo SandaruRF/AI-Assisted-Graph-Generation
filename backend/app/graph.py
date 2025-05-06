@@ -6,6 +6,7 @@ from agents.intent_agent.intent_classifier import IntentClassifier
 from agents.system_agent.other_response import System
 from agents.sql_agent.metadata_retriever import get_cached_metadata
 from agents.sql_agent.sql_query_generator import SQLQueryGenerator
+from agents.sql_agent.query_executor import execute_query_with_session
 
 # Nodes
 def intent_classifier(state: State):
@@ -28,6 +29,12 @@ def sql_generator(state: State):
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, state.metadata, "MySQL")
     state.sql_query = sql_query
     state.response = sql_query
+    return state
+
+def sql_executor(state: State):
+    """Execute the generated SQL query and fetch data from the database."""
+    state.data = execute_query_with_session(state.session_id, state.sql_query)
+    state.response = f"SQL Query: {state.sql_query}\n\nData: {state.data}"
     return state
 
 def response_generator(state: State):
@@ -146,7 +153,9 @@ builder = StateGraph(State)
 builder.add_node("intent_classifier", intent_classifier)
 builder.add_node("metadata_retriever", metadata_retriever)
 builder.add_node("sql_generator", sql_generator)
+builder.add_node("sql_executor", sql_executor)
 builder.add_node("response_generator", response_generator)
+
 # builder.add_node("sql_agent", sql_agent.compile())
 # builder.add_node("analysis_agent", analysis_agent.compile())
 # builder.add_node("explanation_agent", explanation_agent.compile())
@@ -165,7 +174,8 @@ builder.add_conditional_edges(
     },
 )
 builder.add_edge("metadata_retriever", "response_generator")
-builder.add_edge("sql_generator", END)
+builder.add_edge("sql_generator", "sql_executor")
+builder.add_edge("sql_executor", END)
 builder.add_edge("response_generator", END)
 # builder.add_edge("intent_classifier", "sql_agent")
 # builder.add_edge("sql_agent", "analysis_agent")
