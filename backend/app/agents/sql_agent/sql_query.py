@@ -2,15 +2,9 @@ from fastapi import APIRouter, HTTPException
 from sqlalchemy.sql import text
 from sqlalchemy import create_engine
 
-from api.sql_database import session_store
 
-router = APIRouter()
 
-def get_metadata(session_id:str = None):
-    if session_id not in session_store:
-        raise HTTPException(status_code=404, detail="Session ID not found")
-    metadata = session_store[session_id]["metadata"]
-    return metadata
+
 
 # async def get_sql_query( nl_query: str = None,session_id:str = None):
 #     if session_id not in session_store:

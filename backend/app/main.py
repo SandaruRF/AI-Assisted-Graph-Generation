@@ -5,7 +5,6 @@ from config import settings
 from api.database import router as database_router
 from api.users import router as user_router
 from api.passwd_reset import router as passwd_reset_router
-from agents.sql_agent.sql_query import router as query_router
 from api.sql_database import router as database_connection_router
 from api.user_prompt import router as user_prompt_router
 from api.graph_recommendation import router as graph_recommendation_router
@@ -27,7 +26,6 @@ app.add_middleware(
 app.include_router(database_router, prefix="/api", tags=["Database connecton"])
 app.include_router(user_router, prefix="/api", tags=["User Management"])
 app.include_router(passwd_reset_router, prefix="/api", tags=["Password Reset"])
-app.include_router(query_router, prefix="/sql", tags=["NL to SQL Query"])
 app.include_router(database_connection_router, prefix="/sql", tags=["Database Connector"])
 app.include_router(user_prompt_router, tags=["User Prompt"])
 app.include_router(graph_recommendation_router, prefix="/api")

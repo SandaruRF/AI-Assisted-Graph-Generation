@@ -4,7 +4,7 @@ from bson import ObjectId
 import uuid
 
 from models.database_model import Database, DatabaseType
-from agents.sql_agent.metadata_retriever import retrieve_metadata
+from agents.sql_agent.metadata_retriever import reflect_sql_metadata
 from utils.sql_utils import generate_connection_string
 from utils.logging import logger
 from config import db
@@ -54,7 +54,7 @@ async def connect_database(connection_id: str):
         connection_string = generate_connection_string(db)
         GLOBAL_CONNECTION_STRING = connection_string
 
-        tables_info = retrieve_metadata(connection_string)
+        tables_info = reflect_sql_metadata(connection_string)
         session_id = str(uuid.uuid4())
         session_store[session_id] = jsonable_encoder({"metadata": tables_info,"connection_string": connection_string})
 

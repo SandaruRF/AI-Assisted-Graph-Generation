@@ -4,7 +4,7 @@ from langgraph.graph import StateGraph
 from state import State
 from agents.intent_agent.intent_classifier import IntentClassifier
 from agents.system_agent.other_response import System
-from agents.sql_agent.sql_query import get_metadata
+from agents.sql_agent.metadata_retriever import get_cached_metadata
 from agents.sql_agent.sql_query_generator import SQLQueryGenerator
 
 # Nodes
@@ -16,15 +16,15 @@ def intent_classifier(state: State):
     print("Intent identification successfull.")
     return state
 
-def metadata_retreiver(state: State):
+def metadata_retriever(state: State):
     """Retrieve metadata from the database."""
-    state.metadata = get_metadata(state.session_id)
+    state.metadata = get_cached_metadata(state.session_id)
     return state
 
 def sql_generator(state: State):
     """Generates an SQL query for retrieve data from the database."""
     sql_query_generator = SQLQueryGenerator()
-    state.metadata = get_metadata(state.session_id)
+    state.metadata = get_cached_metadata(state.session_id)
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, state.metadata, "MySQL")
     state.sql_query = sql_query
     state.response = sql_query
@@ -144,7 +144,7 @@ def route_intent(state: State):
 
 builder = StateGraph(State)
 builder.add_node("intent_classifier", intent_classifier)
-builder.add_node("metadata_retreiver", metadata_retreiver)
+builder.add_node("metadata_retriever", metadata_retriever)
 builder.add_node("sql_generator", sql_generator)
 builder.add_node("response_generator", response_generator)
 # builder.add_node("sql_agent", sql_agent.compile())
@@ -158,13 +158,13 @@ builder.add_conditional_edges(
     "intent_classifier",
     route_intent, 
     {   # Name returned by route_intent : Name of next node to visit
-        "metadata": "metadata_retreiver",
+        "metadata": "metadata_retriever",
         "visualization": "sql_generator",
         "insight": "sql_generator",
         "other": "response_generator",
     },
 )
-builder.add_edge("metadata_retreiver", "response_generator")
+builder.add_edge("metadata_retriever", "response_generator")
 builder.add_edge("sql_generator", END)
 builder.add_edge("response_generator", END)
 # builder.add_edge("intent_classifier", "sql_agent")
