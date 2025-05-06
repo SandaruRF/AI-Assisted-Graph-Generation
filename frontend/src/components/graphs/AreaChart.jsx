@@ -129,7 +129,6 @@ const AreaChart = () => {
     });
   }
 
-  // 2. Basic Area Simple Univariate Area Series (Cumulative Trend)
   else if (type === "num_1_cat_0_temp_1") {
     const [xKey, yKey] = Object.keys(mockData[0]);
     charts.push({
@@ -147,7 +146,6 @@ const AreaChart = () => {
     });
   }
 
-  // 3. Area Chart: Average Score by Course
   else if (type === "num_1_cat_1_temp_0") {
     const [xKey, yKey] = Object.keys(mockData[0]);
     charts.push({
@@ -167,7 +165,6 @@ const AreaChart = () => {
     });
   }
 
-  // 4. Stacked Area Chart (Category Comparison Over Time)
   else if (type === "num_1_cat_1_temp_1_type_1") {
     const [xKey, catKey, yKey] = Object.keys(mockData[0]);
     const categories = [...new Set(mockData.map(item => item[catKey]))];
@@ -191,7 +188,6 @@ const AreaChart = () => {
     });
   }
 
-  // 5. 100% Stacked Area Chart (Proportional Composition Over Time)
   else if (type === "num_1_cat_1_temp_1_type_2") {
     const [xKey, catKey, yKey] = Object.keys(mockData[0]);
     const categories = [...new Set(mockData.map(item => item[catKey]))];
@@ -220,7 +216,6 @@ const AreaChart = () => {
     });
   }
 
-  // 6. Multi-Series Area Chart (Overlapping Trends)
   else if (type === "num_1_cat_1_temp_1_type_3") {
     const [xKey, catKey, yKey] = Object.keys(mockData[0]);
     const categories = [...new Set(mockData.map(item => item[catKey]))];
@@ -245,7 +240,6 @@ const AreaChart = () => {
     });
   }
 
-  // 7. Dual-Axis Area Chart (Your Query)
   else if (type === "num_2_cat_0_temp_1") {
     const [xKey, y1Key, y2Key] = Object.keys(mockData[0]);
     charts.push({
@@ -280,7 +274,6 @@ const AreaChart = () => {
     });
   }
 
-  // 8. Numeric Sequence Area Chart
   else if (type === "num_2_cat_0_temp_0") {
     const [xKey, y1Key] = Object.keys(mockData[0]);
     charts.push({
@@ -299,7 +292,6 @@ const AreaChart = () => {
     });
   }
 
-  // 9. Time + Aggregation + Category (Stacked/Grouped)
   else if (type === "num_2_cat_1_temp_1") {
     const [xKey, catKey, y1Key, y2Key] = Object.keys(mockData[0]);
     const categories = [...new Set(mockData.map(item => item[catKey]))];
@@ -337,7 +329,6 @@ const AreaChart = () => {
     });
   }
 
-  // Render all charts in the array
   return (
     <div>
       {charts.length > 0 ? charts.map((chart, idx) => (
