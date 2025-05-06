@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from graph import orchestrator_worker, UserPromptState
+from graph import workflow, State
 
 router = APIRouter()
 
@@ -10,9 +10,9 @@ class UserPrompt(BaseModel):
 @router.post("/send-user-prompt")
 async def process_user_prompt(user_prompt: UserPrompt):
     try:
-        state = UserPromptState(user_prompt=user_prompt.user_prompt, intents=[], response="")
+        state = State(user_prompt=user_prompt.user_prompt, intents=[], response="")
         
-        result = orchestrator_worker.invoke(state)
+        result = workflow.invoke(state)
         
         return {
             "message": "Prompt processed successfully!",
