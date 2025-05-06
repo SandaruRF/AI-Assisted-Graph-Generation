@@ -24,7 +24,7 @@ const TypewriterWords = ({ text }) => {
       timer = setTimeout(() => {
         setDisplayedText((prev) => prev + words[currentIndex] + " ");
         setCurrentIndex((prev) => prev + 1);
-      }, 40);
+      }, 20);
     } else {
       setFlag(true);
     }

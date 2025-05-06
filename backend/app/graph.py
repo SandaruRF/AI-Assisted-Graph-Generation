@@ -1,20 +1,11 @@
 from langgraph.constants import START, END, Send
 from langgraph.graph import StateGraph
 
-from pydantic import BaseModel
-from typing import List
-
+from state import State
 from agents.intent_agent.intent_classifier import IntentClassifier
 from agents.visualization_agent.graph_recommender import GraphModel
 from agents.system_agent.other_response import System
 from agents.sql_agent.sql_query import get_metadata
-
-class State(BaseModel):
-    session_id: str
-    user_prompt: str
-    intents: List[str]
-    metadata: List[dict]
-    response: str
 
 # Nodes
 def intent_classifier(state: State):
@@ -25,19 +16,20 @@ def intent_classifier(state: State):
     print("Intent identification successfull.")
     return state
 
-def other_response_generator(state: State):
-    """Generate responses if intent classifier identifies intent as 'other'."""
-    system = System()
-    response = system.other_response(state.user_prompt)
-    state.response = response
-    print(f"session id: ", state.session_id)
-    print(response)
-    return state
-
-def get_metadata_node(state: State):
+def metadata_retreiver(state: State):
     """Retrieve metadata from the database."""
     state.metadata = get_metadata(state.session_id)
-    state.response = state.metadata
+    return state
+
+# def sql_generator(state: State):
+#     """Generates an SQL query for retrieve data from the database."""
+
+def response_generator(state: State):
+    """Generate responses if intent classifier identifies intent as 'other'."""
+    system = System()
+    response = system.other_response(state)
+    state.response = response
+    print(response)
     return state
 
 # def sql_generator():
@@ -142,8 +134,8 @@ def route_intent(state: State):
 
 builder = StateGraph(State)
 builder.add_node("intent_classifier", intent_classifier)
-builder.add_node("get_metadata", get_metadata_node)
-builder.add_node("other_response", other_response_generator)
+builder.add_node("metadata_retreiver", metadata_retreiver)
+builder.add_node("response_generator", response_generator)
 # builder.add_node("sql_agent", sql_agent.compile())
 # builder.add_node("analysis_agent", analysis_agent.compile())
 # builder.add_node("explanation_agent", explanation_agent.compile())
@@ -155,12 +147,12 @@ builder.add_conditional_edges(
     "intent_classifier",
     route_intent, 
     {   # Name returned by route_intent : Name of next node to visit
-        "metadata": "get_metadata",
-        "other": "other_response",
+        "metadata": "metadata_retreiver",
+        "other": "response_generator",
     },
 )
-builder.add_edge("get_metadata", END)
-builder.add_edge("other_response", END)
+builder.add_edge("metadata_retreiver", "response_generator")
+builder.add_edge("response_generator", END)
 # builder.add_edge("intent_classifier", "sql_agent")
 # builder.add_edge("sql_agent", "analysis_agent")
 # builder.add_edge("analysis_agent", "explanation_agent")
