@@ -105,213 +105,206 @@ const mockData7 = [
 // num_2_cat_0_temp_0 --  mockData6
 // num_2_cat_1_temp_1 --  mockData7
 
-
-
 const type = "num_1_cat_0_temp_1";
-const mockData=mockData1; 
+const mockData = mockData1;
 
 const AreaChart = () => {
-  let chart = null;
+  const charts = [];
 
   if (type === "num_1_cat_0_temp_0") {
     const [xKey, yKey] = Object.keys(mockData[0]);
-    const x = mockData.map((item) => item[xKey]);
-    const y = mockData.map((item) => item[yKey]);
-
-    chart = {
+    charts.push({
       title: "Area Chart for Sequential Data (Non-Time)",
       xAxisTitle: xKey,
       yAxisTitle: yKey,
       data: [{
-        x,
-        y,
+        x: mockData.map((item) => item[xKey]),
+        y: mockData.map((item) => item[yKey]),
         type: "scatter",
         mode: "lines",
         fill: "tozeroy",
         line: { shape: "spline", smoothing: 0.2 },
         marker: { size: 6 }
-      }],
-    };
+      }]
+    });
   }
-  
+
+  // 2. Basic Area Simple Univariate Area Series (Cumulative Trend)
   else if (type === "num_1_cat_0_temp_1") {
     const [xKey, yKey] = Object.keys(mockData[0]);
-    chart = {
-      title: "Basic Area Simple Univariate Area Series (Cumulative Trend) ",
+    charts.push({
+      title: "Basic Area Simple Univariate Area Series (Cumulative Trend)",
       xAxisTitle: xKey,
       yAxisTitle: yKey,
-      data: [
-        {
-          x: mockData.map((item) => item[xKey]),
-          y: mockData.map((item) => item[yKey]),
-          type: "scatter",
-          mode: "lines",
-          fill: "tozeroy",
-          line: { shape: "spline" },
-        },
-      ],
-    };
-  } else if (type === "num_1_cat_1_temp_0") {
+      data: [{
+        x: mockData.map((item) => item[xKey]),
+        y: mockData.map((item) => item[yKey]),
+        type: "scatter",
+        mode: "lines",
+        fill: "tozeroy",
+        line: { shape: "spline" }
+      }]
+    });
+  }
+
+  // 3. Area Chart: Average Score by Course
+  else if (type === "num_1_cat_1_temp_0") {
     const [xKey, yKey] = Object.keys(mockData[0]);
-    const xValues = mockData.map(item => item[xKey]);
-    const yValues = mockData.map(item => item[yKey]);
-  
-    chart = {
+    charts.push({
       title: "Area Chart: Average Score by Course",
       xAxisTitle: xKey,
       yAxisTitle: yKey,
-      data: [
-        {
-          x: xValues,
-          y: yValues,
-          type: "scatter",
-          mode: "lines",
-          fill: "tozeroy",
-          line: { shape: "spline" },
-          marker: { size: 8 },
-          name: yKey
-        }
-      ]
-    };
+      data: [{
+        x: mockData.map(item => item[xKey]),
+        y: mockData.map(item => item[yKey]),
+        type: "scatter",
+        mode: "lines",
+        fill: "tozeroy",
+        line: { shape: "spline" },
+        marker: { size: 8 },
+        name: yKey
+      }]
+    });
   }
-  
+
+  // 4. Stacked Area Chart (Category Comparison Over Time)
   else if (type === "num_1_cat_1_temp_1_type_1") {
     const [xKey, catKey, yKey] = Object.keys(mockData[0]);
-    const categories = [...new Set(mockData.map((item) => item[catKey]))];
-    const dates = [...new Set(mockData.map((item) => item[xKey]))];
-
-    chart = {
+    const categories = [...new Set(mockData.map(item => item[catKey]))];
+    const dates = [...new Set(mockData.map(item => item[xKey]))];
+    charts.push({
       title: "Stacked Area Chart (Category Comparison Over Time)",
       xAxisTitle: xKey,
       yAxisTitle: yKey,
-      data: categories.map((category) => {
-        return {
-          x: dates,
-          y: dates.map((date) => {
-            const foundItem = mockData.find((item) => item[xKey] === date && item[catKey] === category);
-            return foundItem ? foundItem[yKey] : 0;
-          }),
-          name: category,
-          type: "scatter",
-          mode: "lines",
-          fill: "tonexty",
-          line: { shape: "spline" },
-        };
-      }),
-    };
-  } 
+      data: categories.map(category => ({
+        x: dates,
+        y: dates.map(date => {
+          const foundItem = mockData.find(item => item[xKey] === date && item[catKey] === category);
+          return foundItem ? foundItem[yKey] : 0;
+        }),
+        name: category,
+        type: "scatter",
+        mode: "lines",
+        fill: "tonexty",
+        line: { shape: "spline" }
+      }))
+    });
+  }
+
+  // 5. 100% Stacked Area Chart (Proportional Composition Over Time)
   else if (type === "num_1_cat_1_temp_1_type_2") {
     const [xKey, catKey, yKey] = Object.keys(mockData[0]);
-    const categories = [...new Set(mockData.map((item) => item[catKey]))];
-    const dates = [...new Set(mockData.map((item) => item[xKey]))];
-
-    const totals = dates.map((date) => {
-      const items = mockData.filter((item) => item[xKey] === date);
+    const categories = [...new Set(mockData.map(item => item[catKey]))];
+    const dates = [...new Set(mockData.map(item => item[xKey]))];
+    const totals = dates.map(date => {
+      const items = mockData.filter(item => item[xKey] === date);
       return items.reduce((sum, item) => sum + item[yKey], 0);
     });
-
-    chart = {
+    charts.push({
       title: "100% Stacked Area Chart (Proportional Composition Over Time)",
       xAxisTitle: xKey,
       yAxisTitle: "Percentage Share (%)",
-      data: categories.map((category) => {
-        return {
-          x: dates,
-          y: dates.map((date, index) => {
-            const foundItem = mockData.find((item) => item[xKey] === date && item[catKey] === category);
-            const value = foundItem ? foundItem[yKey] : 0;
-            return totals[index] > 0 ? (value / totals[index]) * 100 : 0;
-          }),
-          name: category,
-          type: "scatter",
-          mode: "lines",
-          fill: "tonexty",
-          line: { shape: "spline" },
-        };
-      }),
-    };
-  } 
+      data: categories.map(category => ({
+        x: dates,
+        y: dates.map((date, idx) => {
+          const foundItem = mockData.find(item => item[xKey] === date && item[catKey] === category);
+          const value = foundItem ? foundItem[yKey] : 0;
+          return totals[idx] > 0 ? (value / totals[idx]) * 100 : 0;
+        }),
+        name: category,
+        type: "scatter",
+        mode: "lines",
+        fill: "tonexty",
+        line: { shape: "spline" }
+      }))
+    });
+  }
+
+  // 6. Multi-Series Area Chart (Overlapping Trends)
   else if (type === "num_1_cat_1_temp_1_type_3") {
     const [xKey, catKey, yKey] = Object.keys(mockData[0]);
-    const categories = [...new Set(mockData.map((item) => item[catKey]))];
-    const dates = [...new Set(mockData.map((item) => item[xKey]))];
-
-    chart = {
+    const categories = [...new Set(mockData.map(item => item[catKey]))];
+    const dates = [...new Set(mockData.map(item => item[xKey]))];
+    charts.push({
       title: "Multi-Series Area Chart (Overlapping Trends)",
       xAxisTitle: xKey,
       yAxisTitle: yKey,
-      data: categories.map((category) => {
-        return {
-          x: dates,
-          y: dates.map((date) => {
-            const foundItem = mockData.find((item) => item[xKey] === date && item[catKey] === category);
-            return foundItem ? foundItem[yKey] : 0;
-          }),
-          name: category,
-          type: "scatter",
-          mode: "lines",
-          fill: "tozeroy",
-          opacity: 0.4,
-          line: { shape: "spline" },
-        };
-      }),
-    };
-  } 
+      data: categories.map(category => ({
+        x: dates,
+        y: dates.map(date => {
+          const foundItem = mockData.find(item => item[xKey] === date && item[catKey] === category);
+          return foundItem ? foundItem[yKey] : 0;
+        }),
+        name: category,
+        type: "scatter",
+        mode: "lines",
+        fill: "tozeroy",
+        opacity: 0.4,
+        line: { shape: "spline" }
+      }))
+    });
+  }
+
+  // 7. Dual-Axis Area Chart (Your Query)
   else if (type === "num_2_cat_0_temp_1") {
     const [xKey, y1Key, y2Key] = Object.keys(mockData[0]);
-    chart = {
+    charts.push({
       title: "Dual-Axis Area Chart",
       xAxisTitle: xKey,
       yAxisTitle: y1Key,
       yAxis2Title: y2Key,
       data: [
         {
-          x: mockData.map((item) => item[xKey]),
-          y: mockData.map((item) => item[y1Key]),
+          x: mockData.map(item => item[xKey]),
+          y: mockData.map(item => item[y1Key]),
           name: y1Key,
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
           opacity: 0.5,
           line: { shape: "spline" },
-          yaxis: "y1",
+          yaxis: "y1"
         },
         {
-          x: mockData.map((item) => item[xKey]),
-          y: mockData.map((item) => item[y2Key]),
+          x: mockData.map(item => item[xKey]),
+          y: mockData.map(item => item[y2Key]),
           name: y2Key,
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
           opacity: 0.5,
           line: { shape: "spline" },
-          yaxis: "y2",
-        },
-      ],
-    };
-  }else if (type === "num_2_cat_0_temp_0") {
+          yaxis: "y2"
+        }
+      ]
+    });
+  }
+
+  // 8. Numeric Sequence Area Chart
+  else if (type === "num_2_cat_0_temp_0") {
     const [xKey, y1Key] = Object.keys(mockData[0]);
-    chart = {
+    charts.push({
       title: "Numeric Sequence Area Chart",
       xAxisTitle: xKey,
       yAxisTitle: y1Key,
       data: [{
-        x: mockData.map((item) => item[xKey]),
-        y: mockData.map((item) => item[y1Key]),
+        x: mockData.map(item => item[xKey]),
+        y: mockData.map(item => item[y1Key]),
         type: "scatter",
         mode: "lines",
         fill: "tozeroy",
         line: { shape: "spline" },
         marker: { size: 6 }
-      }],
-    };
+      }]
+    });
   }
+
+  // 9. Time + Aggregation + Category (Stacked/Grouped)
   else if (type === "num_2_cat_1_temp_1") {
     const [xKey, catKey, y1Key, y2Key] = Object.keys(mockData[0]);
     const categories = [...new Set(mockData.map(item => item[catKey]))];
     const years = [...new Set(mockData.map(item => item[xKey]))];
-  
-    chart = {
+    charts.push({
       title: "Time + Aggregation + Category (Stacked/Grouped)",
       xAxisTitle: xKey,
       yAxisTitle: `${y1Key} / ${y2Key}`,
@@ -341,17 +334,15 @@ const AreaChart = () => {
           line: { shape: "spline", dash: "dot" }
         }))
       ]
-    };
+    });
   }
-  
-  
-  
-  
 
+  // Render all charts in the array
   return (
     <div>
-      {chart ? (
+      {charts.length > 0 ? charts.map((chart, idx) => (
         <Plot
+          key={idx}
           data={chart.data}
           layout={{
             width: 800,
@@ -360,7 +351,7 @@ const AreaChart = () => {
             xaxis: {
               title: { text: chart.xAxisTitle, font: { size: 14 } },
               type: type === "num_1_cat_1_temp_0" ? "category" : 
-                   type.includes("temp_1") ? "date" : "linear",
+                    type.includes("temp_1") ? "date" : "linear",
               tickangle: 45,
               tickfont: { size: 12 },
               automargin: true,
@@ -395,7 +386,7 @@ const AreaChart = () => {
             hovermode: "x unified",
           }}
         />
-      ) : (
+      )) : (
         <div>No valid chart data available</div>
       )}
     </div>
