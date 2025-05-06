@@ -7,14 +7,17 @@ from typing import List
 from agents.intent_agent.intent_classifier import IntentClassifier
 from agents.visualization_agent.graph_recommender import GraphModel
 from agents.system_agent.other_response import System
+from agents.sql_agent.sql_query import get_metadata
 
 class State(BaseModel):
+    session_id: str
     user_prompt: str
     intents: List[str]
+    metadata: List[dict]
     response: str
 
 # Nodes
-def intent_classifier(state: State) -> State:
+def intent_classifier(state: State):
     """Intent classifier identifies user intents from the query."""
     classifier = IntentClassifier()
     intents = classifier.classify_intent(state.user_prompt)
@@ -22,12 +25,19 @@ def intent_classifier(state: State) -> State:
     print("Intent identification successfull.")
     return state
 
-def other_response_generator(state: State) -> State:
+def other_response_generator(state: State):
     """Generate responses if intent classifier identifies intent as 'other'."""
     system = System()
     response = system.other_response(state.user_prompt)
     state.response = response
+    print(f"session id: ", state.session_id)
     print(response)
+    return state
+
+def get_metadata_node(state: State):
+    """Retrieve metadata from the database."""
+    state.metadata = get_metadata(state.session_id)
+    state.response = state.metadata
     return state
 
 # def sql_generator():
@@ -87,6 +97,12 @@ def other_response_generator(state: State) -> State:
 #     """Synthesize final response."""
 #     print("Final response synthesize successfully.")
 
+def route_intent(state: State):
+    if "metadata" in state.intents:
+        return "metadata"
+    elif "other" in state.intents:
+        return "other"
+
 #Build workflow
 # sql_agent = StateGraph(State)
 # sql_agent.add_node("sql_generator", sql_generator)
@@ -126,6 +142,7 @@ def other_response_generator(state: State) -> State:
 
 builder = StateGraph(State)
 builder.add_node("intent_classifier", intent_classifier)
+builder.add_node("get_metadata", get_metadata_node)
 builder.add_node("other_response", other_response_generator)
 # builder.add_node("sql_agent", sql_agent.compile())
 # builder.add_node("analysis_agent", analysis_agent.compile())
@@ -134,12 +151,15 @@ builder.add_node("other_response", other_response_generator)
 # builder.add_node("synthesizer", synthesizer)
 
 builder.add_edge(START, "intent_classifier")
-# builder.add_conditional_edges(
-#     "intent_classifier", route_intent, {
-#         ""
-#     }
-# )
-builder.add_edge("intent_classifier", "other_response")
+builder.add_conditional_edges(
+    "intent_classifier",
+    route_intent, 
+    {   # Name returned by route_intent : Name of next node to visit
+        "metadata": "get_metadata",
+        "other": "other_response",
+    },
+)
+builder.add_edge("get_metadata", END)
 builder.add_edge("other_response", END)
 # builder.add_edge("intent_classifier", "sql_agent")
 # builder.add_edge("sql_agent", "analysis_agent")

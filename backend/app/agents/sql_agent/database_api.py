@@ -129,7 +129,6 @@ async def connect_database(connection_id: str):
         session_id = str(uuid.uuid4())
         session_store[session_id] = jsonable_encoder({"metadata": tables_info,"connection_string": connection_string})
 
-
         return  {"session_id": session_id}
     
 

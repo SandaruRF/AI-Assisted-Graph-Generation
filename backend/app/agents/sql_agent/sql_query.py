@@ -7,6 +7,12 @@ from sqlalchemy import create_engine
 
 router = APIRouter()
 
+def get_metadata(session_id:str = None):
+    if session_id not in session_store:
+        raise HTTPException(status_code=404, detail="Session ID not found")
+    metadata = session_store[session_id]["metadata"]
+    return metadata
+
 @router.get("/sql_query/{session_id}")
 async def get_sql_query( nl_query: str = None,session_id:str = None):
     if session_id not in session_store:
