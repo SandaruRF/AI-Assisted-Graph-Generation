@@ -20,10 +20,10 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+
 
 import PasswordStrengthBar from "../components/PasswordStrengthBar";
-import { handleSignUp } from '../services/api';
+
 
 
 // Create a styled component for the logo

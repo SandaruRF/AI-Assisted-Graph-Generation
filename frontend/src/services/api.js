@@ -132,7 +132,7 @@ export const handleSignUp = async (event,formData,setError,Navigate) => {
       console.log("Form data:", formData);
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/signup",
+          `${API_BASE_URL}/api/signup`,
           formData
         );
         if (response.status === 200) {
