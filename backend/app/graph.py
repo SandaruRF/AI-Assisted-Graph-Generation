@@ -25,8 +25,10 @@ def metadata_retriever(state: State):
 def sql_generator(state: State):
     """Generates an SQL query for retrieve data from the database."""
     sql_query_generator = SQLQueryGenerator()
-    state.metadata = get_cached_metadata(state.session_id)
-    sql_query = sql_query_generator.generate_sql_query(state.user_prompt, state.metadata, "MySQL")
+    db_info = get_cached_metadata(state.session_id)
+    state.metadata = db_info["metadata"]
+    state.sql_dialect = db_info["sql_dialect"]
+    sql_query = sql_query_generator.generate_sql_query(state.user_prompt, state.metadata, state.sql_dialect)
     state.sql_query = sql_query
     state.response = sql_query
     return state

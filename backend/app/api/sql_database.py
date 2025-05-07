@@ -55,9 +55,15 @@ async def connect_database(connection_id: str):
         GLOBAL_CONNECTION_STRING = connection_string
 
         tables_info = reflect_sql_metadata(connection_string)
+        sql_dialect = db.type[0].name
         session_id = str(uuid.uuid4())
-        session_store[session_id] = jsonable_encoder({"metadata": tables_info,"connection_string": connection_string})
-
+        session_store[session_id] = jsonable_encoder(
+            {
+                "metadata": tables_info, 
+                "connection_string": connection_string, 
+                "sql_dialect": sql_dialect
+            }
+        )
         return  {"session_id": session_id}
     
     except Exception as e:

@@ -7,5 +7,6 @@ class State(BaseModel):
     intents: List[str]
     metadata: List[dict]
     sql_query: str
+    sql_dialect: str
     data: List[dict]
     response: str

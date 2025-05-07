@@ -19,6 +19,7 @@ async def process_user_prompt(user_prompt: UserPrompt):
             intents=[],
             metadata=[],
             sql_query="",
+            sql_dialect="",
             data=[],
             response=""
         )

@@ -46,9 +46,10 @@ def reflect_sql_metadata(connection_string: str) -> List[Dict[str, Any]]:
     logger.info(f"Metadata retrieved for {len(tables_info)} tables.")
     return tables_info
 
-def get_cached_metadata(session_id:str = None) -> List[Dict[str, Any]]:
+def get_cached_metadata(session_id:str = None) -> Dict[str, Any]:
     from api.sql_database import session_store  # Lazy import
     if session_id not in session_store:
         raise HTTPException(status_code=404, detail="Session ID not found")
     metadata = session_store[session_id]["metadata"]
-    return metadata
+    sql_dialect = session_store[session_id]["sql_dialect"]
+    return {"metadata": metadata, "sql_dialect": sql_dialect}
