@@ -1,24 +1,17 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import HTTPException
 from sqlalchemy.sql import text
-from services.text_to_sql_service import generate_sql_query
-from agents.sql_agent.database_api import session_store
 from sqlalchemy import create_engine
+from typing import List, Dict, Any
 
+from api.sql_database import session_store
 
-router = APIRouter()
-
-@router.get("/sql_query/{session_id}")
-async def get_sql_query( nl_query: str = None,session_id:str = None):
+def execute_query_with_session(session_id:str, sql_query:str) -> List[Dict[str, Any]]:
     if session_id not in session_store:
         raise HTTPException(status_code=404, detail="Session ID not found")
-    metadata = session_store[session_id]["metadata"]
+    
     connection_string = session_store[session_id]["connection_string"]
     
     try:
-        nl_query = nl_query 
-        sql_query = await generate_sql_query(metadata, nl_query)
-        if not sql_query:
-            raise HTTPException(status_code=400, detail="Failed to generate SQL query.")
         engine = create_engine(connection_string)
         db = engine.connect()
 
@@ -28,6 +21,7 @@ async def get_sql_query( nl_query: str = None,session_id:str = None):
         columns = result.keys()
         records = [dict(zip(columns, row)) for row in data]
 
-        return {"query": sql_query, "data": records}
+        return records
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating SQL query: {str(e)}")

@@ -14,11 +14,16 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-import { fetchConnections, connectToDatabase, deleteConnection } from "../services/api";
+import {
+  fetchConnections,
+  connectToDatabase,
+  deleteConnection,
+} from "../services/api";
 
 const ExistingDatabaseConnection = () => {
   const navigate = useNavigate();
   const [connections, setConnections] = useState([]);
+  const [connectedSessions, setConnectedSessions] = useState({});
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,7 +49,10 @@ const ExistingDatabaseConnection = () => {
     try {
       const data = await connectToDatabase(connectionId); // Call the connect API and get the parsed data
       setSuccess(`Connected! sessionid: ${data.session_id}`); // Use the response data
-      // Optional: Store data.connection_string or data.tables for UI or later use
+      setConnectedSessions((prev) => ({
+        ...prev,
+        [connectionId]: data.session_id,
+      }));
     } catch (err) {
       setError("Error Connecting: " + err.message);
     }
@@ -57,7 +65,13 @@ const ExistingDatabaseConnection = () => {
     }
 
     // Make a delete API call
-    deleteConnection(connectionId, connections, setConnections, setSuccess, setError);
+    deleteConnection(
+      connectionId,
+      connections,
+      setConnections,
+      setSuccess,
+      setError
+    );
   };
 
   return (
@@ -194,7 +208,16 @@ const ExistingDatabaseConnection = () => {
                       opacity: 0.9,
                     },
                   }}
-                  onClick={() => navigate("/graph-visualization")}
+                  onClick={() => {
+                    const sessionId = connectedSessions[connection._id];
+                    if (!sessionId) {
+                      setError("Please connect to the database first.");
+                      return;
+                    }
+                    navigate("/graph-visualization", {
+                      state: { sessionId },
+                    });
+                  }}
                 >
                   View Graph
                 </Button>

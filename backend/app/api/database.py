@@ -1,27 +1,18 @@
 from fastapi import APIRouter, HTTPException, Depends
-from models.connection_form import ConnectionData, ConnectionStringData
-from config import settings
 from pymongo import MongoClient
 from bson import ObjectId
 from typing import  Union
+
+from models.connection_form import ConnectionData, ConnectionStringData
+from config import settings
 from utils.logging import logger
 from utils.auth import get_current_user
-
-
-
-
-
 
 client = MongoClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
 connections_collection = db["DatabaseDetails"]
 
-
-
 router = APIRouter()
-
-
-
 
 #insert database connection details into the database
 @router.post("/connections")
@@ -40,8 +31,7 @@ async def save_connection_form(connection: ConnectionData, usr_email: str = Depe
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@router.post("/connection-strings")  # Adjusted to avoid duplicate prefix
+@router.post("/connection-strings")
 async def save_connection_string_form(data: ConnectionStringData, usr_email: str = Depends(get_current_user)):
     try:
         data_dict = data.dict()
@@ -72,7 +62,6 @@ async def get_connections(usr_email: str = Depends(get_current_user)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @router.get("/connections/{connection_id}")
 async def get_connection_by_id(connection_id: str):
     try:
@@ -88,7 +77,6 @@ async def get_connection_by_id(connection_id: str):
         return connection
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.put("/connections/{connection_id}")
 async def update_connection(connection_id: str, updated_connection: Union[ConnectionData, ConnectionStringData]):
@@ -121,7 +109,6 @@ async def update_connection(connection_id: str, updated_connection: Union[Connec
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @router.delete("/connections/{connection_id}")
 async def delete_connection(connection_id: str):
     try:
@@ -136,6 +123,3 @@ async def delete_connection(connection_id: str):
             raise HTTPException(status_code=404, detail="Connection not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-

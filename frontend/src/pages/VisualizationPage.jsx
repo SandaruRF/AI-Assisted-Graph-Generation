@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import {
   Box,
@@ -77,6 +78,8 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
 );
 
 const VisualizationPage = () => {
+  const location = useLocation();
+  const sessionId = location.state?.sessionId;
   const [userPrompt, setUserPrompt] = useState("");
   const [promptHistory, setPromptHistory] = useState([]);
   const [resultHistory, setResultHistory] = useState([]);
@@ -99,6 +102,7 @@ const VisualizationPage = () => {
         "http://localhost:8000/send-user-prompt",
         {
           user_prompt: userPrompt,
+          session_id: sessionId,
         }
       );
       const newResult = response.data.result;
