@@ -169,6 +169,10 @@ const AreaChart = () => {
     const [xKey, catKey, yKey] = Object.keys(mockData[0]);
     const categories = [...new Set(mockData.map(item => item[catKey]))];
     const dates = [...new Set(mockData.map(item => item[xKey]))];
+    const totals = dates.map(date => {
+      const items = mockData.filter(item => item[xKey] === date);
+      return items.reduce((sum, item) => sum + item[yKey], 0);
+    });
     charts.push({
       title: "Stacked Area Chart (Category Comparison Over Time)",
       xAxisTitle: xKey,
@@ -185,16 +189,6 @@ const AreaChart = () => {
         fill: "tonexty",
         line: { shape: "spline" }
       }))
-    });
-  }
-
-  else if (type === "num_1_cat_1_temp_1_type_2") {
-    const [xKey, catKey, yKey] = Object.keys(mockData[0]);
-    const categories = [...new Set(mockData.map(item => item[catKey]))];
-    const dates = [...new Set(mockData.map(item => item[xKey]))];
-    const totals = dates.map(date => {
-      const items = mockData.filter(item => item[xKey] === date);
-      return items.reduce((sum, item) => sum + item[yKey], 0);
     });
     charts.push({
       title: "100% Stacked Area Chart (Proportional Composition Over Time)",
@@ -214,12 +208,6 @@ const AreaChart = () => {
         line: { shape: "spline" }
       }))
     });
-  }
-
-  else if (type === "num_1_cat_1_temp_1_type_3") {
-    const [xKey, catKey, yKey] = Object.keys(mockData[0]);
-    const categories = [...new Set(mockData.map(item => item[catKey]))];
-    const dates = [...new Set(mockData.map(item => item[xKey]))];
     charts.push({
       title: "Multi-Series Area Chart (Overlapping Trends)",
       xAxisTitle: xKey,
@@ -238,8 +226,9 @@ const AreaChart = () => {
         line: { shape: "spline" }
       }))
     });
-  }
 
+
+  }
   else if (type === "num_2_cat_0_temp_1") {
     const [xKey, y1Key, y2Key] = Object.keys(mockData[0]);
     charts.push({
