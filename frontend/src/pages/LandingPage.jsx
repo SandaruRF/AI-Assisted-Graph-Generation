@@ -36,6 +36,7 @@ const LandingPage = () => {
     { src: "/images/sqlserver.png", alt: "SQL Server" },
     { src: "/images/oracle.png", alt: "Oracle" },
     { src: "/images/SQLite.png", alt: "SQLite" },
+    { src: "/images/RedShift.png", alt: "Redshift" },
   ];
   
 
@@ -377,7 +378,6 @@ const LandingPage = () => {
   </Grid>
 </Container>
 
-{/* Image Carousel Section */}
 <Container sx={{ 
   py: 8, 
   position: 'relative', 
@@ -419,15 +419,16 @@ const LandingPage = () => {
           willChange: 'transform'
         }}
         animate={{
-          x: ['0%', '-100%', '-200%'],
+          x: '-300%',
           transition: {
-            duration: 30,
+            duration: 60, // Slower duration for better sync
             ease: 'linear',
             repeat: Infinity,
+            repeatType: 'loop'
           }
         }}
       >
-        {[...databaseLogos, ...databaseLogos, ...databaseLogos].map((logo, index) => (
+        {[...databaseLogos, ...databaseLogos, ...databaseLogos, ...databaseLogos, ...databaseLogos].map((logo, index) => (
           <Box
             key={`${logo.alt}-${index}`}
             sx={{
@@ -453,7 +454,7 @@ const LandingPage = () => {
               boxShadow: 2,
               transition: 'all 0.3s ease',
               '&:hover': {
-                transform: 'translateY(-3px)',
+                transform: 'translateY(-5px)',
                 boxShadow: 4
               }
             }}>
@@ -462,29 +463,22 @@ const LandingPage = () => {
                 src={logo.src}
                 alt={logo.alt}
                 sx={{
-                  height: 80,
+                  height: 140,
                   width: 'auto',
-                  maxWidth: '100%',
+                  maxWidth: '85%',
                   objectFit: 'contain',
-                  filter: 'drop-shadow(0 4px 8px rgba(4, 93, 159, 0.2))'
+                  filter: 'drop-shadow(0 4px 8px rgba(4, 93, 159, 0.2))',
+                  mb: 2
                 }}
               />
-              <Typography variant="subtitle1" sx={{
-                mt: 2,
-                fontWeight: 600,
-                textAlign: 'center',
-                color: "text.primary",
-                fontSize: '1rem'
-              }}>
-                {logo.alt}
-              </Typography>
             </Box>
           </Box>
         ))}
       </motion.div>
     </Box>
 
-    {/* Edge Fades */}
+
+    {/* Enhanced Edge Fades */}
     <Box sx={{
       position: 'absolute',
       top: 0,
