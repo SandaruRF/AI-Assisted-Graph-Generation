@@ -3,6 +3,7 @@ from config import db
 from models.user_detail import UserCreate, UserLogin, Token
 from utils.auth import hash_password, verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 from datetime import timedelta
+from utils.logging import logger
 
 router = APIRouter()
 
@@ -10,12 +11,13 @@ users_collection = db["user"]
 
 @router.post("/signup", response_model=Token)
 async def signup(user: UserCreate):
+    logger.info(f"Attempting to create user: {user.email}")
     if user.password != user.confirm_password:
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
-    existing_user = await users_collection.find_one({"phone_number": user.phone_number})
+    existing_user = await users_collection.find_one({"email": user.email})
     if existing_user:
-        raise HTTPException(status_code=400, detail="Phone number already registered")
+        raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed_password = hash_password(user.password)
     new_user = {
@@ -27,7 +29,7 @@ async def signup(user: UserCreate):
     }
     await users_collection.insert_one(new_user)
 
-    access_token = create_access_token(data={"sub": user.phone_number}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    access_token = create_access_token(data={"sub": user.email}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     return {"access_token": access_token, "token_type": "bearer"}
 
 

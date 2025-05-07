@@ -1,6 +1,8 @@
 import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
+//const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+//const GOOGLE_CLIENT_SECRET = process.env.REACT_APP_GOOGLE_CLIENT_SECRET;
 
 // Save a new connection (supports both connection string and form)
 export const saveConnection = async (
@@ -105,7 +107,7 @@ export const deleteConnection = async (connectionId, connections, setConnections
 };
 
 
-//Login form handler
+//Login form handler nomal email and password form
 export const handleSubmit = async (e,Navigate,setError, email,password) => {
   e.preventDefault();
   try{
@@ -114,6 +116,7 @@ export const handleSubmit = async (e,Navigate,setError, email,password) => {
       password,
     });
     console.log("Login successful:", res.data);
+    localStorage.removeItem("token")
     localStorage.setItem("token", `${res.data.access_token}`);
     
     Navigate("/existing-connections");
@@ -123,3 +126,23 @@ export const handleSubmit = async (e,Navigate,setError, email,password) => {
   }
 };
 
+//Signup from hanndler detail form
+export const handleSignUp = async (event,formData,setError,Navigate) => {
+      event.preventDefault();
+      console.log("Form data:", formData);
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/signup",
+          formData
+        );
+        if (response.status === 200) {
+          console.log("Sign up successful", response.data);
+          localStorage.removeItem("token")
+          localStorage.setItem("token", `${response.data.access_token}`);
+          Navigate("/existing-connections");
+        }
+      } catch (err) {
+        console.error("Error during sign-up:", err);
+        setError("Sign-up failed. Please try again.");
+      }
+    };

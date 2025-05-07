@@ -17,6 +17,7 @@ import { styled } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import { useNavigate } from 'react-router-dom';
 
 import {handleSubmit} from "../services/api.js";
@@ -160,6 +161,7 @@ const handleFormSubmit = (e) => {
               </Typography>
               <Button 
                 variant="outlined" 
+                onClick={() => handleNavigation("/sign-up")}
                 sx={{ 
                   borderColor: 'rgba(0,0,0,0.2)', 
                   color: '#333', 
@@ -217,7 +219,15 @@ const handleFormSubmit = (e) => {
           <Box sx={{ maxWidth: 400, width: '100%' }}>
             {/* SSO Login Options */}
             
-            
+            <SSOButton 
+              variant="outlined"
+              startIcon={<GoogleIcon />}
+              endIcon={<Box component="span" sx={{ ml: 'auto' }}>›</Box>}
+            >
+              Log in with Google
+            </SSOButton>
+
+
             <SSOButton 
               variant="outlined"
               startIcon={<GitHubIcon />}
@@ -225,13 +235,13 @@ const handleFormSubmit = (e) => {
             >
               Log in with GitHub
             </SSOButton>
-            
+
             <SSOButton 
               variant="outlined"
-              startIcon={<GoogleIcon />}
+              startIcon={<FacebookIcon />}
               endIcon={<Box component="span" sx={{ ml: 'auto' }}>›</Box>}
             >
-              Log in with Google
+              Log in with Facebook
             </SSOButton>
             
           
