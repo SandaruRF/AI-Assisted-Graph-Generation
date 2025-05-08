@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, MetaData
 from typing import List, Dict, Any
 import re
 
-from utils.logging import logger
+from app.utils.logging import logger
 
 def reflect_sql_metadata(connection_string: str) -> List[Dict[str, Any]]:
     """Reflect metadata from the database using SQLAlchemy and return a structured format."""
@@ -47,7 +47,7 @@ def reflect_sql_metadata(connection_string: str) -> List[Dict[str, Any]]:
     return tables_info
 
 def get_cached_metadata(session_id:str = None) -> Dict[str, Any]:
-    from api.sql_database import session_store  # Lazy import
+    from app.api.sql_database import session_store  # Lazy import
     if session_id not in session_store:
         raise HTTPException(status_code=404, detail="Session ID not found")
     metadata = session_store[session_id]["metadata"]

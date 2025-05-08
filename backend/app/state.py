@@ -1,3 +1,5 @@
+from langchain_core.messages import BaseMessage
+
 from pydantic import BaseModel
 from typing import List
 
@@ -10,3 +12,4 @@ class State(BaseModel):
     sql_dialect: str
     data: List[dict]
     response: str
+    messages: List[BaseMessage]

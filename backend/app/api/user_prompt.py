@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from graph import workflow, State
-from utils.logging import logger
+from app.graph import workflow, State
+from app.utils.logging import logger
 
 router = APIRouter()
 
@@ -21,7 +21,8 @@ async def process_user_prompt(user_prompt: UserPrompt):
             sql_query="",
             sql_dialect="",
             data=[],
-            response=""
+            response="",
+            messages=[]
         )
         
         result = workflow.invoke(state)

@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from config import settings
-from api.database import router as database_router
-from api.users import router as user_router
-from api.passwd_reset import router as passwd_reset_router
-from api.sql_database import router as database_connection_router
-from api.user_prompt import router as user_prompt_router
+from app.config import settings
+from app.api.database import router as database_router
+from app.api.users import router as user_router
+from app.api.passwd_reset import router as passwd_reset_router
+from app.api.sql_database import router as database_connection_router
+from app.api.user_prompt import router as user_prompt_router
+from app.api.graph_data import router as graph_data_router
+# from app.api.ws_routes import router as stream_ws_router
 
 app = FastAPI(
     title="AI Assisted Graph Generation - VizGen",
@@ -20,6 +22,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 app.include_router(database_router, prefix="/api", tags=["Database connecton"])
@@ -27,6 +30,8 @@ app.include_router(user_router, prefix="/api", tags=["User Management"])
 app.include_router(passwd_reset_router, prefix="/api", tags=["Password Reset"])
 app.include_router(database_connection_router, prefix="/sql", tags=["Database Connector"])
 app.include_router(user_prompt_router, tags=["User Prompt"])
+app.include_router(graph_data_router, tags=["Graph Data"])
+# app.include_router(stream_ws_router, prefix="/ws", tags=["Stream Web Socket"])
 
 @app.get("/")
 async def root():

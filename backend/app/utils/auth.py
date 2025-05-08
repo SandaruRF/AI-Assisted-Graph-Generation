@@ -1,9 +1,10 @@
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Depends, HTTPException
 from datetime import datetime, timedelta
 from jose import jwt,JWTError
 from passlib.context import CryptContext
-from config import settings
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi import Depends, HTTPException
+
+from app.config import settings
 
 security = HTTPBearer()
 

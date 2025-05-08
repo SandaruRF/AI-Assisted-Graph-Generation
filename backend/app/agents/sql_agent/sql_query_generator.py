@@ -1,7 +1,7 @@
 import google.generativeai as genai
 
-from config import settings
-from utils.logging import logger
+from app.config import settings
+from app.utils.logging import logger
 
 class SQLQueryGenerator:
     def __init__(self):

@@ -1,12 +1,14 @@
 from langgraph.constants import START, END, Send
 from langgraph.graph import StateGraph
+from langchain_core.messages import AIMessage, HumanMessage
 
-from state import State
-from agents.intent_agent.intent_classifier import IntentClassifier
-from agents.system_agent.other_response import System
-from agents.sql_agent.metadata_retriever import get_cached_metadata
-from agents.sql_agent.sql_query_generator import SQLQueryGenerator
-from agents.sql_agent.query_executor import execute_query_with_session
+from app.state import State
+from app.agents.intent_agent.intent_classifier import IntentClassifier
+from app.agents.system_agent.other_response import System
+from app.agents.sql_agent.metadata_retriever import get_cached_metadata
+from app.agents.sql_agent.sql_query_generator import SQLQueryGenerator
+from app.agents.sql_agent.query_executor import execute_query_with_session
+from app.agents.visualization_agent.feature_extractor import rearrange_dataset
 
 # Nodes
 def intent_classifier(state: State):
@@ -15,6 +17,9 @@ def intent_classifier(state: State):
     intents = classifier.classify_intent(state.user_prompt)
     state.intents = intents["intent"]
     print("Intent identification successfull.")
+    if "messages" not in state:
+        state.messages = [HumanMessage(content=state.user_prompt)]
+    state.messages.append(AIMessage(content=f"Intent identified: {intents['intent']}"))
     return state
 
 def metadata_retriever(state: State):
@@ -31,13 +36,20 @@ def sql_generator(state: State):
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, state.metadata, state.sql_dialect)
     state.sql_query = sql_query
     state.response = sql_query
+    state.messages.append(AIMessage(content=f"Generated SQL Query: {sql_query}"))
     return state
 
 def sql_executor(state: State):
     """Execute the generated SQL query and fetch data from the database."""
     state.data = execute_query_with_session(state.session_id, state.sql_query)
-    state.response = f"SQL Query: {state.sql_query}\n\nData: {state.data}"
+    state.response = f"SQL Query Generated\n\nData Retrieved from Database"
+    state.messages.append(AIMessage(content=state.response))
     return state
+
+def graph_generator(state: State):
+    """Prepare data and Send data to frontend for render graphs."""
+    result = rearrange_dataset(state.data)
+    state.messages.append(AIMessage(content=result))
 
 def response_generator(state: State):
     """Generate responses if intent classifier identifies intent as 'other'."""
@@ -45,15 +57,8 @@ def response_generator(state: State):
     response = system.other_response(state)
     state.response = response
     print(response)
+    state.messages.append(AIMessage(content=response))
     return state
-
-# def sql_generator():
-#     """Generates SQL queries from user input."""
-#     print("SQL query generation successfull.")
-
-# def data_fetcher():
-#     """Fetches data from SQL database."""
-#     print("Data fetching successfull.")
 
 # def trend_detector():
 #     """Detect trends in data."""
@@ -100,9 +105,6 @@ def response_generator(state: State):
 #     """Generate the graph for visualize data."""
 #     print("Graph generation successfull.")
 
-# def synthesizer():
-#     """Synthesize final response."""
-#     print("Final response synthesize successfully.")
 
 def route_intent(state: State):
     if "metadata" in state.intents:

@@ -3,7 +3,7 @@ from sqlalchemy.sql import text
 from sqlalchemy import create_engine
 from typing import List, Dict, Any
 
-from api.sql_database import session_store
+from app.api.sql_database import session_store
 
 def execute_query_with_session(session_id:str, sql_query:str) -> List[Dict[str, Any]]:
     if session_id not in session_store:
