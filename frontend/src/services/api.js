@@ -126,7 +126,7 @@ export const handleSubmit = async (e,Navigate,setError, email,password) => {
   }
 };
 
-//Signup from hanndler detail form
+//Signup part 1 from hanndler detail form
 export const handleSignUp = async (event,formData,setError,Navigate) => {
       event.preventDefault();
       console.log("Form data:", formData);
@@ -136,13 +136,42 @@ export const handleSignUp = async (event,formData,setError,Navigate) => {
           formData
         );
         if (response.status === 200) {
-          console.log("Sign up successful", response.data);
-          localStorage.removeItem("token")
-          localStorage.setItem("token", `${response.data.access_token}`);
-          Navigate("/existing-connections");
+          console.log("Data sent successful.", response.data);
+          localStorage.removeItem("email")
+          localStorage.setItem("email", `${formData.email}`);
+          Navigate("/sign-up-p2");
         }
       } catch (err) {
         console.error("Error during sign-up:", err);
         setError("Sign-up failed. Please try again.");
       }
     };
+
+
+//Signup part 2 from handler name and phone number form
+export const handleSignUpP2 = async (event,firstName, lastName, phoneNumber,Navigate,setError) =>{
+  event.preventDefault();
+  console.log("Form data:", firstName, lastName, phoneNumber);
+  try{
+    const response = await axios.post(
+      `${API_BASE_URL}/api/signup/2`,
+      {
+        first_name: firstName,
+        last_name: lastName,
+        phone_number: phoneNumber,
+        email: localStorage.getItem("email")
+      }
+    );
+    if (response.status === 200){
+      console.log("Data sent successful.", response.data);
+      localStorage.removeItem("token")
+      localStorage.removeItem("email")
+      localStorage.setItem("token", `${response.data.access_token}`);
+      Navigate("/existing-connections");
+    }
+  }catch(err){
+    console.error("Error during sign-up:", err);
+    setError("Sign-up failed. Please try again.");
+  }
+
+}

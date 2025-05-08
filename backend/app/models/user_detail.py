@@ -1,12 +1,16 @@
 from pydantic import BaseModel, EmailStr, Field
 
-class UserCreate(BaseModel):
-    first_name: str = Field(..., min_length=1, max_length=50)
-    last_name: str = Field(..., min_length=1, max_length=50)
-    phone_number: str = Field(..., min_length=10, max_length=15, pattern="^[0-9]+$")
+class UserCreatep1(BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=6)
     confirm_password: str = Field(..., min_length=6)
+
+class UserCreatep2(BaseModel):
+    email: EmailStr
+    first_name: str = Field(..., min_length=2)
+    last_name: str = Field(..., min_length=2)
+    phone_number: str = Field(..., )
+
 
 class UserLogin(BaseModel):
     email: EmailStr
