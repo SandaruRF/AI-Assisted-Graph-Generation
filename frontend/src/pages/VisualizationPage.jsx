@@ -83,15 +83,39 @@ const VisualizationPage = () => {
   const [userPrompt, setUserPrompt] = useState("");
   const [promptHistory, setPromptHistory] = useState([]);
   const [resultHistory, setResultHistory] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [isFirstSend, setIsFirstSend] = useState(true);
   const scrollContainerRef = useRef(null);
   const lastPromptRef = useRef(null);
+  const socketRef = useRef(null);
+
+  useEffect(() => {
+    socketRef.current = new WebSocket("ws://localhost:8000/ws");
+
+    socketRef.current.onmessage = (event) => {
+      setMessages((prev) => [...prev, event.data]);
+    };
+
+    socketRef.current.onclose = () => {
+      console.log("WebSocket closed");
+    };
+
+    return () => {
+      socketRef.current?.close();
+    };
+  }, []);
 
   const handleSend = async () => {
     if (userPrompt.trim() === "") return;
 
     if (isFirstSend) {
       setIsFirstSend(false);
+    }
+
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(userPrompt);
+    } else {
+      console.error("WebSocket is not open.");
     }
 
     setPromptHistory((prev) => [...prev, userPrompt]);
@@ -138,6 +162,19 @@ const VisualizationPage = () => {
           </Typography>
         </Box>
       )}
+
+      <div
+        style={{
+          border: "1px solid black",
+          padding: "1rem",
+          height: "200px",
+          overflowY: "scroll",
+        }}
+      >
+        {messages.map((msg, idx) => (
+          <div key={idx}>{msg}</div>
+        ))}
+      </div>
 
       {/* History */}
       <Box
