@@ -10,7 +10,10 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import Loading from "./components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import LandingPage from"./pages/LandingPage";
+import AboutUs from"./pages/AboutUs";
+import ContactUs from"./pages/ContactUs";
+import PrivacyPolicy from"./pages/PrivacyPolicy";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -18,7 +21,7 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 0);
+    }, 3000);
   }, []);
 
   return (
@@ -29,13 +32,17 @@ function App() {
         <div>
           <Router>
             <Routes>
-            <Route path="/" element={<LoginPage />} />
-              <Route path="/existing-connections" element={<ProtectedRoute> <ExistingDatabaseConnection /> </ProtectedRoute>} />
-              <Route path="/new-connection" element={<ProtectedRoute><DatabaseConnection /></ProtectedRoute>} />
-              <Route path="/edit-connection/:id" element={<ProtectedRoute><EditDatabaseConnection /></ProtectedRoute>} />
-              <Route path="/graph-visualization" element={<ProtectedRoute><VisualizationPage /></ProtectedRoute>} />
+              <Route path="/existing-connections" element={<ExistingDatabaseConnection />} />
+              <Route path="/new-connection" element={<DatabaseConnection />} />
+              <Route path="/edit-connection/:id" element={<EditDatabaseConnection />} />
+              <Route path="/graph-visualization" element={<VisualizationPage />} />
+              <Route path="/" element={<LoginPage />} />
               <Route path="/sign-up/" element={<SignUpPage />} />
               <Route path="/forgot-password/" element={<ForgotPasswordPage />} />
+              <Route path="/LandingPage" element={<LandingPage />} />
+              <Route path="/about/" element={<AboutUs />} />
+              <Route path="/contact/" element={<ContactUs />} />
+              <Route path="/privacy/" element={<PrivacyPolicy />} />
             </Routes>
           </Router>
         </div>
