@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+
 from config import settings
 from api.database import router as database_router
 from api.users import router as user_router
