@@ -18,8 +18,8 @@ def intent_classifier(state: State):
     state.intents = intents["intent"]
     print("Intent identification successfull.")
     if "messages" not in state:
-        state.messages = [HumanMessage(content=state.user_prompt)]
-    state.messages.append(AIMessage(content=f"Intent identified: {intents['intent']}"))
+        state.messages = [state.user_prompt]
+    state.messages.append(f"Intent identified: {intents['intent']}")
     return state
 
 def metadata_retriever(state: State):
@@ -36,20 +36,20 @@ def sql_generator(state: State):
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, state.metadata, state.sql_dialect)
     state.sql_query = sql_query
     state.response = sql_query
-    state.messages.append(AIMessage(content=f"Generated SQL Query: {sql_query}"))
+    state.messages.append(f"Generated SQL Query: {sql_query}")
     return state
 
 def sql_executor(state: State):
     """Execute the generated SQL query and fetch data from the database."""
     state.data = execute_query_with_session(state.session_id, state.sql_query)
     state.response = f"SQL Query Generated\n\nData Retrieved from Database"
-    state.messages.append(AIMessage(content=state.response))
+    state.messages.append(state.response)
     return state
 
 def graph_generator(state: State):
     """Prepare data and Send data to frontend for render graphs."""
     result = rearrange_dataset(state.data)
-    state.messages.append(AIMessage(content=result))
+    state.messages.append(result)
 
 def response_generator(state: State):
     """Generate responses if intent classifier identifies intent as 'other'."""
@@ -57,7 +57,7 @@ def response_generator(state: State):
     response = system.other_response(state)
     state.response = response
     print(response)
-    state.messages.append(AIMessage(content=response))
+    state.messages.append(response)
     return state
 
 # def trend_detector():

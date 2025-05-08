@@ -93,7 +93,23 @@ const VisualizationPage = () => {
     socketRef.current = new WebSocket("ws://localhost:8000/ws");
 
     socketRef.current.onmessage = (event) => {
-      setMessages((prev) => [...prev, event.data]);
+      try {
+        // Parse the incoming message
+        const data = JSON.parse(event.data);
+
+        // If it contains a result property like your HTTP response did
+        if (data.result) {
+          console.log("Response from backend:", data.result);
+          setResultHistory((prev) => [...prev, data.result]);
+        }
+
+        // Also add to messages if you're using that for display
+        setMessages((prev) => [...prev, event.data]);
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
+        // Handle non-JSON messages
+        setMessages((prev) => [...prev, event.data]);
+      }
     };
 
     socketRef.current.onclose = () => {
@@ -112,28 +128,21 @@ const VisualizationPage = () => {
       setIsFirstSend(false);
     }
 
+    // Create the message object similar to what you were sending with Axios
+    const messageObject = {
+      user_prompt: userPrompt,
+      session_id: sessionId,
+    };
+
+    // Convert the object to a JSON string for WebSocket transmission
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      socketRef.current.send(userPrompt);
+      socketRef.current.send(JSON.stringify(messageObject));
+
+      // Add the user prompt to history
+      setPromptHistory((prev) => [...prev, userPrompt]);
+      setUserPrompt("");
     } else {
       console.error("WebSocket is not open.");
-    }
-
-    setPromptHistory((prev) => [...prev, userPrompt]);
-    setUserPrompt("");
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/send-user-prompt",
-        {
-          user_prompt: userPrompt,
-          session_id: sessionId,
-        }
-      );
-      const newResult = response.data.result;
-      console.log("Response from backend:", newResult);
-      setResultHistory((prev) => [...prev, newResult]);
-    } catch (error) {
-      console.log("Error sending user prompt:", error);
     }
   };
 
