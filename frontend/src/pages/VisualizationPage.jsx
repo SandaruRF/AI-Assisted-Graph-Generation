@@ -82,11 +82,12 @@ const VisualizationPage = () => {
   const [userPrompt, setUserPrompt] = useState("");
   const [promptHistory, setPromptHistory] = useState([]);
   const [resultHistory, setResultHistory] = useState([]);
-  const [messages, setMessages] = useState([]);
+  const [tracesHistory, setTracesHistory] = useState({});
   const [isFirstSend, setIsFirstSend] = useState(true);
   const scrollContainerRef = useRef(null);
   const lastPromptRef = useRef(null);
   const socketRef = useRef(null);
+  const latestIndexRef = useRef(0);
 
   useEffect(() => {
     socketRef.current = new WebSocket("ws://localhost:8000/ws");
@@ -97,22 +98,25 @@ const VisualizationPage = () => {
         console.log("Received message:", data); // For debugging
 
         if (data.type === "update") {
-          // Handle intermediate updates
-          setMessages((prev) => [...prev, data.message]);
+          const currentIndex = latestIndexRef.current;
+          console.log("Current latest index:", currentIndex);
+          setTracesHistory((prev) => ({
+            ...prev,
+            [currentIndex]: [...(prev[currentIndex] || []), data.message],
+          }));
         } else if (data.type === "final") {
-          // Handle final result
           console.log("Final result received:", data.result);
           setResultHistory((prev) => [...prev, data.result]);
         } else if (data.type === "error") {
           console.error("Error from server:", data.message);
-          setMessages((prev) => [...prev, `Error: ${data.message}`]);
+          setTracesHistory((prev) => [...prev, `Error: ${data.message}`]);
         } else {
           // Handle legacy format (your original format)
           if (data.result) {
             setResultHistory((prev) => [...prev, data.result]);
           }
           if (data.message) {
-            setMessages((prev) => [...prev, data.message]);
+            setTracesHistory((prev) => [...prev, data.message]);
           }
         }
       } catch (error) {
@@ -147,7 +151,12 @@ const VisualizationPage = () => {
       socketRef.current.send(JSON.stringify(messageObject));
 
       // Add the user prompt to history
-      setPromptHistory((prev) => [...prev, userPrompt]);
+      setPromptHistory((prev) => {
+        const newLength = prev.length;
+        // Update both the state and the ref
+        latestIndexRef.current = newLength;
+        return [...prev, userPrompt];
+      });
       setUserPrompt("");
     } else {
       console.error("WebSocket is not open.");
@@ -179,19 +188,6 @@ const VisualizationPage = () => {
           </Typography>
         </Box>
       )}
-
-      <div
-        style={{
-          border: "1px solid black",
-          padding: "1rem",
-          height: "200px",
-          overflowY: "scroll",
-        }}
-      >
-        {messages.map((msg, idx) => (
-          <div key={idx}>{msg}</div>
-        ))}
-      </div>
 
       {/* History */}
       <Box
@@ -227,6 +223,23 @@ const VisualizationPage = () => {
               >
                 <Typography>{prompt}</Typography>
               </Paper>
+
+              {/* Traces */}
+              <Box>
+                {(tracesHistory[index] || []).map((msg, idx) => (
+                  <Typography
+                    key={idx}
+                    variant="body2"
+                    sx={{
+                      backgroundColor: "#edf1f2",
+                      color: "#00ccff",
+                      p: 1,
+                    }}
+                  >
+                    {msg}
+                  </Typography>
+                ))}
+              </Box>
 
               {/* Response */}
               {promptHistory[index] && !resultHistory[index] && (
