@@ -13,14 +13,14 @@ import {
   CssBaseline,
   GlobalStyles
 } from '@mui/material';
-
+import {GoogleLogin} from '@react-oauth/google'
 import { styled } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import { useNavigate } from 'react-router-dom';
-import { handleSignUp } from '../services/api';
+import { handleSignUp, handleGoogleLogin } from '../services/api';
+
 
 
 import PasswordStrengthBar from "../components/PasswordStrengthBar";
@@ -59,6 +59,10 @@ const SSOButton = styled(Button)(({ theme }) => ({
 }));
 
 const SignUpPage = () => {
+  
+
+
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -69,6 +73,13 @@ const SignUpPage = () => {
   const [error, setError] = useState("");
   const Navigate = useNavigate();
   const handleNavigation = (path) => Navigate(path);
+
+  const handleGoogle = (credentialResponse) => {
+    handleGoogleLogin(credentialResponse, Navigate);
+  };
+
+
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -227,13 +238,11 @@ const SignUpPage = () => {
             <Box sx={{ maxWidth: 400, width: '100%' }}>
               {/* SSO Login Options */}
 
-              <SSOButton
-                variant="outlined"
-                startIcon={<GoogleIcon />}
-                endIcon={<Box component="span" sx={{ ml: 'auto' }}>›</Box>}
-              >
-                Signup with Google
-              </SSOButton>
+              
+
+              <Container>
+                <GoogleLogin  onSuccess={handleGoogle} onError={() => console.log("Login Failed")  }  />
+              </Container>
 
 
               <SSOButton
@@ -260,7 +269,7 @@ const SignUpPage = () => {
 
               {/* Traditional Login Form */}
               <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handlesignup}>
-                
+
 
                 {/* email field */}
                 <TextField
@@ -431,7 +440,7 @@ const SignUpPage = () => {
                     }
                   }}
                 >
-                  Create one here 
+                  Create one here
                 </Button>
 
               </Box>

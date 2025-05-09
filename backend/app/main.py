@@ -9,6 +9,7 @@ from agents.sql_agent.sql_query import router as query_router
 from agents.sql_agent.database_api import router as get_database_router
 from api.user_prompt import router as user_prompt_router
 from api.graph_recommendation import router as graph_recommendation_router
+from api.googleauth import router as google_auth_router
 
 app = FastAPI(
     title="AI Assisted Graph Generation - VizGen",
@@ -25,6 +26,7 @@ app.add_middleware(
 )
 
 app.include_router(database_router, prefix="/api", tags=["Database connecton"])
+app.include_router(google_auth_router, prefix="/api", tags=["Google Auth"])
 app.include_router(user_router, prefix="/api", tags=["User Management"])
 app.include_router(passwd_reset_router, prefix="/api", tags=["Password Reset"])
 app.include_router(query_router, prefix="/sql", tags=["NL to SQL Query"])

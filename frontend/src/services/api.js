@@ -1,5 +1,8 @@
 import axios from "axios";
 
+
+
+
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 //const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 //const GOOGLE_CLIENT_SECRET = process.env.REACT_APP_GOOGLE_CLIENT_SECRET;
@@ -175,3 +178,26 @@ export const handleSignUpP2 = async (event,firstName, lastName, phoneNumber,Navi
   }
 
 }
+
+
+
+//Google signup / Login handler
+export const handleGoogleLogin = async (credentialResponse,Navigate) => {
+    try {
+      const res = await axios.post('http://localhost:8000/api/auth/google', {
+        token: credentialResponse.credential
+      });
+      if (res.message == "New User created"){
+              localStorage.removeItem("email","token")
+              localStorage.setItem("email", `${res.data.email}`);
+              Navigate("/sign-up-p2");}
+      else{
+              localStorage.removeItem("token")
+              localStorage.setItem("token", `${res.data.access_token}`);
+              Navigate("/existing-connections");
+            }
+      console.log("Login successful", res.data);
+    } catch (err) {
+      console.error("Login failed", err);
+    }
+  };

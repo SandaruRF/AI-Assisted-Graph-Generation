@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     CLICK_SEND_API: str = os.getenv("CLICK_SEND_API")
     CLICK_SEND_USERNAME: str = os.getenv("CLICK_SEND_USERNAME")
+    GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID")
+    GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET")
    
 
     

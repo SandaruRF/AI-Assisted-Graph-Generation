@@ -24,6 +24,7 @@ async def signup(user: UserCreatep1):
     new_user = {
         "email": user.email,
         "hashed_password": hashed_password,
+        "auth_provider": "manual",
     }
     await users_collection.insert_one(new_user)
 
@@ -50,7 +51,9 @@ async def signup_part2(user: UserCreatep2):
 
 @router.post("/login", response_model=Token)
 async def login(user: UserLogin):
-    db_user = await users_collection.find_one({"email": user.email})  
+    db_user = await users_collection.find_one({"email": user.email, "auth_provider": "manual"})
+    if not db_user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")  
     if not db_user or not verify_password(user.password, db_user["hashed_password"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 

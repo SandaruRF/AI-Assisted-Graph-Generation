@@ -37,7 +37,7 @@ function App() {
               <Route path="/new-connection" element={<ProtectedRoute><DatabaseConnection /></ProtectedRoute>} />
               <Route path="/edit-connection/:id" element={<ProtectedRoute><EditDatabaseConnection /></ProtectedRoute>} />
               <Route path="/graph-visualization" element={<ProtectedRoute><VisualizationPage /></ProtectedRoute>} />
-              <Route path="/sign-up/" element={<SignUpPage />} />
+              <Route path="/sign-up" element={<SignUpPage />} />
               <Route path="/forgot-password/" element={<ForgotPasswordPage />} />
             </Routes>
           </Router>
