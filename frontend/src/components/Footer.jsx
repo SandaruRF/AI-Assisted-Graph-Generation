@@ -10,6 +10,14 @@ import {
 } from "@mui/material";
 
 const Footer = () => {
+  // Function to handle scroll to top
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth" // Optional smooth scroll
+    });
+  };
+
   return (
     <Box
       component="footer"
@@ -70,7 +78,8 @@ const Footer = () => {
                   <motion.div key={itemIndex} whileHover={{ x: 6 }}>
                     <Button
                       component={Link}
-                      to={item.path || "/"} // Use path if available, else fallback
+                      to={item.path || "/"}
+                      onClick={handleScrollToTop} 
                       sx={{
                         justifyContent: "flex-start",
                         color: "#b0c4de",
@@ -82,7 +91,7 @@ const Footer = () => {
                         },
                       }}
                     >
-                      {item.name || item} {/* Handle both object and string items */}
+                      {item.name || item}
                     </Button>
                   </motion.div>
                 ))}
