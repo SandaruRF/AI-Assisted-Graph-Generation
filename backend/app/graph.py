@@ -10,7 +10,7 @@ from app.agents.system_agent.other_response import System
 from app.agents.sql_agent.metadata_retriever import get_cached_metadata
 from app.agents.sql_agent.sql_query_generator import SQLQueryGenerator
 from app.agents.sql_agent.query_executor import execute_query_with_session
-from app.agents.visualization_agent.feature_extractor import rearrange_dataset
+from app.agents.visualization_agent.feature_extractor import process_and_clean_dataset, get_graph_types
 from app.state import connected_clients
 
 # Helper function for sending WebSocket updates
@@ -47,6 +47,12 @@ async def intent_classifier(state: State):
 async def metadata_retriever(state: State):
     """Retrieve metadata from the database."""
     state.metadata = get_cached_metadata(state.session_id)
+    update_message = f"Metadata Retrieved"
+    state.messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+    
     return state
 
 async def sql_generator(state: State):
@@ -78,15 +84,35 @@ async def sql_executor(state: State):
     
     return state
 
-async def graph_generator(state: State):
-    """Prepare data and Send data to frontend for render graphs."""
-    result = rearrange_dataset(state.data)
-    update_message = f"Data rearranged successfully"
+async def data_preprocessor(state: State):
+    """Clean, preprocess and rearrange the dataset."""
+    result = process_and_clean_dataset(state.data)
+    state.data = result["reordered_dataset"]
+    state.num_numeric = result["num_numeric"]
+    state.num_cat = result["num_cat"]
+    state.num_temporal = result["num_temporal"]
+    state.num_rows = result["num_rows"]
+    state.cardinalities = result["cardinalities"]
+
+    update_message = f"Data preprocessed successfully."
     state.messages.append(update_message)
     
     if state.session_id in connected_clients:
         asyncio.create_task(send_websocket_update(state.session_id, update_message))
+
+    return state
+
+async def graph_ranker(state: State):
+    """Rank the graphs based on the data."""
+    # Placeholder for graph ranking logic
+    suitable_graphs = get_graph_types(state.num_numeric, state.num_cat, state.num_temporal)
+    state.ranked_graphs = suitable_graphs  # placeholder until actual ranking implementation
+    update_message = f"Graph ranking successfull. Ranked graphs: {suitable_graphs}"
+    state.messages.append(update_message)
     
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+
     return state
 
 async def response_generator(state: State):
@@ -201,6 +227,8 @@ builder.add_node("intent_classifier", intent_classifier)
 builder.add_node("metadata_retriever", metadata_retriever)
 builder.add_node("sql_generator", sql_generator)
 builder.add_node("sql_executor", sql_executor)
+builder.add_node("data_preprocessor", data_preprocessor)
+builder.add_node("graph_ranker", graph_ranker)
 builder.add_node("response_generator", response_generator)
 
 # builder.add_node("sql_agent", sql_agent.compile())
@@ -222,7 +250,9 @@ builder.add_conditional_edges(
 )
 builder.add_edge("metadata_retriever", "response_generator")
 builder.add_edge("sql_generator", "sql_executor")
-builder.add_edge("sql_executor", END)
+builder.add_edge("sql_executor", "data_preprocessor")
+builder.add_edge("data_preprocessor", "graph_ranker")
+builder.add_edge("graph_ranker", END)
 builder.add_edge("response_generator", END)
 # builder.add_edge("intent_classifier", "sql_agent")
 # builder.add_edge("sql_agent", "analysis_agent")

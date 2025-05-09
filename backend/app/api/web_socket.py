@@ -32,6 +32,12 @@ async def websocket_endpoint(websocket: WebSocket):
                     sql_query="",
                     sql_dialect="",
                     data=[],
+                    num_numeric=0,
+                    num_cat=0,
+                    num_temporal=0,
+                    num_rows=0,
+                    cardinalities={},
+                    ranked_graphs=[],
                     response="",
                     messages=[]
                 )

@@ -6,7 +6,6 @@ from app.api.database import router as database_router
 from app.api.users import router as user_router
 from app.api.passwd_reset import router as passwd_reset_router
 from app.api.sql_database import router as database_connection_router
-from app.api.graph_data import router as graph_data_router
 from app.api.web_socket import router as stream_ws_router
 
 app = FastAPI(
@@ -28,7 +27,6 @@ app.include_router(database_router, prefix="/api", tags=["Database connecton"])
 app.include_router(user_router, prefix="/api", tags=["User Management"])
 app.include_router(passwd_reset_router, prefix="/api", tags=["Password Reset"])
 app.include_router(database_connection_router, prefix="/sql", tags=["Database Connector"])
-app.include_router(graph_data_router, tags=["Graph Data"])
 app.include_router(stream_ws_router, tags=["Stream Web Socket"])
 
 @app.get("/")
