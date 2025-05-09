@@ -3,6 +3,8 @@ from langchain_core.messages import BaseMessage
 from pydantic import BaseModel
 from typing import List
 
+connected_clients = {}
+
 class State(BaseModel):
     session_id: str
     user_prompt: str

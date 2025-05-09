@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 import {
   Box,
   Paper,
@@ -94,21 +93,30 @@ const VisualizationPage = () => {
 
     socketRef.current.onmessage = (event) => {
       try {
-        // Parse the incoming message
         const data = JSON.parse(event.data);
+        console.log("Received message:", data); // For debugging
 
-        // If it contains a result property like your HTTP response did
-        if (data.result) {
-          console.log("Response from backend:", data.result);
+        if (data.type === "update") {
+          // Handle intermediate updates
+          setMessages((prev) => [...prev, data.message]);
+        } else if (data.type === "final") {
+          // Handle final result
+          console.log("Final result received:", data.result);
           setResultHistory((prev) => [...prev, data.result]);
+        } else if (data.type === "error") {
+          console.error("Error from server:", data.message);
+          setMessages((prev) => [...prev, `Error: ${data.message}`]);
+        } else {
+          // Handle legacy format (your original format)
+          if (data.result) {
+            setResultHistory((prev) => [...prev, data.result]);
+          }
+          if (data.message) {
+            setMessages((prev) => [...prev, data.message]);
+          }
         }
-
-        // Also add to messages if you're using that for display
-        setMessages((prev) => [...prev, event.data]);
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);
-        // Handle non-JSON messages
-        setMessages((prev) => [...prev, event.data]);
       }
     };
 

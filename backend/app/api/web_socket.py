@@ -3,15 +3,14 @@ import json
 
 from app.graph import State, workflow
 from app.utils.logging import logger
+from app.state import connected_clients
 
 router = APIRouter()
-
-connected_clients = []
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    connected_clients.append(websocket)
+    session_id = None
     try:
         while True:
             text_data = await websocket.receive_text()
@@ -19,8 +18,12 @@ async def websocket_endpoint(websocket: WebSocket):
             user_prompt = data["user_prompt"]
             session_id = data["session_id"]
             print(f"User prompt: {user_prompt}\n\nSession ID: {session_id}")
-            print(f"Message received: {data}")
+            
+            # Store the websocket connection
+            connected_clients[session_id] = websocket
+            
             try:
+                # Initialize state
                 state = State(
                     session_id=session_id,
                     user_prompt=user_prompt,
@@ -33,23 +36,24 @@ async def websocket_endpoint(websocket: WebSocket):
                     messages=[]
                 )
                 
-                result = workflow.invoke(state)
-                logger.info("Workflow result: %s", result)
-                print(f"Workflow result: {result}")
+                result = await workflow.ainvoke(state)  # Get final state
                 
-                # return {
-                #     "message": "Prompt processed successfully!",
-                #     "result": result
-                # }
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=str(e))
-            
-            for client in connected_clients:
-                returned_data = json.dumps({
+                # Send final result
+                await websocket.send_text(json.dumps({
+                    "type": "final",
                     "message": "Prompt processed successfully!",
                     "result": result
-                })
-                await client.send_text(returned_data)
-                print(f"Message sent to client: {returned_data}")
+                }))
+                
+            except Exception as e:
+                error_message = str(e)
+                await websocket.send_text(json.dumps({
+                    "type": "error",
+                    "message": error_message
+                }))
+                logger.error(f"Error processing request: {error_message}")
+                
     except WebSocketDisconnect:
-        connected_clients.remove(websocket)
+        if session_id and session_id in connected_clients:
+            del connected_clients[session_id]
+            print(f"Client {session_id} disconnected.")

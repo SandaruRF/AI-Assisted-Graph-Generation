@@ -1,6 +1,8 @@
 from langgraph.constants import START, END, Send
 from langgraph.graph import StateGraph
 from langchain_core.messages import AIMessage, HumanMessage
+import asyncio
+import json
 
 from app.state import State
 from app.agents.intent_agent.intent_classifier import IntentClassifier
@@ -9,25 +11,45 @@ from app.agents.sql_agent.metadata_retriever import get_cached_metadata
 from app.agents.sql_agent.sql_query_generator import SQLQueryGenerator
 from app.agents.sql_agent.query_executor import execute_query_with_session
 from app.agents.visualization_agent.feature_extractor import rearrange_dataset
+from app.state import connected_clients
+
+# Helper function for sending WebSocket updates
+async def send_websocket_update(session_id, message):
+    if session_id in connected_clients:
+        websocket = connected_clients[session_id]
+        try:
+            await websocket.send_text(json.dumps({
+                "type": "update",
+                "message": message,
+                "result": {"response": message}
+            }))
+        except Exception as e:
+            print(f"Error sending WebSocket update: {e}")
 
 # Nodes
-def intent_classifier(state: State):
+async def intent_classifier(state: State):
     """Intent classifier identifies user intents from the query."""
     classifier = IntentClassifier()
     intents = classifier.classify_intent(state.user_prompt)
     state.intents = intents["intent"]
     print("Intent identification successfull.")
-    if "messages" not in state:
+    if not hasattr(state, "messages") or state.messages is None:
         state.messages = [state.user_prompt]
-    state.messages.append(f"Intent identified: {intents['intent']}")
+    
+    update_message = f"Intent identified: {intents['intent']}"
+    state.messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+    
     return state
 
-def metadata_retriever(state: State):
+async def metadata_retriever(state: State):
     """Retrieve metadata from the database."""
     state.metadata = get_cached_metadata(state.session_id)
     return state
 
-def sql_generator(state: State):
+async def sql_generator(state: State):
     """Generates an SQL query for retrieve data from the database."""
     sql_query_generator = SQLQueryGenerator()
     db_info = get_cached_metadata(state.session_id)
@@ -36,28 +58,49 @@ def sql_generator(state: State):
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, state.metadata, state.sql_dialect)
     state.sql_query = sql_query
     state.response = sql_query
-    state.messages.append(f"Generated SQL Query: {sql_query}")
+    update_message = f"SQL query generated: {sql_query}"
+    state.messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+    
     return state
 
-def sql_executor(state: State):
+async def sql_executor(state: State):
     """Execute the generated SQL query and fetch data from the database."""
     state.data = execute_query_with_session(state.session_id, state.sql_query)
     state.response = f"SQL Query Generated\n\nData Retrieved from Database"
-    state.messages.append(state.response)
+    update_message = f"SQL query executed: {state.data}"
+    state.messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+    
     return state
 
-def graph_generator(state: State):
+async def graph_generator(state: State):
     """Prepare data and Send data to frontend for render graphs."""
     result = rearrange_dataset(state.data)
-    state.messages.append(result)
+    update_message = f"Data rearranged successfully"
+    state.messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+    
+    return state
 
-def response_generator(state: State):
+async def response_generator(state: State):
     """Generate responses if intent classifier identifies intent as 'other'."""
     system = System()
     response = system.other_response(state)
     state.response = response
     print(response)
-    state.messages.append(response)
+    update_message = f"Response generated: {response}"
+    state.messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+    
     return state
 
 # def trend_detector():
@@ -106,7 +149,7 @@ def response_generator(state: State):
 #     print("Graph generation successfull.")
 
 
-def route_intent(state: State):
+async def route_intent(state: State):
     if "metadata" in state.intents:
         return "metadata"
     elif "visualization" in state.intents:
