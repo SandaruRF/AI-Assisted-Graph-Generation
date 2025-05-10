@@ -10,81 +10,90 @@ const AboutUs = () => {
       <NavigationBar />
 
       {/* Hero Section */}
-      <Box sx={{ 
-        position: 'relative',
-        height: '500px',
-        overflow: 'hidden',
-        mb: 8,
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 100%)',
-          zIndex: 1
-        }
-      }}>
-        <Box
-          component="img"
-          src="/images/Background.png"
-          alt="Background"
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center 30%',
-            filter: 'brightness(1.05) saturate(1.05) contrast(1.05)'
-          }}
-        />
-        <Box sx={{
+<Box sx={{ 
+  position: 'relative',
+  height: '70vh',
+  minHeight: '400px',
+  overflow: 'hidden',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#03224C',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(to bottom, rgba(3, 34, 76, 0.6) 0%, rgba(3, 34, 76, 0.3) 100%)',
+    zIndex: 1,
+    pointerEvents: 'none'
+  }
+}}>
+  <Box
+    component="img"
+    src="/images/Background.png"
+    alt="Background"
+    sx={{
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      objectPosition: 'center 30%',
+      filter: 'brightness(0.9) contrast(1.1)',
+      opacity: 0.4
+    }}
+  />
+
+  <Box sx={{
+    position: 'relative',
+    zIndex: 2,
+    textAlign: 'center',
+    px: 2,
+    maxWidth: '1200px',
+    margin: '0 auto',
+    color: 'white'
+  }}>
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <Typography
+        variant="h2"
+        sx={{
+          fontWeight: 900,
+          color: 'white',
+          fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4rem' },
+          letterSpacing: { xs: '0.03em', md: '0.05em' },
+          mb: 2,
+          textShadow: '0 4px 12px rgba(0,0,0,0.3)',
           position: 'relative',
-          zIndex: 2,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100%',
-          textAlign: 'center',
-          px: 2
-        }}>
-          <Typography 
-            variant="h2" 
-            sx={{ 
-              fontWeight: 800,
-              background: 'linear-gradient(45deg, #045D9F 30%, #00B4DB 90%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              fontSize: { xs: '2.75rem', md: '4rem' },
-              maxWidth: '800px',
-              mx: 'auto',
-              letterSpacing: { xs: '0.03em', md: '0.05em' },
-              p: 4,
-              position: 'relative',
-              textAlign: 'center',
-              textShadow: '0 4px 8px rgba(0,0,0,0.1)',
-              '&:before': {
-                content: '""',
-                position: 'absolute',
-                inset: 0,
-                borderRadius: '12px',
-                background: 'rgba(255,255,255,0.15)',
-                backdropFilter: 'blur(8px)',
-                zIndex: -1
-              }
-            }}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              About Us
-            </motion.div>
-          </Typography>
-        </Box>
-      </Box>
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: '-20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '30%',
+            height: '4px',
+            background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, #FFFFFF 50%, rgba(255,255,255,0) 100%)',
+            animation: 'underlineExpand 0.8s ease-out forwards',
+            '@keyframes underlineExpand': {
+              '0%': { width: '0%' },
+              '100%': { width: '30%' }
+            }
+          }
+        }}
+      >
+        ABOUT US
+      </Typography>
+    </motion.div>
+
+   
+  </Box>
+</Box>
 
       {/* Main Content Container */}
       <Box sx={{ 
