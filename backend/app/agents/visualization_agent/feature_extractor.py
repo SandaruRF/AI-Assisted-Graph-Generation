@@ -1,30 +1,8 @@
 from datetime import datetime, date, time
 from dateutil.parser import parse
+from decimal import Decimal
 
 TEMPORAL_KEYWORDS = ['date', 'time', 'year', 'month', 'day', 'timestamp']
-
-SUPPORTED_GRAPH_TYPES = {
-    "num_0_cat_1_temp_0": ["Histogram"],
-    "num_1_cat_0_temp_0": ["Area Chart", "Histogram", "Normalized Histogram", "Line Chart"],
-    "num_n_cat_0_temp_0": ["Histogram", "Stacked Histogram"],
-    "num_1_cat_0_temp_1": ["Area Chart", "Bar Chart", "Histogram", "Line Chart", "Scatter Plot"],
-    "num_1_cat_1_temp_0": ["Area Chart", "Bar Chart", "Grouped Histogram", "Stacked Histogram", "Line Chart", "Pie Chart", "Donut Chart"],
-    "num_1_cat_1_temp_1": ["Area Chart", "Stacked Bar Chart", "Grouped Bar Chart", "Line Chart"],
-    "num_n_cat_1_temp_0": ["Stacked Bar Chart", "Grouped Bar Chart"],
-    "num_1_cat_2_temp_0": ["Stacked Bar Chart", "Grouped Bar Chart", "Pie Chart", "Donut Chart"],
-    "num_1_cat_2_temp_1": ["Line Chart"],
-    "num_2_cat_0_temp_0": ["Area Chart", "Scatter Plot"],
-    "num_2_cat_0_temp_1": ["Area Chart", "Line Chart", "Scatter Plot"],
-    "num_2_cat_1_temp_0": ["Scatter Plot"],
-    "num_2_cat_1_temp_1": ["Area Chart", "Line Chart", "Scatter Plot"],
-    "num_2_cat_2_temp_0": ["Scatter Plot"],
-    "num_3_cat_0_temp_0": ["Bubble Chart"],
-    "num_3_cat_1_temp_0": ["Bubble Chart"],
-    "num_3_cat_2_temp_0": ["Scatter Plot"],
-    "num_4_cat_0_temp_1": ["Candlestick Chart"],
-    "num_4_cat_1_temp_1": ["Candlestick Chart"],
-}
-
 
 
 def is_temporal(key, value):
@@ -59,7 +37,7 @@ def process_and_clean_dataset(dataset):
         if is_temporal(key, value):
             temp_cols.append(key)
             num_temporal += 1
-        elif isinstance(value, (int, float)):
+        elif isinstance(value, (int, float, Decimal)):
             num_cols.append(key)
             num_numeric += 1
         elif isinstance(value, str):
@@ -69,12 +47,19 @@ def process_and_clean_dataset(dataset):
     new_order = num_cols + cat_cols + temp_cols
     cardinalities = {key: {"unique_values": set(), "count": 0} for key in new_order}
 
+    x = dataset[0]
+    for value in x.values():
+        if isinstance(value, Decimal):
+            value = float(value)
+        print(f"Value: {value}, Type: {type(value)}")
     for row in dataset:
         if all(row.get(key) is not None and str(row.get(key)).strip() != '' for key in row):
             reordered_row = {}
             for key in new_order:
                 if key in row:
                     val = row.get(key)
+                    if isinstance(val, Decimal):
+                        val = float(val)
                     reordered_row[key] = val
                     if val not in cardinalities[key]["unique_values"]:
                         cardinalities[key]["count"] += 1
@@ -85,6 +70,7 @@ def process_and_clean_dataset(dataset):
     for key in cardinalities:
         cardinalities[key]["unique_values"] = list(cardinalities[key]["unique_values"])
 
+    print(f"Original dataset: {dataset}")
     print(f"Rearranged dataset: {reordered_dataset}")
     print(f"Type: {type}")
     print(f"Number of rows: {len(reordered_dataset)}")
@@ -97,15 +83,6 @@ def process_and_clean_dataset(dataset):
         "num_rows": len(reordered_dataset),
         "cardinalities": cardinalities
     }
-
-def get_graph_types(num_numeric, num_cat, num_temporal):
-    type = f"num_{num_numeric}_cat_{num_cat}_temp_{num_temporal}"
-    if type in SUPPORTED_GRAPH_TYPES:
-        return SUPPORTED_GRAPH_TYPES[type]
-    type = f"num_n_cat_{num_cat}_temp_{num_temporal}"
-    if type in SUPPORTED_GRAPH_TYPES:
-        return SUPPORTED_GRAPH_TYPES[type]
-    return []
 
 
 if __name__ == "__main__":

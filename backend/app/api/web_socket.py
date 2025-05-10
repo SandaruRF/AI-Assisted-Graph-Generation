@@ -3,6 +3,7 @@ import json
 
 from app.graph import State, workflow
 from app.utils.logging import logger
+from app.utils.decimal_encoder import DecimalEncoder
 from app.state import connected_clients
 
 router = APIRouter()
@@ -18,7 +19,7 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_text(json.dumps({
                     "type": "update",
                     "message": "Classifying user intent..."
-                }))
+                }, cls=DecimalEncoder))
             user_prompt = data["user_prompt"]
             session_id = data["session_id"]
             print(f"User prompt: {user_prompt}\n\nSession ID: {session_id}")
@@ -35,12 +36,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     metadata=[],
                     sql_query="",
                     sql_dialect="",
-                    data=[],
+                    original_data=[],
+                    rearranged_data=[],
                     num_numeric=0,
                     num_cat=0,
                     num_temporal=0,
                     num_rows=0,
                     cardinalities={},
+                    suitable_graphs=[],
                     ranked_graphs=[],
                     response="",
                     messages=[]
@@ -53,14 +56,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     "type": "final",
                     "message": "Prompt processed successfully!",
                     "result": result
-                }))
+                }, cls=DecimalEncoder))
                 
             except Exception as e:
                 error_message = str(e)
                 await websocket.send_text(json.dumps({
                     "type": "error",
                     "message": error_message
-                }))
+                }, cls=DecimalEncoder))
                 logger.error(f"Error processing request: {error_message}")
                 
     except WebSocketDisconnect:

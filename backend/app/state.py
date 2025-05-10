@@ -12,12 +12,14 @@ class State(BaseModel):
     metadata: List[dict]
     sql_query: str
     sql_dialect: str
-    data: List[dict]
+    original_data: List[dict]
+    rearranged_data: List[dict]
     num_numeric: int
     num_cat: int
     num_temporal: int
     num_rows: int
     cardinalities: Dict[str, Dict[str, Any]]
+    suitable_graphs: List[str]
     ranked_graphs: List[str]
     response: str
     messages: List[BaseMessage]
