@@ -69,7 +69,7 @@ function App() {
                 path="/forgot-password/"
                 element={<ForgotPasswordPage />}
               />
-              <Route path="/test/" element={<Test />} />
+              {/* <Route path="/test/" element={<Test />} /> */}
             </Routes>
           </Router>
         </div>

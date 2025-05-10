@@ -33,30 +33,35 @@ async def intent_classifier(state: State):
     intents = classifier.classify_intent(state.user_prompt)
     state.intents = intents["intent"]
     print("Intent identification successfull.")
-    if not hasattr(state, "messages") or state.messages is None:
-        state.messages = [state.user_prompt]
+    # if not hasattr(state, "messages") or state.messages is None:
+    #     state.messages = [state.user_prompt]
     
-    update_message = f"Intent identified: {intents['intent']}"
-    state.messages.append(update_message)
+    # update_message = f"Intent identified: {intents['intent']}"
+    # state.messages.append(update_message)
     
-    if state.session_id in connected_clients:
-        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+    # if state.session_id in connected_clients:
+    #     asyncio.create_task(send_websocket_update(state.session_id, update_message))
     
     return state
 
 async def metadata_retriever(state: State):
     """Retrieve metadata from the database."""
-    state.metadata = get_cached_metadata(state.session_id)
-    update_message = f"Metadata Retrieved"
+    update_message = "Retrieving metadata..."
     state.messages.append(update_message)
     
     if state.session_id in connected_clients:
         asyncio.create_task(send_websocket_update(state.session_id, update_message))
+    state.metadata = get_cached_metadata(state.session_id)
     
     return state
 
 async def sql_generator(state: State):
     """Generates an SQL query for retrieve data from the database."""
+    update_message = f"Generating SQL query..."
+    state.messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
     sql_query_generator = SQLQueryGenerator()
     db_info = get_cached_metadata(state.session_id)
     state.metadata = db_info["metadata"]
@@ -64,28 +69,28 @@ async def sql_generator(state: State):
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, state.metadata, state.sql_dialect)
     state.sql_query = sql_query
     state.response = sql_query
-    update_message = f"SQL query generated: {sql_query}"
-    state.messages.append(update_message)
-    
-    if state.session_id in connected_clients:
-        asyncio.create_task(send_websocket_update(state.session_id, update_message))
     
     return state
 
 async def sql_executor(state: State):
     """Execute the generated SQL query and fetch data from the database."""
-    state.data = execute_query_with_session(state.session_id, state.sql_query)
-    state.response = f"SQL Query Generated\n\nData Retrieved from Database"
-    update_message = f"SQL query executed: {state.data}"
+    update_message = f"Executing SQL query..."
     state.messages.append(update_message)
     
     if state.session_id in connected_clients:
         asyncio.create_task(send_websocket_update(state.session_id, update_message))
+    state.data = execute_query_with_session(state.session_id, state.sql_query)
+    state.response = f"SQL Query Generated\n\nData Retrieved from Database"
     
     return state
 
 async def data_preprocessor(state: State):
     """Clean, preprocess and rearrange the dataset."""
+    update_message = f"Preprocessing data..."
+    state.messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
     result = process_and_clean_dataset(state.data)
     state.data = result["reordered_dataset"]
     state.num_numeric = result["num_numeric"]
@@ -94,20 +99,19 @@ async def data_preprocessor(state: State):
     state.num_rows = result["num_rows"]
     state.cardinalities = result["cardinalities"]
 
-    update_message = f"Data preprocessed successfully."
-    state.messages.append(update_message)
-    
-    if state.session_id in connected_clients:
-        asyncio.create_task(send_websocket_update(state.session_id, update_message))
-
     return state
 
 async def graph_ranker(state: State):
     """Rank the graphs based on the data."""
+    update_message = f"Ranking suitable graphs..."
+    state.messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        asyncio.create_task(send_websocket_update(state.session_id, update_message))
     # Placeholder for graph ranking logic
     suitable_graphs = get_graph_types(state.num_numeric, state.num_cat, state.num_temporal)
     state.ranked_graphs = suitable_graphs  # placeholder until actual ranking implementation
-    update_message = f"Graph ranking successfull. Ranked graphs: {suitable_graphs}"
+    update_message = f"Ranked graphs: {suitable_graphs}"
     state.messages.append(update_message)
     
     if state.session_id in connected_clients:
@@ -121,11 +125,6 @@ async def response_generator(state: State):
     response = system.other_response(state)
     state.response = response
     print(response)
-    update_message = f"Response generated: {response}"
-    state.messages.append(update_message)
-    
-    if state.session_id in connected_clients:
-        asyncio.create_task(send_websocket_update(state.session_id, update_message))
     
     return state
 

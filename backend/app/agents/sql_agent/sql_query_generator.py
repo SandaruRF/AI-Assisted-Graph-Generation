@@ -13,25 +13,33 @@ class SQLQueryGenerator:
         print(f"Schema: {metadata}")
         print(f"SQL Dialect: {sql_dialect}")
         prompt = f"""
-            You are an AI assistant that generates SQL queries based on the user's natural language question (nl_query), 
-            the provided database schema (metadata), and the SQL dialect (sql_dialect). Your job is to generate an accurate 
-            and syntactically valid SQL query for the specified dialect.
+        You are an AI assistant that generates SQL queries based on the user's natural language question (nl_query), 
+        the provided database schema (metadata), and the SQL dialect (sql_dialect). Your job is to generate an accurate 
+        and syntactically valid SQL query for the specified dialect.
 
-            Instructions:
-            - Use only the table and column names available in metadata.
-            - Strictly follow the syntax rules of the given sql_dialect.
-            - Use only the spellings of column and table names exactly as they appear in metadata.
-            - Filter out rows where any column used in the query is NULL, "", or "N/A".
-            - For aggregation, grouping, or filtering, use functions and syntax supported by sql_dialect.
-            - If the user's question does not provide enough information to create a valid SQL query, return: NOT_ENOUGH_INFO
-            - Just output the query string — no comments, no markdown, no explanation.
+        Instructions:
+        - Use only the table and column names exactly as they appear in metadata.
+        - Strictly follow the syntax rules of the specified sql_dialect.
+        - For MySQL:
+            - Use DATE_FORMAT(column, '%Y-%m') to extract year-month.
+            - Use MONTH(column) to extract the month as a number (1–12).
+            - Do NOT use STRFTIME or CAST(... AS INTEGER).
+        - For SQLite:
+            - Use STRFTIME('%Y-%m', column) for year-month.
+            - Use CAST(STRFTIME('%m', column) AS INTEGER) for month number.
+        - Filter out rows where any column used in the query is NULL, "", or "N/A".
+        - Use aggregation and filtering functions only supported by the sql_dialect.
+        - If the user's question does not provide enough information to create a valid SQL query, return: NOT_ENOUGH_INFO
+        - If the question is not related to SQL, return: NOT_SQL_QUERY
+        - Just output the SQL query string — no comments, no markdown, no explanation.
 
-            Question: {nl_query}
+        Question: {nl_query}
 
-            Database schema: {metadata}
+        Database schema: {metadata}
 
-            sql_dialect: {sql_dialect}
-            """
+        sql_dialect: {sql_dialect}
+        """
+
         
         try:
             response = self.model.generate_content(prompt)

@@ -9,7 +9,14 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import Timeline from "@mui/lab/Timeline";
+import TimelineItem from "@mui/lab/TimelineItem";
+import TimelineSeparator from "@mui/lab/TimelineSeparator";
+import TimelineConnector from "@mui/lab/TimelineConnector";
+import TimelineContent from "@mui/lab/TimelineContent";
+import TimelineDot from "@mui/lab/TimelineDot";
 import TypewriterWords from "../components/TypewriterWords";
+import TraceTimeline from "../components/chat_interface/TraceTimeline";
 
 const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
   <Stack spacing={2}>
@@ -225,21 +232,7 @@ const VisualizationPage = () => {
               </Paper>
 
               {/* Traces */}
-              <Box>
-                {(tracesHistory[index] || []).map((msg, idx) => (
-                  <Typography
-                    key={idx}
-                    variant="body2"
-                    sx={{
-                      backgroundColor: "#edf1f2",
-                      color: "#00ccff",
-                      p: 1,
-                    }}
-                  >
-                    {msg}
-                  </Typography>
-                ))}
-              </Box>
+              <TraceTimeline messages={tracesHistory[index] || []} />
 
               {/* Response */}
               {promptHistory[index] && !resultHistory[index] && (

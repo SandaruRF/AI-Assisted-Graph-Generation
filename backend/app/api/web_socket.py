@@ -15,6 +15,10 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             text_data = await websocket.receive_text()
             data = json.loads(text_data)
+            await websocket.send_text(json.dumps({
+                    "type": "update",
+                    "message": "Classifying user intent..."
+                }))
             user_prompt = data["user_prompt"]
             session_id = data["session_id"]
             print(f"User prompt: {user_prompt}\n\nSession ID: {session_id}")
