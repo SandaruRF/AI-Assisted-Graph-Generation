@@ -187,15 +187,19 @@ export const handleGoogleLogin = async (credentialResponse,Navigate) => {
       const res = await axios.post('http://localhost:8000/api/auth/google', {
         token: credentialResponse.credential
       });
-      if (res.message == "New User created"){
+      if (res.data.message === "New User created"){
               localStorage.removeItem("email","token")
               localStorage.setItem("email", `${res.data.email}`);
               Navigate("/sign-up-p2");}
-      else{
+      else if(res.data.message === "user already exists"){
               localStorage.removeItem("token")
               localStorage.setItem("token", `${res.data.access_token}`);
               Navigate("/existing-connections");
             }
+      else{
+        console.error("Unexpected response:", res);
+        throw new Error("Unexpected response from server");
+      }
       console.log("Login successful", res.data);
     } catch (err) {
       console.error("Login failed", err);

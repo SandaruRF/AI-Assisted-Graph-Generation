@@ -30,14 +30,14 @@ async def google_auth(token_data: TokenModel, response_model=Token):
     if user_info["aud"] != client_id:
         raise HTTPException(status_code=400, detail="Invalid client ID")
         
-    user = users_collection.find_one({"email": user_info["email"],"auth_provider": "google"})
+    user = await users_collection.find_one({"email": user_info["email"],"auth_provider": "google"})
     logger.info(f"User info: {user_info}")
     if user is None:
         users_collection.insert_one({
             "email": user_info["email"],
             "auth_provider": "google"
         })
-        return {"email": user["email"], "message": "New User created"}
+        return {"email": user_info["email"], "message": "New User created"}
     else:
         access_token = create_access_token(data={"sub": user_info["email"]}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
         return {"access_token": access_token, "token_type": "bearer", "message": "user already exists"}
