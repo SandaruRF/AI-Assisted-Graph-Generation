@@ -25,3 +25,6 @@ class Token(BaseModel):
 #temporary model for google auth
 class TokenModel(BaseModel):
     token: str 
+
+class GitHubAuthRequest(BaseModel):
+    code: str

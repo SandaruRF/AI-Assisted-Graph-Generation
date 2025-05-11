@@ -4,6 +4,7 @@ import axios from "axios";
 
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
+const GITHUB_CLIENT_ID = process.env.REACT_APP_GITHUB_CLIENT_ID;
 //const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 //const GOOGLE_CLIENT_SECRET = process.env.REACT_APP_GOOGLE_CLIENT_SECRET;
 
@@ -184,7 +185,7 @@ export const handleSignUpP2 = async (event,firstName, lastName, phoneNumber,Navi
 //Google signup / Login handler
 export const handleGoogleLogin = async (credentialResponse,Navigate) => {
     try {
-      const res = await axios.post('http://localhost:8000/api/auth/google', {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/google`, {
         token: credentialResponse.credential
       });
       if (res.data.message === "New User created"){
@@ -205,3 +206,43 @@ export const handleGoogleLogin = async (credentialResponse,Navigate) => {
       console.error("Login failed", err);
     }
   };
+
+  //github login signup handler
+  export const handleGitHubAuth = (setError) => {
+    setError(null);
+    try {
+      const clientId = GITHUB_CLIENT_ID; 
+      const redirectUri = "http://localhost:3000/github-callback"; 
+
+      window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}`;
+      
+      
+    } catch (err) {
+      setError("Failed to initiate GitHub login");
+      
+    }}
+
+//github auth callback handler
+export const handleGitHubAuthCallback = async (code,  Navigate) => {
+  if (code) {
+      axios.post(`${API_BASE_URL}/api/auth/github`, { code })
+        .then((res) => {
+          if (res.data.message === "New User created") {
+            localStorage.removeItem("email","token")
+              localStorage.setItem("email", `${res.data.email}`);
+              Navigate("/sign-up-p2");
+          } else if (res.data.message === "user already exists") {
+            localStorage.removeItem("token")
+              localStorage.setItem("token", `${res.data.access_token}`);
+              Navigate("/existing-connections");
+          }else{
+            console.error("Unexpected response:", res);
+            throw new Error("Unexpected response from server");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          
+        });
+    }
+}

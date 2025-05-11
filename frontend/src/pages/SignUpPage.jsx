@@ -16,14 +16,14 @@ import {
 import {GoogleLogin} from '@react-oauth/google'
 import { styled } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import FacebookIcon from '@mui/icons-material/Facebook';
+
 import { useNavigate } from 'react-router-dom';
-import { handleSignUp, handleGoogleLogin } from '../services/api';
-
-
-
+import { handleSignUp, handleGoogleLogin,handleGitHubAuth } from '../services/api';
 import PasswordStrengthBar from "../components/PasswordStrengthBar";
+
+
+
+
 
 
 
@@ -38,25 +38,7 @@ const Logo = styled('div')(({ theme }) => ({
   },
 }));
 
-// Custom styled button for SSO providers
-const SSOButton = styled(Button)(({ theme }) => ({
-  width: '100%',
-  padding: theme.spacing(1.5),
-  marginBottom: theme.spacing(1.5),
-  color: '#333',
-  justifyContent: 'flex-start',
-  textAlign: 'left',
-  border: '1px solid rgba(0,0,0,0.15)',
-  borderRadius: '4px',
-  backgroundColor: '#fff',
-  '&:hover': {
-    backgroundColor: 'rgba(0,0,0,0.03)',
-    border: '1px solid rgba(0,0,0,0.25)',
-  },
-  '& .MuiButton-startIcon': {
-    marginRight: theme.spacing(2),
-  },
-}));
+
 
 const SignUpPage = () => {
   
@@ -71,12 +53,24 @@ const SignUpPage = () => {
     confirm_password: "",
   });
   const [error, setError] = useState("");
+
   const Navigate = useNavigate();
   const handleNavigation = (path) => Navigate(path);
 
+  // Handle Google login
   const handleGoogle = (credentialResponse) => {
     handleGoogleLogin(credentialResponse, Navigate);
   };
+
+  //handle github login
+  
+
+  const handleGitHubLogin =  () => {
+    
+    handleGitHubAuth(setError);   
+  };
+
+ 
 
 
   
@@ -245,21 +239,17 @@ const SignUpPage = () => {
               </Container>
 
 
-              <SSOButton
-                variant="outlined"
-                startIcon={<GitHubIcon />}
-                endIcon={<Box component="span" sx={{ ml: 'auto' }}>›</Box>}
-              >
-                Signup with GitHub
-              </SSOButton>
+              <Button
+            variant="contained"
+            color="primary"
+            onClick={handleGitHubLogin}
+            fullWidth
+          >
+            Login with GitHub
+          </Button>
+          {error && <Typography color="error">{error}</Typography>}
 
-              <SSOButton
-                variant="outlined"
-                startIcon={<FacebookIcon />}
-                endIcon={<Box component="span" sx={{ ml: 'auto' }}>›</Box>}
-              >
-                Signup with Facebook
-              </SSOButton>
+              
 
 
 

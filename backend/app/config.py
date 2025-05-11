@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     CLICK_SEND_USERNAME: str = os.getenv("CLICK_SEND_USERNAME")
     GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID")
     GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET")
+    GITHUB_CLIENT_ID: str = os.getenv("GITHUB_CLIENT_ID")
+    GITHUB_CLIENT_SECRET: str = os.getenv("GITHUB_CLIENT_SECRET")
    
 
     

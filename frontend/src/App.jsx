@@ -8,7 +8,7 @@ import EditDatabaseConnection from "./pages/EditDatabaseConnection";
 import VisualizationPage from "./pages/VisualizationPage";
 import SignUpPage from "./pages/SignUpPage";
 import NameEnterPage from "./pages/NameEnterPage";
-
+import  GithubCallback  from "./pages/GithubSignupHandling";
 import Loading from "./components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import LoginForm from "./pages/LoginPage";
@@ -33,6 +33,7 @@ function App() {
             <Routes>
             <Route path="/login" element={<LoginForm />} />
             <Route path ="/sign-up-p2" element={<NameEnterPage />} />"
+            <Route path="/github-callback" element={<GithubCallback />} />
               <Route path="/existing-connections" element={<ProtectedRoute> <ExistingDatabaseConnection /> </ProtectedRoute>} />
               <Route path="/new-connection" element={<ProtectedRoute><DatabaseConnection /></ProtectedRoute>} />
               <Route path="/edit-connection/:id" element={<ProtectedRoute><EditDatabaseConnection /></ProtectedRoute>} />
