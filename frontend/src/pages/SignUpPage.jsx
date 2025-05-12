@@ -56,7 +56,7 @@ const SignUpPage = () => {
       );
       if (response.status === 200) {
         console.log("Sign up successful", response.data);
-        navigate("/log-in");
+        navigate("/");
       }
     } catch (err) {
       console.error("Error during sign-up:", err);

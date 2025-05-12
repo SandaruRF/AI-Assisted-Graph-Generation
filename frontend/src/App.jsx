@@ -11,6 +11,7 @@ import SignUpPage from "./pages/SignUpPage";
 import Loading from "./components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import LandingPage from './pages/LandingPage';
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   const [loading, setLoading] = useState(true);

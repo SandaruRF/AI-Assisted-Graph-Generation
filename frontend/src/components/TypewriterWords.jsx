@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 
-const TypewriterWords = ({ text, onDone }) => {
+const TypewriterWords = ({ text }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [flag, setFlag] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const words = text.split(" ");
+
+  // Convert anything passed into a readable string
+  const safeText = React.useMemo(() => {
+    try {
+      if (typeof text === "string") return text;
+      return JSON.stringify(text, null, 2); // pretty print JSON
+    } catch {
+      return String(text);
+    }
+  });
+  const words = safeText.split(" ");
 
   useEffect(() => {
     let timer;
@@ -14,7 +24,7 @@ const TypewriterWords = ({ text, onDone }) => {
       timer = setTimeout(() => {
         setDisplayedText((prev) => prev + words[currentIndex] + " ");
         setCurrentIndex((prev) => prev + 1);
-      }, 40);
+      }, 20);
     } else {
       setFlag(true);
     }
