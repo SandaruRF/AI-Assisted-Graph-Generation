@@ -73,7 +73,7 @@ const NavigationBar = () => {
                 src="/images/logo.png"
                 alt="VizGen Logo"
                 style={{ height: 40, cursor: "pointer" }}
-                onClick={() => handleNavigation("/")}
+                onClick={() => handleNavigation("/home")}
               />
             </Box>
 
@@ -88,13 +88,19 @@ const NavigationBar = () => {
             >
               {/* Nav Buttons */}
               <Box sx={{ display: "flex", gap: 4 }}>
-                <Button onClick={() => navigate("/LandingPage")} sx={navBtnStyle}>
+                <Button onClick={() => navigate("/home")} sx={navBtnStyle}>
                   Home
                 </Button>
-                <Button onClick={() => navigate("/graph-visualization")} sx={navBtnStyle}>
+                <Button
+                  onClick={() => navigate("/existing-connections")}
+                  sx={navBtnStyle}
+                >
                   Chat
                 </Button>
-                <Button onClick={() => handleNavigation("/docs")} sx={navBtnStyle}>
+                <Button
+                  onClick={() => handleNavigation("/docs")}
+                  sx={navBtnStyle}
+                >
                   Docs
                 </Button>
               </Box>
@@ -102,10 +108,18 @@ const NavigationBar = () => {
 
             {/* Auth Buttons */}
             <Box sx={{ display: "flex", gap: 2 }}>
-              <Button variant="outlined" onClick={() => navigate("/")} sx={outlineBtnStyle}>
+              <Button
+                variant="outlined"
+                onClick={() => navigate("/")}
+                sx={outlineBtnStyle}
+              >
                 Login
               </Button>
-              <Button variant="contained" onClick={() => navigate("/sign-up")} sx={filledBtnStyle}>
+              <Button
+                variant="contained"
+                onClick={() => navigate("/signup")}
+                sx={filledBtnStyle}
+              >
                 Sign Up
               </Button>
             </Box>
@@ -137,10 +151,13 @@ const NavigationBar = () => {
         }}
       >
         <List>
-          <ListItem button onClick={() => handleNavigation("/LandingPage")}>
+          <ListItem button onClick={() => handleNavigation("/home")}>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem button onClick={() => handleNavigation("/graph-visualization")}>
+          <ListItem
+            button
+            onClick={() => handleNavigation("/graph-visualization")}
+          >
             <ListItemText primary="Chat" />
           </ListItem>
           <ListItem button onClick={() => handleNavigation("/docs")}>
@@ -149,7 +166,7 @@ const NavigationBar = () => {
           <ListItem button onClick={() => handleNavigation("/")}>
             <ListItemText primary="Login" />
           </ListItem>
-          <ListItem button onClick={() => handleNavigation("/sign-up")}>
+          <ListItem button onClick={() => handleNavigation("/signup")}>
             <ListItemText primary="Sign Up" />
           </ListItem>
         </List>
