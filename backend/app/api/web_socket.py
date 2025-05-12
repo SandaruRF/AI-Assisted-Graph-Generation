@@ -55,7 +55,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.send_text(json.dumps({
                     "type": "final",
                     "message": "Prompt processed successfully!",
-                    "result": result
+                    "result": result,
                 }, cls=DecimalEncoder))
                 
             except Exception as e:

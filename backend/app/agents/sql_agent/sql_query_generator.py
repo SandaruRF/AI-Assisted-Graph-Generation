@@ -40,6 +40,7 @@ class SQLQueryGenerator:
 
         5. SCHEMA COMPLIANCE
         - Use ONLY tables and columns explicitly defined in the provided schema
+        - Do not assume a column exists unless it is present in the provided metadata. 
         - NEVER hallucinate schema elements or assumptions about data structure
         - Request clarification when the schema lacks elements needed for the query
 

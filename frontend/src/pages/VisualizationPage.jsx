@@ -256,6 +256,7 @@ const VisualizationPage = () => {
                   }}
                 >
                   <TypewriterWords text={resultHistory[index].response} />
+                  <Button>Hello</Button>
                 </Box>
               )}
             </React.Fragment>
