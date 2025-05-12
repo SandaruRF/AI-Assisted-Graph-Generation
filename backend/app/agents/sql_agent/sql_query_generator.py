@@ -42,7 +42,7 @@ class SQLQueryGenerator:
         - Use ONLY tables and columns explicitly defined in the provided schema
         - Do not assume a column exists unless it is present in the provided metadata. 
         - NEVER hallucinate schema elements or assumptions about data structure
-        - Request clarification when the schema lacks elements needed for the query
+        - If any required table or column is NOT in the provided schema, respond with: **SCHEMA_INSUFFICIENT**
 
         ### Query Construction Guidelines
 
@@ -74,9 +74,10 @@ class SQLQueryGenerator:
 
         ERROR HANDLING:
         - If query would produce empty results based on impossible constraints, add warning
-        - If request requires unavailable schema elements, respond with: SCHEMA_INSUFFICIENT
+        - If request requires unavailable schema elements, respond with: **SCHEMA_INSUFFICIENT**
         - If request is ambiguous or unclear, respond with: CLARIFICATION_NEEDED
         - If request isn't for SQL generation, respond with: NOT_SQL_QUERY
+        - **Always cross-check column names with schema before using them in SELECT, JOIN, GROUP BY, or ORDER BY clauses**
 
         ### Output Format
 

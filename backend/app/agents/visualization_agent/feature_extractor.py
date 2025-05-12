@@ -1,16 +1,24 @@
 from datetime import datetime, date, time
 from dateutil.parser import parse
 from decimal import Decimal
+import re
 
 TEMPORAL_KEYWORDS = ['date', 'time', 'year', 'month', 'day', 'timestamp']
 
+def split_words(s):
+    # Split camel case and underscores
+    return re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z]|$)', s)
 
 def is_temporal(key, value):
-    if any(kw in key.lower() for kw in TEMPORAL_KEYWORDS):
+    words = [w.lower() for w in split_words(key)]
+    if any(kw in words for kw in TEMPORAL_KEYWORDS):
         return True
     if isinstance(value, (datetime, date, time)):
         return True
     if isinstance(value, str):
+        # Exclude pure numeric strings
+        if value.isdigit():
+            return False
         try:
             parse(value)
             return True
@@ -70,6 +78,7 @@ def process_and_clean_dataset(dataset):
     for key in cardinalities:
         cardinalities[key]["unique_values"] = list(cardinalities[key]["unique_values"])
 
+    print(f"new order: {new_order}, num_numeric: {num_numeric}, num_cat: {num_cat}, num_temp: {num_temporal}")
     print(f"Original dataset: {dataset}")
     print(f"Rearranged dataset: {reordered_dataset}")
     print(f"Type: {type}")

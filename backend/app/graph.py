@@ -44,7 +44,7 @@ async def metadata_retriever(state: State):
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+        await send_websocket_update(state.session_id, update_message)
 
     metadata = get_cached_metadata(state.session_id)
 
@@ -60,7 +60,7 @@ async def sql_generator(state: State):
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+        await send_websocket_update(state.session_id, update_message)
 
     sql_query_generator = SQLQueryGenerator()
     db_info = get_cached_metadata(state.session_id)
@@ -84,7 +84,7 @@ async def sql_executor(state: State):
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+        await send_websocket_update(state.session_id, update_message)
 
     original_data = execute_query_with_session(state.session_id, state.sql_query)
     
@@ -125,7 +125,7 @@ async def graph_ranker(state: State):
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+        await send_websocket_update(state.session_id, update_message)
 
     suitable_graphs = get_graph_types(state.num_numeric, state.num_cat, state.num_temporal)
     
@@ -143,7 +143,8 @@ async def temp_response_generator(state: State):
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        asyncio.create_task(send_websocket_update(state.session_id, update_message))
+        print(f"Sending WebSocket message: {update_message}")
+        await send_websocket_update(state.session_id, update_message)
 
     state = state.copy(update={
         "messages": messages,
