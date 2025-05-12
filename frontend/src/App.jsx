@@ -12,6 +12,7 @@ import Test from "./pages/Test";
 import Loading from "./components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import BarChart from "./components/graphs/BarChart";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -69,7 +70,7 @@ function App() {
                 path="/forgot-password/"
                 element={<ForgotPasswordPage />}
               />
-              {/* <Route path="/test/" element={<Test />} /> */}
+              <Route path="/bar-chart" element={<BarChart />} />
             </Routes>
           </Router>
         </div>
