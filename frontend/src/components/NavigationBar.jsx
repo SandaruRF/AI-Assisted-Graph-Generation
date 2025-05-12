@@ -73,7 +73,7 @@ const NavigationBar = () => {
                 src="/images/logo.png"
                 alt="VizGen Logo"
                 style={{ height: 40, cursor: "pointer" }}
-                onClick={() => handleNavigation("/home")}
+                onClick={() => handleNavigation("/")}
               />
             </Box>
 
@@ -88,7 +88,7 @@ const NavigationBar = () => {
             >
               {/* Nav Buttons */}
               <Box sx={{ display: "flex", gap: 4 }}>
-                <Button onClick={() => navigate("/home")} sx={navBtnStyle}>
+                <Button onClick={() => navigate("/")} sx={navBtnStyle}>
                   Home
                 </Button>
                 <Button
@@ -151,7 +151,7 @@ const NavigationBar = () => {
         }}
       >
         <List>
-          <ListItem button onClick={() => handleNavigation("/home")}>
+          <ListItem button onClick={() => handleNavigation("/")}>
             <ListItemText primary="Home" />
           </ListItem>
           <ListItem
