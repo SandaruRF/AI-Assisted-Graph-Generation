@@ -10,6 +10,14 @@ import {
 } from "@mui/material";
 
 const Footer = () => {
+  // Function to handle scroll to top
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth" // Optional smooth scroll
+    });
+  };
+
   return (
     <Box
       component="footer"
@@ -27,14 +35,12 @@ const Footer = () => {
         <Grid container spacing={4}>
           {/* Logo Section */}
           <Grid item xs={12} md={3}>
-            
-              <Box
-                component="img"
-                src="/images/logo.png"
-                alt="Logo"
-                sx={{ height: 50, mb: 2 }}
-              />
-            
+            <Box
+              component="img"
+              src="/images/logo.png"
+              alt="Logo"
+              sx={{ height: 50, mb: 2 }}
+            />
             <Typography variant="body2" sx={{ color: "#ccc", mt: 1 }}>
               Empowering your data with AI-driven insights.
             </Typography>
@@ -52,7 +58,11 @@ const Footer = () => {
             },
             {
               title: "Company",
-              items: ["About Us", "Contact Us", "Privacy Policy"],
+              items: [
+                { name: "About Us", path: "/about" },
+                { name: "Contact Us", path: "/contact" },
+                { name: "Privacy Policy", path: "/privacy" }
+              ],
             },
           ].map((section, index) => (
             <Grid item xs={6} md={3} key={index}>
@@ -68,7 +78,8 @@ const Footer = () => {
                   <motion.div key={itemIndex} whileHover={{ x: 6 }}>
                     <Button
                       component={Link}
-                      to="/"
+                      to={item.path || "/"}
+                      onClick={handleScrollToTop}
                       sx={{
                         justifyContent: "flex-start",
                         color: "#b0c4de",
@@ -80,7 +91,7 @@ const Footer = () => {
                         },
                       }}
                     >
-                      {item}
+                      {item.name || item}
                     </Button>
                   </motion.div>
                 ))}
@@ -88,7 +99,8 @@ const Footer = () => {
             </Grid>
           ))}
         </Grid>
-{/* Copyright */}
+
+        {/* Copyright */}
         <Typography
           variant="body2"
           align="center"
