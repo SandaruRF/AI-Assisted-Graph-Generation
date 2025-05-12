@@ -18,7 +18,7 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 0);
   }, []);
 
   return (
@@ -29,14 +29,14 @@ function App() {
         <div>
           <Router>
             <Routes>
-              <Route path="/existing-connections" element={<ExistingDatabaseConnection />} />
-              <Route path="/new-connection" element={<DatabaseConnection />} />
-              <Route path="/edit-connection/:id" element={<EditDatabaseConnection />} />
-              <Route path="/graph-visualization" element={<VisualizationPage />} />
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/sign-up/" element={<SignUpPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup/" element={<SignUpPage />} />
+              <Route path="/home" element={<LandingPage />} />
+              <Route path="/existing-connections" element={<ProtectedRoute> <ExistingDatabaseConnection /> </ProtectedRoute>} />
+              <Route path="/new-connection" element={<ProtectedRoute><DatabaseConnection /></ProtectedRoute>} />
+              <Route path="/edit-connection/:id" element={<ProtectedRoute><EditDatabaseConnection /></ProtectedRoute>} />
+              <Route path="/graph-visualization" element={<ProtectedRoute><VisualizationPage /></ProtectedRoute>} />
               <Route path="/forgot-password/" element={<ForgotPasswordPage />} />
-              <Route path="/LandingPage" element={<LandingPage />} />
             </Routes>
           </Router>
         </div>
