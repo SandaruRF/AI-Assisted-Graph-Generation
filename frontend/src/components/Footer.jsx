@@ -79,7 +79,7 @@ const Footer = () => {
                     <Button
                       component={Link}
                       to={item.path || "/"}
-                      onClick={handleScrollToTop} 
+                      onClick={handleScrollToTop}
                       sx={{
                         justifyContent: "flex-start",
                         color: "#b0c4de",

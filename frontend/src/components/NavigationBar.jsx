@@ -1,4 +1,3 @@
-// NavigationBar.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -110,7 +109,7 @@ const NavigationBar = () => {
             <Box sx={{ display: "flex", gap: 2 }}>
               <Button
                 variant="outlined"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/login")}
                 sx={outlineBtnStyle}
               >
                 Login
@@ -156,14 +155,14 @@ const NavigationBar = () => {
           </ListItem>
           <ListItem
             button
-            onClick={() => handleNavigation("/graph-visualization")}
+            onClick={() => handleNavigation("/existing-connections")}
           >
             <ListItemText primary="Chat" />
           </ListItem>
           <ListItem button onClick={() => handleNavigation("/docs")}>
             <ListItemText primary="Docs" />
           </ListItem>
-          <ListItem button onClick={() => handleNavigation("/")}>
+          <ListItem button onClick={() => handleNavigation("/login")}>
             <ListItemText primary="Login" />
           </ListItem>
           <ListItem button onClick={() => handleNavigation("/signup")}>
