@@ -33,11 +33,11 @@ function App() {
           <Router>
             <Routes>
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup/" element={<SignUpPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
               <Route path="/home" element={<LandingPage />} />
-              <Route path="/about/" element={<AboutUs />} />
-              <Route path="/contact/" element={<ContactUs />} />
-              <Route path="/privacy/" element={<PrivacyPolicy />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route
                 path="/existing-connections"
                 element={
@@ -71,10 +71,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/forgot-password/"
-                element={<ForgotPasswordPage />}
-              />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             </Routes>
           </Router>
         </div>
