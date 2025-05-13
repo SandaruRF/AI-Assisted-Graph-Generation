@@ -13,12 +13,12 @@ import {
   CssBaseline,
   GlobalStyles
 } from '@mui/material';
-import {GoogleLogin} from '@react-oauth/google'
+import { GoogleLogin } from '@react-oauth/google'
 import { styled } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-
+import GithubIcon from '@mui/icons-material/GitHub';
 import { useNavigate } from 'react-router-dom';
-import { handleSignUp, handleGoogleLogin,handleGitHubAuth } from '../services/api';
+import { handleSignUp, handleGoogleLogin, handleGitHubAuth } from '../services/api';
 import PasswordStrengthBar from "../components/PasswordStrengthBar";
 
 
@@ -41,7 +41,7 @@ const Logo = styled('div')(({ theme }) => ({
 
 
 const SignUpPage = () => {
-  
+
 
 
 
@@ -63,17 +63,17 @@ const SignUpPage = () => {
   };
 
   //handle github login
-  
 
-  const handleGitHubLogin =  () => {
-    
-    handleGitHubAuth(setError);   
+
+  const handleGitHubLogin = () => {
+
+    handleGitHubAuth(setError);
   };
 
- 
 
 
-  
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -232,24 +232,42 @@ const SignUpPage = () => {
             <Box sx={{ maxWidth: 400, width: '100%' }}>
               {/* SSO Login Options */}
 
-              
+
 
               <Container>
-                <GoogleLogin  onSuccess={handleGoogle} onError={() => console.log("Login Failed")  }  />
+                <GoogleLogin onSuccess={handleGoogle} onError={() => console.log("Login Failed")} />
               </Container>
 
 
               <Button
-            variant="contained"
-            color="primary"
-            onClick={handleGitHubLogin}
-            fullWidth
-          >
-            Login with GitHub
-          </Button>
-          {error && <Typography color="error">{error}</Typography>}
+                variant="contained"
+                color="primary"
+                onClick={handleGitHubLogin}
+                fullWidth
+                startIcon={<GithubIcon />}
+                sx={{
+                  width: 350,
+                  mt: 2,
+                  mb: 2,
+                  ml:3.5,
+                  textTransform: 'none',
+                  borderRadius: '3px',
+                  backgroundColor: 'white',
+                  color: 'rgba(0, 0, 0, 1)',
+                  borderColor: '#ddd',
+                  
+                  fontWeight: 500,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                    borderColor: '#ccc',
+                  },
+                }}
+              >
+                Login with GitHub
+              </Button>
+              {error && <Typography color="error">{error}</Typography>}
 
-              
+
 
 
 
