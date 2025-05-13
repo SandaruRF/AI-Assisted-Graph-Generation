@@ -269,10 +269,10 @@ const mockData2 = [
 
 // num_4_cat_0_temp_1  --  mockData1  ***open, high, low, close, time***
 // num_4_cat_1_temp_1  --  mockData2  ***open, high, low, close, category, time***
-const type = "num_4_cat_1_temp_1";
-const mockData = mockData2;
 
-const CandlestickChart = () => {
+const CandlestickChart = ({ typeString, dataset }) => {
+  const type = typeString;
+  const mockData = dataset;
   if (!mockData || mockData.length === 0) return null;
 
   let data = [];

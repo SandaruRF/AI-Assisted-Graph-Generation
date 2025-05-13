@@ -64,10 +64,8 @@ const mockData5 = [
 // num_1_cat_0_temp_1  --  mockData2
 // num_1_cat_1_temp_1  --  mockData4
 // num_n_cat_1_temp_0  --  mockData5
-const type = "num_1_cat_1_temp_1";
-const mockData = mockData4;
 
-const generateGroupedOrStackedAxis = (axis, data, orientation = "v") => {
+const generateGroupedOrStackedAxis = (type, axis, data, orientation = "v") => {
   const xKey = Object.keys(data[0])[0];
   let yKey;
 
@@ -83,7 +81,7 @@ const generateGroupedOrStackedAxis = (axis, data, orientation = "v") => {
   }
 };
 
-const generateGroupedOrStackedData = (data, orientation = "v") => {
+const generateGroupedOrStackedData = (type, data, orientation = "v") => {
   if (type === "num_1_cat_2_temp_0" || type === "num_1_cat_1_temp_1") {
     const legendGroupTitle = Object.keys(data[0])[1];
     const cat1 = [...new Set(data.map((item) => Object.values(item)[0]))];
@@ -120,7 +118,9 @@ const generateGroupedOrStackedData = (data, orientation = "v") => {
   }
 };
 
-const BarChart = () => {
+const BarChart = ({ typeString, dataset }) => {
+  const type = typeString;
+  const mockData = dataset;
   const charts = [];
 
   if (type === "num_1_cat_1_temp_0" || type === "num_1_cat_0_temp_1") {
@@ -148,33 +148,33 @@ const BarChart = () => {
   ) {
     charts.push({
       title: "Grouped Bar Chart",
-      xAxisTitle: generateGroupedOrStackedAxis("x", mockData, "v"),
-      yAxisTitle: generateGroupedOrStackedAxis("y", mockData, "v"),
-      data: generateGroupedOrStackedData(mockData, "v"),
+      xAxisTitle: generateGroupedOrStackedAxis(type, "x", mockData, "v"),
+      yAxisTitle: generateGroupedOrStackedAxis(type, "y", mockData, "v"),
+      data: generateGroupedOrStackedData(type, mockData, "v"),
       barmode: "group",
     });
 
     charts.push({
       title: "Stacked Bar Chart",
-      xAxisTitle: generateGroupedOrStackedAxis("x", mockData, "v"),
-      yAxisTitle: generateGroupedOrStackedAxis("y", mockData, "v"),
-      data: generateGroupedOrStackedData(mockData, "v"),
+      xAxisTitle: generateGroupedOrStackedAxis(type, "x", mockData, "v"),
+      yAxisTitle: generateGroupedOrStackedAxis(type, "y", mockData, "v"),
+      data: generateGroupedOrStackedData(type, mockData, "v"),
       barmode: "stack",
     });
 
     charts.push({
       title: "Horizontal Stacked Bar Chart",
-      xAxisTitle: generateGroupedOrStackedAxis("x", mockData, "h"),
-      yAxisTitle: generateGroupedOrStackedAxis("y", mockData, "h"),
-      data: generateGroupedOrStackedData(mockData, "h"),
+      xAxisTitle: generateGroupedOrStackedAxis(type, "x", mockData, "h"),
+      yAxisTitle: generateGroupedOrStackedAxis(type, "y", mockData, "h"),
+      data: generateGroupedOrStackedData(type, mockData, "h"),
       barmode: "stack",
     });
 
     charts.push({
       title: "Horizontal Grouped Bar Chart",
-      xAxisTitle: generateGroupedOrStackedAxis("x", mockData, "h"),
-      yAxisTitle: generateGroupedOrStackedAxis("y", mockData, "h"),
-      data: generateGroupedOrStackedData(mockData, "h"),
+      xAxisTitle: generateGroupedOrStackedAxis(type, "x", mockData, "h"),
+      yAxisTitle: generateGroupedOrStackedAxis(type, "y", mockData, "h"),
+      data: generateGroupedOrStackedData(type, mockData, "h"),
       barmode: "group",
     });
   }

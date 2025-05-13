@@ -26,10 +26,10 @@ const mockData2 = [
 
 // num_1_cat_1_temp_0  --  mockData1
 // num_1_cat_2_temp_0  --  mockData2
-const type = "num_1_cat_2_temp_0";
-const mockData = mockData2;
 
-const PieChart = () => {
+const PieChart = ({ typeString, dataset }) => {
+  const type = typeString;
+  const mockData = dataset;
   if (!mockData || mockData.length === 0) return null;
 
   const charts = [];
@@ -171,7 +171,6 @@ const PieChart = () => {
 
     const annotations = categories1.map((category1, i) => {
       const j = i < 2 ? 0 : 1;
-      console.log(category1);
       return {
         text: category1,
         showarrow: false,

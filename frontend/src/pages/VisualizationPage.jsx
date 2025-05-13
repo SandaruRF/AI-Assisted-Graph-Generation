@@ -9,8 +9,9 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import TypewriterWords from "../components/TypewriterWords";
+import TypewriterWords from "../components/chat_interface/TypewriterWords";
 import TraceTimeline from "../components/chat_interface/TraceTimeline";
+import Graph from "../components/chat_interface/Graph";
 
 const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
   <Stack spacing={2}>
@@ -96,17 +97,17 @@ const VisualizationPage = () => {
     socketRef.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log("Received message:", data); // For debugging
+        // console.log("Received message:", data); // For debugging
 
         if (data.type === "update") {
           const currentIndex = latestIndexRef.current;
-          console.log("Current latest index:", currentIndex);
+          // console.log("Current latest index:", currentIndex);
           setTracesHistory((prev) => ({
             ...prev,
             [currentIndex]: [...(prev[currentIndex] || []), data.message],
           }));
         } else if (data.type === "final") {
-          console.log("Final result received:", data.result);
+          // console.log("Final result received:", data.result);
           setResultHistory((prev) => [...prev, data.result]);
         } else if (data.type === "error") {
           console.error("Error from server:", data.message);
@@ -256,7 +257,13 @@ const VisualizationPage = () => {
                   }}
                 >
                   <TypewriterWords text={resultHistory[index].response} />
-                  <Button>Hello</Button>
+                  <Graph
+                    num_numeric={resultHistory[index].num_numeric}
+                    num_cat={resultHistory[index].num_cat}
+                    num_temporal={resultHistory[index].num_temporal}
+                    types={resultHistory[index].ranked_graphs}
+                    data={resultHistory[index].rearranged_data}
+                  />
                 </Box>
               )}
             </React.Fragment>

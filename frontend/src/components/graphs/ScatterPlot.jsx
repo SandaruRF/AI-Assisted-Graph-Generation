@@ -233,10 +233,10 @@ const mockData9 = [
 // num_1_cat_0_temp_1  --  mockData7
 // num_2_cat_2_temp_0  --  mockData8   ***8 unique categories only***
 // num_3_cat_2_temp_0  --  mockData9   ***8 unique categories only***
-const type = "num_3_cat_2_temp_0";
-const mockData = mockData9;
 
-const ScatterPlot = () => {
+const ScatterPlot = ({ typeString, dataset }) => {
+  const type = typeString;
+  const mockData = dataset;
   if (!mockData || mockData.length === 0) return null;
 
   let data = [];

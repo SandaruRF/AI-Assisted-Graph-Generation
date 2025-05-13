@@ -117,10 +117,10 @@ const mockData5 = [
 // num_1_cat_0_temp_1  --  mockData3
 // num_n_cat_0_temp_0  --  mockData4
 // num_0_cat_1_temp_0  --  mockData5
-const type = "num_0_cat_1_temp_0";
-const mockData = mockData5;
 
-const Histogram = () => {
+const Histogram = ({ typeString, dataset }) => {
+  const type = typeString;
+  const mockData = dataset;
   if (!mockData || mockData.length === 0) return null;
 
   const charts = [];
