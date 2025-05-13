@@ -235,21 +235,34 @@ const LoginPage = () => {
               </Container>
 
 
-              <SSOButton
-                variant="outlined"
-                startIcon={<GitHubIcon />}
-                endIcon={<Box component="span" sx={{ ml: 'auto' }}>›</Box>}
-              >
-                Log in with GitHub
-              </SSOButton>
 
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleGitHubLogin}
                 fullWidth
+                startIcon={<GitHubIcon />}
+                sx={{
+                  width: 350,
+                  mt: 2,
+                  mb: 2,
+                  ml: 3.5,
+                  textTransform: 'none',
+                  borderRadius: '3px',
+                  backgroundColor: 'white',
+                  color: 'rgba(0, 0, 0, 1)',
+                  transition: 'all 0.3s ease-in-out',
+                  borderColor: '#ddd',
+
+                  fontWeight: 500,
+
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                    borderColor: '#ccc',
+                  },
+                }}
               >
-                Login with GitHub
+                Sign in with GitHub
               </Button>
 
 

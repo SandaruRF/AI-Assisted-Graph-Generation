@@ -249,21 +249,23 @@ const SignUpPage = () => {
                   width: 350,
                   mt: 2,
                   mb: 2,
-                  ml:3.5,
+                  ml: 3.5,
                   textTransform: 'none',
                   borderRadius: '3px',
                   backgroundColor: 'white',
                   color: 'rgba(0, 0, 0, 1)',
+                  transition: 'all 0.3s ease-in-out',
                   borderColor: '#ddd',
-                  
+
                   fontWeight: 500,
+
                   '&:hover': {
                     backgroundColor: '#f5f5f5',
                     borderColor: '#ccc',
                   },
                 }}
               >
-                Login with GitHub
+                Sign in with GitHub
               </Button>
               {error && <Typography color="error">{error}</Typography>}
 
@@ -409,7 +411,9 @@ const SignUpPage = () => {
                   }}
 
                 />
-                <PasswordStrengthBar password={formData.password} />
+                {formData.password.length > 0 && (
+                  <PasswordStrengthBar password={formData.password} />
+                )}
                 {error && <Typography color="error">{error}</Typography>}
                 <Button
                   type="submit"
