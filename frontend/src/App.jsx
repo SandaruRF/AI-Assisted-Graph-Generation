@@ -8,11 +8,9 @@ import EditDatabaseConnection from "./pages/EditDatabaseConnection";
 import VisualizationPage from "./pages/VisualizationPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import Test from "./pages/Test";
 import Loading from "./components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import BarChart from "./components/graphs/BarChart";
 
 function App() {
   const [loading, setLoading] = useState(true);
