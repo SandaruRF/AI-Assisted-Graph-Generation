@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import { useLocation } from "react-router-dom";
 import {
   Box,
   Paper,
@@ -9,7 +9,9 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import TypewriterWords from "../components/TypewriterWords";
+import TypewriterWords from "../components/chat_interface/TypewriterWords";
+import TraceTimeline from "../components/chat_interface/TraceTimeline";
+import Graph from "../components/chat_interface/Graph";
 
 const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
   <Stack spacing={2}>
@@ -77,12 +79,61 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
 );
 
 const VisualizationPage = () => {
+  const location = useLocation();
+  const sessionId = location.state?.sessionId;
   const [userPrompt, setUserPrompt] = useState("");
   const [promptHistory, setPromptHistory] = useState([]);
   const [resultHistory, setResultHistory] = useState([]);
+  const [tracesHistory, setTracesHistory] = useState({});
   const [isFirstSend, setIsFirstSend] = useState(true);
   const scrollContainerRef = useRef(null);
   const lastPromptRef = useRef(null);
+  const socketRef = useRef(null);
+  const latestIndexRef = useRef(0);
+
+  useEffect(() => {
+    socketRef.current = new WebSocket("ws://localhost:8000/ws");
+
+    socketRef.current.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        // console.log("Received message:", data); // For debugging
+
+        if (data.type === "update") {
+          const currentIndex = latestIndexRef.current;
+          // console.log("Current latest index:", currentIndex);
+          setTracesHistory((prev) => ({
+            ...prev,
+            [currentIndex]: [...(prev[currentIndex] || []), data.message],
+          }));
+        } else if (data.type === "final") {
+          // console.log("Final result received:", data.result);
+          setResultHistory((prev) => [...prev, data.result]);
+        } else if (data.type === "error") {
+          console.error("Error from server:", data.message);
+          setTracesHistory((prev) => [...prev, `Error: ${data.message}`]);
+        } else {
+          // Handle legacy format (your original format)
+          if (data.result) {
+            setResultHistory((prev) => [...prev, data.result]);
+          }
+          if (data.message) {
+            setTracesHistory((prev) => [...prev, data.message]);
+          }
+        }
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
+      }
+    };
+
+    socketRef.current.onclose = () => {
+      console.log("WebSocket closed");
+    };
+
+    return () => {
+      socketRef.current?.close();
+    };
+  }, []);
 
   const handleSend = async () => {
     if (userPrompt.trim() === "") return;
@@ -91,21 +142,26 @@ const VisualizationPage = () => {
       setIsFirstSend(false);
     }
 
-    setPromptHistory((prev) => [...prev, userPrompt]);
-    setUserPrompt("");
+    // Create the message object similar to what you were sending with Axios
+    const messageObject = {
+      user_prompt: userPrompt,
+      session_id: sessionId,
+    };
 
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/send-user-prompt",
-        {
-          user_prompt: userPrompt,
-        }
-      );
-      const newResult = response.data.result;
-      console.log("Response from backend:", newResult);
-      setResultHistory((prev) => [...prev, newResult]);
-    } catch (error) {
-      console.log("Error sending user prompt:", error);
+    // Convert the object to a JSON string for WebSocket transmission
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify(messageObject));
+
+      // Add the user prompt to history
+      setPromptHistory((prev) => {
+        const newLength = prev.length;
+        // Update both the state and the ref
+        latestIndexRef.current = newLength;
+        return [...prev, userPrompt];
+      });
+      setUserPrompt("");
+    } else {
+      console.error("WebSocket is not open.");
     }
   };
 
@@ -170,6 +226,9 @@ const VisualizationPage = () => {
                 <Typography>{prompt}</Typography>
               </Paper>
 
+              {/* Traces */}
+              <TraceTimeline messages={tracesHistory[index] || []} />
+
               {/* Response */}
               {promptHistory[index] && !resultHistory[index] && (
                 <Box sx={{ pl: 1 }}>
@@ -198,6 +257,13 @@ const VisualizationPage = () => {
                   }}
                 >
                   <TypewriterWords text={resultHistory[index].response} />
+                  <Graph
+                    num_numeric={resultHistory[index].num_numeric}
+                    num_cat={resultHistory[index].num_cat}
+                    num_temporal={resultHistory[index].num_temporal}
+                    types={resultHistory[index].ranked_graphs}
+                    data={resultHistory[index].rearranged_data}
+                  />
                 </Box>
               )}
             </React.Fragment>

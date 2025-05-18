@@ -1,8 +1,9 @@
 import os
 import google.generativeai as genai
-from config import settings
-from utils.logging import logger
 import json
+
+from app.config import settings
+from app.utils.logging import logger
 
 class IntentClassifier:
     def __init__(self):

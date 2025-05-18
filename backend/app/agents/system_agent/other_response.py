@@ -1,19 +1,20 @@
-import os
 import google.generativeai as genai
-from config import settings
-from utils.logging import logger
-import json
+
+from app.config import settings
+from app.utils.logging import logger
+from app.state import State
 
 class System:
     def __init__(self):
         genai.configure(api_key=settings.GEMINI_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
-    def other_response(self, query: str) -> str:
+    def other_response(self, state: State) -> str:
         prompt = f"""
         You are a friendly assistant in a system called "AI-Assisted Graph Generator", designed to help users generate graphs, gain insights, and explore structured data through natural language.
 
-        The user has sent the following query: "{query}"
+        The user has sent the following query: "{state.user_prompt}"
+        This is the metadata related to the connected database: "{state.metadata}"
 
         Your task:
         - Respond politely and helpfully.
