@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles"; // Import ThemeProvider and createTheme
 import App from "./App";
 
+
+
 // Create a default theme
 const theme = createTheme();
 
