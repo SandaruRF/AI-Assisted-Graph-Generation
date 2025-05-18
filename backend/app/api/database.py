@@ -3,10 +3,10 @@ from pymongo import MongoClient
 from bson import ObjectId
 from typing import  Union
 
-from models.connection_form import ConnectionData, ConnectionStringData
-from config import settings
-from utils.logging import logger
-from utils.auth import get_current_user
+from app.models.connection_form import ConnectionData, ConnectionStringData
+from app.config import settings
+from app.utils.logging import logger
+from app.utils.auth import get_current_user
 
 client = MongoClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]

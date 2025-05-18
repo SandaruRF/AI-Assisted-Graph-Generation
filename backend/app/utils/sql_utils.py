@@ -1,6 +1,6 @@
 from sqlalchemy.engine import URL
 
-from models.database_model import Database, DatabaseType
+from app.models.database_model import Database, DatabaseType
 
 def generate_connection_string(db: Database) -> str:
     """Generates a database connection string based on the selected database type."""
