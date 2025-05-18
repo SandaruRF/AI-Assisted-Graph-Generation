@@ -1,10 +1,11 @@
 from fastapi import APIRouter,HTTPException
-from config import settings,db
 import httpx
-from models.user_detail import Token,TokenModel
-from utils.auth import ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token
 from datetime import timedelta
-from utils.logging import logger
+
+from app.models.user_detail import Token,TokenModel
+from app.utils.auth import ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token
+from app.utils.logging import logger
+from app.config import settings,db
 
 
 client_id = settings.GOOGLE_CLIENT_ID

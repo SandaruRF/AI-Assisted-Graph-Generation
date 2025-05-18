@@ -1,11 +1,13 @@
 from fastapi import APIRouter,HTTPException
-from config import settings,db
 import httpx
-from models.user_detail import Token,TokenModel,GitHubAuthRequest
-from utils.auth import ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token
 from datetime import timedelta
-from utils.logging import logger
 import requests
+
+from app.models.user_detail import Token,TokenModel,GitHubAuthRequest
+from app.utils.auth import ACCESS_TOKEN_EXPIRE_MINUTES,create_access_token
+from app.utils.logging import logger
+from app.config import settings,db
+
 
 client_id = settings.GITHUB_CLIENT_ID
 client_secret = settings.GITHUB_CLIENT_SECRET
