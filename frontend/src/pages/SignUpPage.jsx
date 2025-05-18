@@ -59,8 +59,8 @@ const SignUpPage = () => {
         navigate("/");
       }
     } catch (err) {
-      console.error("Error during sign-up:", err);
-      setError("Sign-up failed. Please try again.");
+      console.error("Error during signup:", err);
+      setError("Signup failed. Please try again.");
     }
   };
 
@@ -277,7 +277,7 @@ const SignUpPage = () => {
           <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
             <Typography variant="body2" sx={{ color: "#0277bd" }}>
               Already have an account?
-              <Link href="/" sx={{ ml: 1, color: "#0277bd" }}>
+              <Link href="/login" sx={{ ml: 1, color: "#0277bd" }}>
                 Log in
               </Link>
             </Typography>

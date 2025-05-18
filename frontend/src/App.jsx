@@ -11,6 +11,10 @@ import SignUpPage from "./pages/SignUpPage";
 import Test from "./pages/Test";
 import Loading from "./components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import LandingPage from "./pages/LandingPage";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import BarChart from "./components/graphs/BarChart";
 
@@ -31,7 +35,12 @@ function App() {
         <div>
           <Router>
             <Routes>
-              <Route path="/" element={<LoginPage />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route
                 path="/existing-connections"
                 element={
@@ -65,12 +74,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/sign-up/" element={<SignUpPage />} />
-              <Route
-                path="/forgot-password/"
-                element={<ForgotPasswordPage />}
-              />
-              <Route path="/bar-chart" element={<BarChart />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             </Routes>
           </Router>
         </div>
