@@ -495,7 +495,7 @@ const SignUpPage = () => {
               >
                 Already have an account?
               </Typography>
-              <Link href="/sign-up" variant="body2" sx={{ color: "#0069FF" }}>
+              <Link href="/signup" variant="body2" sx={{ color: "#0069FF" }}>
                 Create one here
               </Link>
             </Box>
