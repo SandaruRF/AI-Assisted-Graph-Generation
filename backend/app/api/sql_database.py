@@ -3,11 +3,11 @@ from fastapi.encoders import jsonable_encoder
 from bson import ObjectId
 import uuid
 
-from models.database_model import Database, DatabaseType
-from agents.sql_agent.metadata_retriever import reflect_sql_metadata
-from utils.sql_utils import generate_connection_string
-from utils.logging import logger
-from config import db
+from app.models.database_model import Database, DatabaseType
+from app.agents.sql_agent.metadata_retriever import reflect_sql_metadata
+from app.utils.sql_utils import generate_connection_string
+from app.utils.logging import logger
+from app.config import db
 
 #Collection 
 connection_collection = db["DatabaseDetails"]

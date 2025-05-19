@@ -3,7 +3,7 @@ from sqlalchemy.sql import text
 from sqlalchemy import create_engine
 from typing import List, Dict, Any
 
-from api.sql_database import session_store
+from app.api.sql_database import session_store
 
 def execute_query_with_session(session_id:str, sql_query:str) -> List[Dict[str, Any]]:
     if session_id not in session_store:
@@ -24,4 +24,9 @@ def execute_query_with_session(session_id:str, sql_query:str) -> List[Dict[str, 
         return records
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating SQL query: {str(e)}")
+        import traceback
+        traceback_str = traceback.format_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error generating SQL query: {str(e)}\n\nTraceback:\n{traceback_str}"
+        )

@@ -1,8 +1,8 @@
 import google.generativeai as genai
 
-from config import settings
-from utils.logging import logger
-from state import State
+from app.config import settings
+from app.utils.logging import logger
+from app.state import State
 
 class System:
     def __init__(self):
