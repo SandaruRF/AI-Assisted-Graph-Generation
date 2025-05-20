@@ -286,7 +286,8 @@ const LandingPage = () => {
 
 
  {/* Features Section */}
-<Container sx={{ py: 10 }}>
+<Container maxWidth="xl" sx={{ py: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
   <Typography
     variant="h4"
     align="center"
@@ -296,51 +297,66 @@ const LandingPage = () => {
       background: 'linear-gradient(45deg, #045D9F 30%, #078DEB 90%)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
-      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
+      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
     }}
   >
     Unlock the Power of AI-Driven Data Visualization
   </Typography>
 
-  <Grid container spacing={4}>
+  <Grid
+  container
+  spacing={4}
+  justifyContent="center"
+  alignItems="stretch"
+>
     {[
       {
-        title: "AI Diagram Generator",
+        title: 'AI Diagram Generator',
         description:
-          "Convert your raw data into sleek, interactive graphs with a few simple prompts. Skip the design struggle and get polished visuals instantly.",
-        image: "/images/ai.png",
+          'Convert your raw data into sleek, interactive graphs with a few simple prompts. Skip the design struggle and get polished visuals instantly.',
+        image: '/images/ai.png',
       },
       {
-        title: "Multi-Database Compatibility",
+        title: 'Multi-Database Compatibility',
         description:
-          "Connect easily with SQLite, MySQL, PostgreSQL, and more for flexible, secure, and scalable data integration across any environment.",
-        image: "/images/db-compatibility.png",
+          'Connect easily with SQLite, MySQL, PostgreSQL, and more for flexible, secure, and scalable data integration across any environment.',
+        image: '/images/db-compatibility.png',
       },
       {
-        title: "Advanced Data Protection",
+        title: 'Advanced Data Protection',
         description:
-          "Your data is safe with bank-grade encryption, multi-layer authentication, and real-time threat detection ensuring complete privacy.",
-        image: "/images/security.png",
+          'Your data is safe with bank-grade encryption, multi-layer authentication, and real-time threat detection ensuring complete privacy.',
+        image: '/images/security.png',
       },
-
     ].map((feature, index) => (
-      <Grid item xs={12} md={4} key={index}>
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        md={4}
+        key={index}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          textAlign: 'center',
+        }}
+      >
         <Box
           sx={{
-            boxShadow: 3 ,
+            width: '100%',
+            maxWidth: 360,
+            boxShadow: 3,
             borderRadius: 4,
             p: 4,
-            textAlign: "center",
-            transition: "all 0.3s ease",
-            height: "100%",
-            backgroundColor: '#EAF2F8', // Light blue base color
+            backgroundColor: '#EAF2F8',
+            transition: 'all 0.3s ease',
             '&:hover': {
-              transform: "translateY(-8px)",
-              boxShadow: "0 8px 24px rgba(4, 93, 159, 0.2)",
-              backgroundColor: '#001F3F', // Darker blue on hover
+              transform: 'translateY(-8px)',
+              boxShadow: '0 8px 24px rgba(4, 93, 159, 0.2)',
+              backgroundColor: '#001F3F',
               '& h6, & p': {
-                color: 'white'
-              }
+                color: 'white',
+              },
             },
           }}
         >
@@ -350,27 +366,33 @@ const LandingPage = () => {
             alt={feature.title}
             sx={{
               height: 120,
-              width: "auto",
+              width: 'auto',
               mb: 3,
-              objectFit: "contain",
-              filter: "brightness(1)",
-              transition: "filter 0.3s ease",
+              objectFit: 'contain',
+              filter: 'brightness(1)',
+              transition: 'filter 0.3s ease',
               '&:hover': {
-                filter: "brightness(1.1)",
+                filter: 'brightness(1.1)',
               },
             }}
           />
-          <Typography variant="h6" sx={{ 
-            fontWeight: 600, 
-            mb: 1, 
-            color: '#0d47a1' // Dark blue text
-          }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              mb: 1,
+              color: '#0d47a1',
+            }}
+          >
             {feature.title}
           </Typography>
-          <Typography variant="body2" sx={{ 
-            color: '#191970', // Medium blue text
-            lineHeight: 1.6 
-          }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: '#191970',
+              lineHeight: 1.6,
+            }}
+          >
             {feature.description}
           </Typography>
         </Box>
@@ -379,6 +401,8 @@ const LandingPage = () => {
   </Grid>
 </Container>
 
+
+{/*image carousel*/}
 <Container sx={{ 
   py: 8, 
   position: 'relative', 
@@ -505,8 +529,14 @@ const LandingPage = () => {
 </Container>
       
 {/* How It Works Section */}
-<Box sx={{ py: 12, background: "linear-gradient(to bottom, #f8fbff, #ffffff)" }}>
-  <Container maxWidth="lg">
+<Box sx={{ 
+  py: 12,
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center'
+}}>
+  <Container maxWidth="lg" sx={{ width: '100%' }}>
     <motion.div
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
@@ -526,7 +556,18 @@ const LandingPage = () => {
         How It Works
       </Typography>
 
-      <Grid container spacing={6} justifyContent="center">
+    <Grid 
+  container 
+  spacing={4} 
+  sx={{ 
+    width: '100%', 
+    margin: 0, 
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    flexWrap: 'nowrap',
+  }}
+>
         {[
           // ... your step data array
           {
@@ -546,8 +587,14 @@ const LandingPage = () => {
           }
 
         ].map((step, index) => (
-          <Grid item xs={12} md={4} key={index}>
+           <Grid item xs={12} md={4} key={index} sx={{ 
+            display: 'flex',
+            justifyContent: 'center',
+           
+          }}>
             <Box sx={{ 
+              width: '100%',
+              maxWidth: 360,
               position: "relative",
               px: 2,
               "&:not(:last-child)::after": {
