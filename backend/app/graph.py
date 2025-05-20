@@ -9,6 +9,7 @@ from app.agents.intent_agent.intent_classifier import IntentClassifier
 from app.agents.system_agent.other_response import System
 from app.agents.sql_agent.metadata_retriever import get_cached_metadata
 from app.agents.sql_agent.sql_query_generator import SQLQueryGenerator
+from app.agents.sql_agent.sql_validator import SQLQueryValidator
 from app.agents.sql_agent.query_executor import execute_query_with_session
 from app.agents.visualization_agent.feature_extractor import process_and_clean_dataset
 from app.agents.visualization_agent.graph_recommender import get_graph_types, GraphRecommender
@@ -63,11 +64,13 @@ async def sql_generator(state: State):
         await send_websocket_update(state.session_id, update_message)
 
     sql_query_generator = SQLQueryGenerator()
+    sql_query_validator = SQLQueryValidator()
     db_info = get_cached_metadata(state.session_id)
     metadata = db_info["metadata"]
     sql_dialect = db_info["sql_dialect"]
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect)
-    response = sql_query
+    validated_sql_query = sql_query_validator.validate_sql_query(sql_query, metadata, sql_dialect)
+    response = validated_sql_query
     
     return state.copy(update={
         "messages": messages,
