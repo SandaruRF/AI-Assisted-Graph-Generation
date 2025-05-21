@@ -36,7 +36,7 @@ async def intent_classifier(state: State):
     classifier = IntentClassifier()
     intents = classifier.classify_intent(state.user_prompt)
     print("Intent identification successfull.")
-    return state.copy(update={"intents": intents["intent"]})
+    return state.copy(update={"intents": intents["intent"]})  # Make sure this always returns a State object
 
 
 async def metadata_retriever(state: State):
@@ -64,13 +64,11 @@ async def sql_generator(state: State):
         await send_websocket_update(state.session_id, update_message)
 
     sql_query_generator = SQLQueryGenerator()
-    sql_query_validator = SQLQueryValidator()
     db_info = get_cached_metadata(state.session_id)
     metadata = db_info["metadata"]
     sql_dialect = db_info["sql_dialect"]
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect)
-    validated_sql_query = sql_query_validator.validate_sql_query(sql_query, metadata, sql_dialect)
-    response = validated_sql_query
+    response = sql_query
     
     return state.copy(update={
         "messages": messages,
@@ -78,6 +76,25 @@ async def sql_generator(state: State):
         "sql_dialect": sql_dialect,
         "sql_query": sql_query,
         "response": response
+    })
+    
+async def sql_validator(state: State):
+    """Validate the generated SQL query."""
+    update_message = f"Validating SQL query..."
+    messages = state.messages.copy()
+    messages.append(update_message)
+    if state.session_id in connected_clients:
+        await send_websocket_update(state.session_id, update_message)
+
+    sql_validator = SQLQueryValidator()
+    db_info = get_cached_metadata(state.session_id)
+    metadata = db_info["metadata"]
+    sql_dialect = db_info["sql_dialect"]
+    sql_query = sql_validator.validate_sql_query(state.sql_query, metadata, sql_dialect)
+    
+    return state.copy(update={
+        "messages": messages,
+        "sql_query": sql_query
     })
 
 
@@ -91,7 +108,7 @@ async def sql_executor(state: State):
 
     original_data = execute_query_with_session(state.session_id, state.sql_query)
     
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages,
         "original_data": original_data
     })
@@ -158,7 +175,7 @@ async def temp_response_generator(state: State):
                     f"Suitable graph types: {state.suitable_graphs}\n\n"
                     f"Recommended graph types: {state.ranked_graphs}")
 
-    return state.copy(update={"response": response})
+    return state.model_copy(update={"response": response})
 
 
 async def response_generator(state: State):
@@ -266,6 +283,7 @@ builder = StateGraph(State)
 builder.add_node("intent_classifier", intent_classifier)
 builder.add_node("metadata_retriever", metadata_retriever)
 builder.add_node("sql_generator", sql_generator)
+builder.add_node("sql_validator", sql_validator)
 builder.add_node("sql_executor", sql_executor)
 builder.add_node("data_preprocessor", data_preprocessor)
 builder.add_node("graph_ranker", graph_ranker)
@@ -290,7 +308,8 @@ builder.add_conditional_edges(
     },
 )
 builder.add_edge("metadata_retriever", "response_generator")
-builder.add_edge("sql_generator", "sql_executor")
+builder.add_edge("sql_generator", "sql_validator")
+builder.add_edge("sql_validator", "sql_executor")
 builder.add_edge("sql_executor", "data_preprocessor")
 builder.add_edge("data_preprocessor", "graph_ranker")
 builder.add_edge("graph_ranker", "temp_response_generator")

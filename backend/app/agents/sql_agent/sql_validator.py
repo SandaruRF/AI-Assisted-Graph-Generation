@@ -1,13 +1,14 @@
 import google.generativeai as genai
 from app.config import settings
 from app.utils.logging import logger
+import json
 
 class SQLQueryValidator:
     def __init__(self):
         genai.configure(api_key=settings.GEMINI_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
 
-    def validate_sql_query(self, sql_query:str, metadata:str, sql_dialect:str)-> str:
+    def validate_sql_query(self, sql_query:str, metadata:str, sql_dialect:str) -> str:
         print(f"SQL Query: {sql_query}")
         print(f"Schema: {metadata}")
         print(f"SQL Dialect: {sql_dialect}")
@@ -56,18 +57,24 @@ class SQLQueryValidator:
         """
         try:
             response = self.model.generate_content(prompt)
+            
         
             if not response or not response.text:
                 logger.error("Error: Received an empty response from Gemini API.")
-                return "SQL_VALIDATION_FAILED"
+                return sql_query
 
             result = response.text.strip()
             result = result.replace("```sql", "").replace("```", "").strip()
+            parsed_result = json.loads(result)
             logger.info("SQL query validated successfully.")
-            logger.info(f"Validated SQL query: {result}")
-            return result['corrected_query']
+            logger.info(f"Validated SQL query: {parsed_result}")
+            if parsed_result['valid']:
+                logger.info("SQL query is valid.")
+                return sql_query
+            else:
+                return parsed_result['corrected_query']
         except Exception as e:
                 logger.error(f"Error validating sql query: {e}")
-                return "SQL_VALIDATION_FAILD"
+                return sql_query
     
     
