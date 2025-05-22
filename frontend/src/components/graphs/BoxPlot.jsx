@@ -1,190 +1,190 @@
 import Plot from "react-plotly.js";
 
-const mockData1 = [
-  { score: 88 },
-  { score: 92 },
-  { score: 76 },
-  { score: 81 },
-  { score: 95 },
-  { score: 67 },
-  { score: 90 },
-  { score: 85 },
-];
+// const mockData1 = [
+//   { score: 88 },
+//   { score: 92 },
+//   { score: 76 },
+//   { score: 81 },
+//   { score: 95 },
+//   { score: 67 },
+//   { score: 90 },
+//   { score: 85 },
+// ];
 
-const mockData2 = [
-  { job_role: "Engineer", salary: 75000 },
-  { job_role: "Engineer", salary: 72000 },
-  { job_role: "Engineer", salary: 78000 },
-  { job_role: "Manager", salary: 95000 },
-  { job_role: "Manager", salary: 91000 },
-  { job_role: "Manager", salary: 97000 },
-  { job_role: "Analyst", salary: 62000 },
-  { job_role: "Analyst", salary: 60000 },
-  { job_role: "Analyst", salary: 63000 },
-  { job_role: "Designer", salary: 68000 },
-  { job_role: "Designer", salary: 70000 },
-  { job_role: "Designer", salary: 69000 },
-];
+// const mockData2 = [
+//   { job_role: "Engineer", salary: 75000 },
+//   { job_role: "Engineer", salary: 72000 },
+//   { job_role: "Engineer", salary: 78000 },
+//   { job_role: "Manager", salary: 95000 },
+//   { job_role: "Manager", salary: 91000 },
+//   { job_role: "Manager", salary: 97000 },
+//   { job_role: "Analyst", salary: 62000 },
+//   { job_role: "Analyst", salary: 60000 },
+//   { job_role: "Analyst", salary: 63000 },
+//   { job_role: "Designer", salary: 68000 },
+//   { job_role: "Designer", salary: 70000 },
+//   { job_role: "Designer", salary: 69000 },
+// ];
 
-const mockData3 = [
-  { month: "2024-01", sales: 100 },
-  { month: "2024-01", sales: 120 },
-  { month: "2024-01", sales: 105 },
-  { month: "2024-02", sales: 90 },
-  { month: "2024-02", sales: 110 },
-  { month: "2024-02", sales: 115 },
-  { month: "2024-03", sales: 130 },
-  { month: "2024-03", sales: 105 },
-  { month: "2024-03", sales: 125 },
-];
+// const mockData3 = [
+//   { month: "2024-01", sales: 100 },
+//   { month: "2024-01", sales: 120 },
+//   { month: "2024-01", sales: 105 },
+//   { month: "2024-02", sales: 90 },
+//   { month: "2024-02", sales: 110 },
+//   { month: "2024-02", sales: 115 },
+//   { month: "2024-03", sales: 130 },
+//   { month: "2024-03", sales: 105 },
+//   { month: "2024-03", sales: 125 },
+// ];
 
-const mockData4 = [
-  { school_type: "Public", gender: "Male", score: 78 },
-  { school_type: "Public", gender: "Male", score: 82 },
-  { school_type: "Public", gender: "Male", score: 75 },
-  { school_type: "Public", gender: "Female", score: 88 },
-  { school_type: "Public", gender: "Female", score: 91 },
-  { school_type: "Public", gender: "Female", score: 85 },
+// const mockData4 = [
+//   { school_type: "Public", gender: "Male", score: 78 },
+//   { school_type: "Public", gender: "Male", score: 82 },
+//   { school_type: "Public", gender: "Male", score: 75 },
+//   { school_type: "Public", gender: "Female", score: 88 },
+//   { school_type: "Public", gender: "Female", score: 91 },
+//   { school_type: "Public", gender: "Female", score: 85 },
 
-  { school_type: "Private", gender: "Male", score: 90 },
-  { school_type: "Private", gender: "Male", score: 87 },
-  { school_type: "Private", gender: "Male", score: 92 },
-  { school_type: "Private", gender: "Female", score: 95 },
-  { school_type: "Private", gender: "Female", score: 98 },
-  { school_type: "Private", gender: "Female", score: 93 },
-];
-const mockData5 = [
-  { height: 170, weight: 65, age: 25 },
-  { height: 165, weight: 60, age: 30 },
-  { height: 180, weight: 75, age: 28 },
-  { height: 172, weight: 68, age: 35 },
-  { height: 178, weight: 72, age: 40 },
-  { height: 160, weight: 55, age: 22 },
-  { height: 185, weight: 80, age: 33 },
-  { height: 168, weight: 62, age: 26 },
-  { height: 175, weight: 70, age: 31 },
-  { height: 169, weight: 64, age: 27 },
-];
+//   { school_type: "Private", gender: "Male", score: 90 },
+//   { school_type: "Private", gender: "Male", score: 87 },
+//   { school_type: "Private", gender: "Male", score: 92 },
+//   { school_type: "Private", gender: "Female", score: 95 },
+//   { school_type: "Private", gender: "Female", score: 98 },
+//   { school_type: "Private", gender: "Female", score: 93 },
+// ];
+// const mockData5 = [
+//   { height: 170, weight: 65, age: 25 },
+//   { height: 165, weight: 60, age: 30 },
+//   { height: 180, weight: 75, age: 28 },
+//   { height: 172, weight: 68, age: 35 },
+//   { height: 178, weight: 72, age: 40 },
+//   { height: 160, weight: 55, age: 22 },
+//   { height: 185, weight: 80, age: 33 },
+//   { height: 168, weight: 62, age: 26 },
+//   { height: 175, weight: 70, age: 31 },
+//   { height: 169, weight: 64, age: 27 },
+// ];
 
-const mockData6 = [
-  {
-    pulse_rate: 72,
-    blood_pressure: 118,
-    glucose_level: 95,
-    cholesterol_level: 180,
-  },
-  {
-    pulse_rate: 76,
-    blood_pressure: 120,
-    glucose_level: 90,
-    cholesterol_level: 185,
-  },
-  {
-    pulse_rate: 70,
-    blood_pressure: 115,
-    glucose_level: 92,
-    cholesterol_level: 175,
-  },
-  {
-    pulse_rate: 74,
-    blood_pressure: 122,
-    glucose_level: 88,
-    cholesterol_level: 190,
-  },
-  {
-    pulse_rate: 69,
-    blood_pressure: 110,
-    glucose_level: 94,
-    cholesterol_level: 178,
-  },
-  {
-    pulse_rate: 73,
-    blood_pressure: 117,
-    glucose_level: 96,
-    cholesterol_level: 182,
-  },
-  {
-    pulse_rate: 71,
-    blood_pressure: 116,
-    glucose_level: 91,
-    cholesterol_level: 176,
-  },
-  {
-    pulse_rate: 75,
-    blood_pressure: 124,
-    glucose_level: 89,
-    cholesterol_level: 188,
-  },
-  {
-    pulse_rate: 68,
-    blood_pressure: 112,
-    glucose_level: 93,
-    cholesterol_level: 174,
-  },
-  {
-    pulse_rate: 77,
-    blood_pressure: 126,
-    glucose_level: 97,
-    cholesterol_level: 195,
-  },
-];
+// const mockData6 = [
+//   {
+//     pulse_rate: 72,
+//     blood_pressure: 118,
+//     glucose_level: 95,
+//     cholesterol_level: 180,
+//   },
+//   {
+//     pulse_rate: 76,
+//     blood_pressure: 120,
+//     glucose_level: 90,
+//     cholesterol_level: 185,
+//   },
+//   {
+//     pulse_rate: 70,
+//     blood_pressure: 115,
+//     glucose_level: 92,
+//     cholesterol_level: 175,
+//   },
+//   {
+//     pulse_rate: 74,
+//     blood_pressure: 122,
+//     glucose_level: 88,
+//     cholesterol_level: 190,
+//   },
+//   {
+//     pulse_rate: 69,
+//     blood_pressure: 110,
+//     glucose_level: 94,
+//     cholesterol_level: 178,
+//   },
+//   {
+//     pulse_rate: 73,
+//     blood_pressure: 117,
+//     glucose_level: 96,
+//     cholesterol_level: 182,
+//   },
+//   {
+//     pulse_rate: 71,
+//     blood_pressure: 116,
+//     glucose_level: 91,
+//     cholesterol_level: 176,
+//   },
+//   {
+//     pulse_rate: 75,
+//     blood_pressure: 124,
+//     glucose_level: 89,
+//     cholesterol_level: 188,
+//   },
+//   {
+//     pulse_rate: 68,
+//     blood_pressure: 112,
+//     glucose_level: 93,
+//     cholesterol_level: 174,
+//   },
+//   {
+//     pulse_rate: 77,
+//     blood_pressure: 126,
+//     glucose_level: 97,
+//     cholesterol_level: 195,
+//   },
+// ];
 
-const mockData7 = [
-  { region: "North", electricity_usage: 320 },
-  { region: "North", electricity_usage: 340 },
-  { region: "North", electricity_usage: 310 },
-  { region: "North", electricity_usage: 330 },
-  { region: "North", electricity_usage: 900 }, // outlier
+// const mockData7 = [
+//   { region: "North", electricity_usage: 320 },
+//   { region: "North", electricity_usage: 340 },
+//   { region: "North", electricity_usage: 310 },
+//   { region: "North", electricity_usage: 330 },
+//   { region: "North", electricity_usage: 900 }, // outlier
 
-  { region: "South", electricity_usage: 280 },
-  { region: "South", electricity_usage: 290 },
-  { region: "South", electricity_usage: 270 },
-  { region: "South", electricity_usage: 285 },
-  { region: "South", electricity_usage: 800 }, // outlier
+//   { region: "South", electricity_usage: 280 },
+//   { region: "South", electricity_usage: 290 },
+//   { region: "South", electricity_usage: 270 },
+//   { region: "South", electricity_usage: 285 },
+//   { region: "South", electricity_usage: 800 }, // outlier
 
-  { region: "East", electricity_usage: 300 },
-  { region: "East", electricity_usage: 305 },
-  { region: "East", electricity_usage: 295 },
-  { region: "East", electricity_usage: 310 },
-  { region: "East", electricity_usage: 1000 }, // outlier
+//   { region: "East", electricity_usage: 300 },
+//   { region: "East", electricity_usage: 305 },
+//   { region: "East", electricity_usage: 295 },
+//   { region: "East", electricity_usage: 310 },
+//   { region: "East", electricity_usage: 1000 }, // outlier
 
-  { region: "West", electricity_usage: 260 },
-  { region: "West", electricity_usage: 255 },
-  { region: "West", electricity_usage: 270 },
-  { region: "West", electricity_usage: 265 },
-  { region: "West", electricity_usage: 850 }, // outlier
-];
-const mockData8 = [
-  { data_size_group: "1K", training_time: 12 },
-  { data_size_group: "1K", training_time: 13 },
-  { data_size_group: "1K", training_time: 11 },
-  { data_size_group: "1K", training_time: 14 },
-  { data_size_group: "1K", training_time: 12 },
+//   { region: "West", electricity_usage: 260 },
+//   { region: "West", electricity_usage: 255 },
+//   { region: "West", electricity_usage: 270 },
+//   { region: "West", electricity_usage: 265 },
+//   { region: "West", electricity_usage: 850 }, // outlier
+// ];
+// const mockData8 = [
+//   { data_size_group: "1K", training_time: 12 },
+//   { data_size_group: "1K", training_time: 13 },
+//   { data_size_group: "1K", training_time: 11 },
+//   { data_size_group: "1K", training_time: 14 },
+//   { data_size_group: "1K", training_time: 12 },
 
-  { data_size_group: "5K", training_time: 20 },
-  { data_size_group: "5K", training_time: 22 },
-  { data_size_group: "5K", training_time: 21 },
-  { data_size_group: "5K", training_time: 19 },
-  { data_size_group: "5K", training_time: 23 },
+//   { data_size_group: "5K", training_time: 20 },
+//   { data_size_group: "5K", training_time: 22 },
+//   { data_size_group: "5K", training_time: 21 },
+//   { data_size_group: "5K", training_time: 19 },
+//   { data_size_group: "5K", training_time: 23 },
 
-  { data_size_group: "10K", training_time: 28 },
-  { data_size_group: "10K", training_time: 30 },
-  { data_size_group: "10K", training_time: 29 },
-  { data_size_group: "10K", training_time: 31 },
-  { data_size_group: "10K", training_time: 27 },
+//   { data_size_group: "10K", training_time: 28 },
+//   { data_size_group: "10K", training_time: 30 },
+//   { data_size_group: "10K", training_time: 29 },
+//   { data_size_group: "10K", training_time: 31 },
+//   { data_size_group: "10K", training_time: 27 },
 
-  { data_size_group: "50K", training_time: 45 },
-  { data_size_group: "50K", training_time: 48 },
-  { data_size_group: "50K", training_time: 50 },
-  { data_size_group: "50K", training_time: 47 },
-  { data_size_group: "50K", training_time: 46 },
+//   { data_size_group: "50K", training_time: 45 },
+//   { data_size_group: "50K", training_time: 48 },
+//   { data_size_group: "50K", training_time: 50 },
+//   { data_size_group: "50K", training_time: 47 },
+//   { data_size_group: "50K", training_time: 46 },
 
-  { data_size_group: "100K", training_time: 62 },
-  { data_size_group: "100K", training_time: 65 },
-  { data_size_group: "100K", training_time: 64 },
-  { data_size_group: "100K", training_time: 63 },
-  { data_size_group: "100K", training_time: 66 },
-];
+//   { data_size_group: "100K", training_time: 62 },
+//   { data_size_group: "100K", training_time: 65 },
+//   { data_size_group: "100K", training_time: 64 },
+//   { data_size_group: "100K", training_time: 63 },
+//   { data_size_group: "100K", training_time: 66 },
+// ];
 
 // num_1_cat_0_temp_0 --  mockData1
 // num_1_cat_1_temp_0 --  mockData2
