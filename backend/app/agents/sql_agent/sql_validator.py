@@ -1,7 +1,7 @@
 import google.generativeai as genai
 from app.config import settings
 from app.utils.logging import logger
-import json
+import json,re
 
 class SQLQueryValidator:
     def __init__(self):
@@ -57,24 +57,25 @@ class SQLQueryValidator:
         """
         try:
             response = self.model.generate_content(prompt)
+            logger.info("Response from Gemini API: %s", response)
             
         
             if not response or not response.text:
                 logger.error("Error: Received an empty response from Gemini API.")
-                return sql_query
-
-            result = response.text.strip()
-            result = result.replace("```sql", "").replace("```", "").strip()
-            parsed_result = json.loads(result)
+                return "SQL_VALIDATION_FAILED_NO_RESPONSE"
+            text = response.candidates[0].content.parts[0].text
+            json_str = re.search(r'```json\n(.*?)```', text, re.DOTALL).group(1)
+            parsed_result = json.loads(json_str)
             logger.info("SQL query validated successfully.")
             logger.info(f"Validated SQL query: {parsed_result}")
             if parsed_result['valid']:
                 logger.info("SQL query is valid.")
                 return sql_query
             else:
+                logger.info("SQL query is invalid.", parsed_result)
                 return parsed_result['corrected_query']
         except Exception as e:
                 logger.error(f"Error validating sql query: {e}")
-                return sql_query
+                return "SQL_VALIDATION_FAILED"
     
     
