@@ -32,16 +32,16 @@ const Footer = () => {
       }}
     >
       <Container>
-        <Grid container spacing={4}>
-          {/* Logo Section */}
-          <Grid item xs={12} md={3}>
+        <Grid container spacing={4} sx={{ justifyContent: "space-between" }}>
+          {/* Logo Section (aligned to left) */}
+          <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <Box
               component="img"
               src="/images/logo.png"
               alt="Logo"
               sx={{ height: 50, mb: 2 }}
             />
-            <Typography variant="body2" sx={{ color: "#ccc", mt: 1 }}>
+            <Typography variant="body2" sx={{ color: "#ccc", mt: 1, textAlign: 'left' }}>
               Empowering your data with AI-driven insights.
             </Typography>
           </Grid>
@@ -65,15 +65,15 @@ const Footer = () => {
               ],
             },
           ].map((section, index) => (
-            <Grid item xs={6} md={3} key={index}>
+            <Grid item xs={6} md={3} key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Typography
                 variant="h6"
                 gutterBottom
-                sx={{ fontWeight: 700, color: "#ffffff" }}
+                sx={{ fontWeight: 700, color: "#ffffff", textAlign: 'center' }}
               >
                 {section.title}
               </Typography>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1, alignItems: 'center' }}>
                 {section.items.map((item, itemIndex) => (
                   <motion.div key={itemIndex} whileHover={{ x: 6 }}>
                     <Button

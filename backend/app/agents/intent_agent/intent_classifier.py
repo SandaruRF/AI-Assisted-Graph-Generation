@@ -21,7 +21,10 @@ class IntentClassifier:
         - insight: User only wants to find trends, anomalies, or correlations.
         - explanation: User only wants to generate explanations about the insights.
         - metadata: User ONLY asks questions related to the database schema (e.g., "What tables are in the database?", "What are the columns in the 'sales' table?") or requests summary statistics (e.g., "What is the mean revenue?", "What is the standard deviation of product prices?").
-        - customization: User only wants to customize the generated graph (e.g., change color, add filter, change graph type, etc.). Assume the user already has a graph generated.
+        - customization: User only wants to customize the generated graph. Examples include:
+            * Changing colors (e.g., "Make the bars red and green")
+            * Updating axis or legend labels (e.g., "Label the x-axis as 'Month'")
+            * Switching chart type (e.g., "Change this to a pie chart")
         - system: User only wants to connect to a different database, export, or share the generated graph.
         - other: User wants to do something else.
 
@@ -58,4 +61,3 @@ class IntentClassifier:
         except Exception as e:
             logger.error(f"Error classifying intent: {e}")
             return {"intent": "unknown", "confidence": 0.0}
-        

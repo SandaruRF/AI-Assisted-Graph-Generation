@@ -1,7 +1,7 @@
 from langchain_core.messages import BaseMessage
 
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 connected_clients = {}
 
@@ -23,3 +23,10 @@ class State(BaseModel):
     ranked_graphs: List[str]
     response: str
     messages: List[BaseMessage]
+
+    # 🔽 ADD THESE FOR CUSTOMIZATION SUPPORT
+    chart_type: Optional[str] = "line"
+    colors: Optional[List[str]] = ["blue", "orange"]
+    x_label: Optional[str] = "X-Axis"
+    y_label: Optional[str] = "Y-Axis"
+    legend_labels: Optional[Dict[str, str]] = {}
