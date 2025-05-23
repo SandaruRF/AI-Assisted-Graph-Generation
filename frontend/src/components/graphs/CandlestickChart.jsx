@@ -270,7 +270,9 @@ const mockData2 = [
 // num_4_cat_0_temp_1  --  mockData1  ***open, high, low, close, time***
 // num_4_cat_1_temp_1  --  mockData2  ***open, high, low, close, category, time***
 
-const CandlestickChart = ({ typeString, dataset }) => {
+
+
+const CandlestickChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }) => {
   const type = typeString;
   const mockData = dataset;
   if (!mockData || mockData.length === 0) return null;
@@ -286,6 +288,11 @@ const CandlestickChart = ({ typeString, dataset }) => {
     categoryKey,
     timeKey = "";
 
+  const getLegendName = (name) => legendLabels?.[name] || name;
+
+  const incColor = colors?.[0] || "rgb(72, 187, 90)";
+  const decColor = colors?.[1] || "rgb(249,51,68)";
+
   if (type === "num_4_cat_0_temp_1") {
     [open, high, low, close, timeKey] = Object.keys(mockData[0]);
 
@@ -296,14 +303,8 @@ const CandlestickChart = ({ typeString, dataset }) => {
         high: mockData.map((item) => item[high]),
         low: mockData.map((item) => item[low]),
         close: mockData.map((item) => item[close]),
-        increasing: {
-          line: { color: "rgb(72, 187, 90)" },
-          fillcolor: "rgba(188,235,193,255)1",
-        },
-        decreasing: {
-          line: { color: "rgb(249,51,68)" },
-          fillcolor: "rgba(249,181,180,255)",
-        },
+        increasing: { line: { color: incColor } },
+        decreasing: { line: { color: decColor } },
         type: "candlestick",
         xaxis: "x",
         yaxis: "y",
@@ -313,7 +314,7 @@ const CandlestickChart = ({ typeString, dataset }) => {
 
     title = "Basic Candlestick Chart";
     xKey = timeKey;
-    yKey = "Price";
+    yKey = yLabel || "Price";
   } else if (type === "num_4_cat_1_temp_1") {
     [open, high, low, close, categoryKey, timeKey] = Object.keys(mockData[0]);
 
@@ -325,56 +326,50 @@ const CandlestickChart = ({ typeString, dataset }) => {
       );
 
       return {
-        name: category,
+        name: getLegendName(category),
         x: filtered.map((item) => item[timeKey]),
         open: filtered.map((item) => item[open]),
         high: filtered.map((item) => item[high]),
         low: filtered.map((item) => item[low]),
         close: filtered.map((item) => item[close]),
-        increasing: {
-          line: { color: "rgb(72, 187, 90)" },
-          fillcolor: "rgba(188,235,193,255)1",
-        },
-        decreasing: {
-          line: { color: "rgb(249,51,68)" },
-          fillcolor: "rgba(249,181,180,255)",
-        },
+        increasing: { line: { color: incColor } },
+        decreasing: { line: { color: decColor } },
         type: "candlestick",
         xaxis: "x",
         yaxis: "y",
         legendgroup: category,
-        ...(i === 0 && { legendgrouptitle: { text: categoryKey } }),
+        ...(i === 0 && { legendgrouptitle: { text: getLegendName(categoryKey) } }),
         showlegend: true,
       };
     });
 
     title = "Grouped Candlestick Chart";
-    xKey = timeKey;
-    yKey = "Price";
+    xKey = xLabel || timeKey;
+    yKey = yLabel || "Price";
   }
 
   const layout = {
     width: 640,
     height: 480,
-    showlegend: false,
     title: { text: title },
     xaxis: {
-      title: { text: xKey },
+      title: { text: xLabel || xKey },
       type: "date",
       autorange: true,
-      domain: [0, 1],
       rangeslider: { visible: true },
     },
     yaxis: {
       title: { text: yKey },
       type: "linear",
       autorange: true,
-      domain: [0, 1],
     },
     showlegend: true,
   };
 
   return <Plot data={data} layout={layout} />;
 };
+
+
+
 
 export default CandlestickChart;

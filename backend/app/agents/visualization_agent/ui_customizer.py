@@ -1,9 +1,11 @@
+# backend/app/agents/VisualizationAgent/ui_customizer.py
+
 from app.state import State
 from typing import Dict
 
-def apply_customization(state: State, extracted_entities: Dict) -> State:
+def apply_customization_to_state(state: State, extracted_entities: Dict) -> State:
     """
-    Updates the current graph state using customization entities.
+    Apply customization-related entities to the current graph state.
     """
     if extracted_entities.get("chart_type"):
         state.chart_type = extracted_entities["chart_type"]

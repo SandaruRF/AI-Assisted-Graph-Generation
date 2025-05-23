@@ -127,25 +127,32 @@ const mockData7 = [
 // num_2_cat_0_temp_0 --  mockData6
 // num_2_cat_1_temp_1 --  mockData7
 
-const AreaChart = ({ typeString, dataset }) => {
+const AreaChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }) => {
   const type = typeString;
   const mockData = dataset;
   const charts = [];
 
-  if (type === "num_1_cat_0_temp_0") {
+  const getLegendName = (name) => legendLabels?.[name] || name;
+
+   if (type === "num_1_cat_0_temp_0") {
     const [xKey, yKey] = Object.keys(mockData[0]);
     charts.push({
       title: "Area Chart for Sequential Data (Non-Time)",
-      xAxisTitle: xKey,
-      yAxisTitle: yKey,
+      xAxisTitle: xLabel || xKey,
+      yAxisTitle: yLabel || yKey,
       data: [
         {
-          x: mockData.map((item) => item[xKey]),
+         x: mockData.map((item) => item[xKey]),
           y: mockData.map((item) => item[yKey]),
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
-          line: { shape: "spline", smoothing: 0.2 },
+          name: getLegendName(yKey),
+          line: {
+            shape: "spline",
+            smoothing: 0.2,
+            color: colors?.[0],
+          },
           marker: { size: 6 },
         },
       ],
@@ -154,8 +161,8 @@ const AreaChart = ({ typeString, dataset }) => {
     const [xKey, yKey] = Object.keys(mockData[0]);
     charts.push({
       title: "Basic Area Simple Univariate Area Series (Cumulative Trend)",
-      xAxisTitle: xKey,
-      yAxisTitle: yKey,
+      xAxisTitle: xLabel || xKey,
+      yAxisTitle: yLabel || yKey,
       data: [
         {
           x: mockData.map((item) => item[xKey]),
@@ -163,16 +170,20 @@ const AreaChart = ({ typeString, dataset }) => {
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
-          line: { shape: "spline" },
+          name: getLegendName(yKey),
+          line: {
+            shape: "spline",
+            color: colors?.[0],
+          },
         },
       ],
     });
-  } else if (type === "num_1_cat_1_temp_0") {
+ } else if (type === "num_1_cat_1_temp_0") {
     const [xKey, yKey] = Object.keys(mockData[0]);
     charts.push({
       title: "Area Chart: Average Score by Course",
-      xAxisTitle: xKey,
-      yAxisTitle: yKey,
+      xAxisTitle: xLabel || xKey,
+      yAxisTitle: yLabel || yKey,
       data: [
         {
           x: mockData.map((item) => item[xKey]),
@@ -180,9 +191,12 @@ const AreaChart = ({ typeString, dataset }) => {
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
-          line: { shape: "spline" },
+          line: {
+            shape: "spline",
+            color: colors?.[0],
+          },
           marker: { size: 8 },
-          name: yKey,
+          name: getLegendName(yKey),
         },
       ],
     });
@@ -196,9 +210,9 @@ const AreaChart = ({ typeString, dataset }) => {
     });
     charts.push({
       title: "Stacked Area Chart (Category Comparison Over Time)",
-      xAxisTitle: xKey,
-      yAxisTitle: yKey,
-      data: categories.map((category) => ({
+      xAxisTitle: xLabel || xKey,
+      yAxisTitle: yLabel || yKey,
+      data: categories.map((category, i) => ({
         x: dates,
         y: dates.map((date) => {
           const foundItem = mockData.find(
@@ -206,18 +220,22 @@ const AreaChart = ({ typeString, dataset }) => {
           );
           return foundItem ? foundItem[yKey] : 0;
         }),
-        name: category,
+        name: getLegendName(category),
         type: "scatter",
         mode: "lines",
         fill: "tonexty",
-        line: { shape: "spline" },
+        line: {
+          shape: "spline",
+          color: colors?.[i % (colors?.length || 1)],
+        },
       })),
     });
+
     charts.push({
       title: "100% Stacked Area Chart (Proportional Composition Over Time)",
-      xAxisTitle: xKey,
+      xAxisTitle: xLabel || xKey,
       yAxisTitle: "Percentage Share (%)",
-      data: categories.map((category) => ({
+      data: categories.map((category, i) => ({
         x: dates,
         y: dates.map((date, idx) => {
           const foundItem = mockData.find(
@@ -226,18 +244,21 @@ const AreaChart = ({ typeString, dataset }) => {
           const value = foundItem ? foundItem[yKey] : 0;
           return totals[idx] > 0 ? (value / totals[idx]) * 100 : 0;
         }),
-        name: category,
+        name: getLegendName(category),
         type: "scatter",
         mode: "lines",
         fill: "tonexty",
-        line: { shape: "spline" },
+        line: {
+          shape: "spline",
+          color: colors?.[i % (colors?.length || 1)],
+        },
       })),
     });
     charts.push({
       title: "Multi-Series Area Chart (Overlapping Trends)",
-      xAxisTitle: xKey,
-      yAxisTitle: yKey,
-      data: categories.map((category) => ({
+      xAxisTitle: xLabel || xKey,
+      yAxisTitle: yLabel || yKey,
+      data: categories.map((category, i) => ({
         x: dates,
         y: dates.map((date) => {
           const foundItem = mockData.find(
@@ -245,42 +266,45 @@ const AreaChart = ({ typeString, dataset }) => {
           );
           return foundItem ? foundItem[yKey] : 0;
         }),
-        name: category,
+       name: getLegendName(category),
         type: "scatter",
         mode: "lines",
         fill: "tozeroy",
         opacity: 0.4,
-        line: { shape: "spline" },
+        line: {
+          shape: "spline",
+          color: colors?.[i % (colors?.length || 1)],
+        },
       })),
     });
   } else if (type === "num_2_cat_0_temp_1") {
     const [xKey, y1Key, y2Key] = Object.keys(mockData[0]);
     charts.push({
       title: "Dual-Axis Area Chart",
-      xAxisTitle: xKey,
-      yAxisTitle: y1Key,
+      xAxisTitle: xLabel || xKey,
+      yAxisTitle: yLabel || y1Key,
       yAxis2Title: y2Key,
       data: [
         {
           x: mockData.map((item) => item[xKey]),
           y: mockData.map((item) => item[y1Key]),
-          name: y1Key,
+          name: getLegendName(y1Key),
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
           opacity: 0.5,
-          line: { shape: "spline" },
+          line: { shape: "spline", color: colors?.[0] },
           yaxis: "y1",
         },
         {
           x: mockData.map((item) => item[xKey]),
           y: mockData.map((item) => item[y2Key]),
-          name: y2Key,
+          name: getLegendName(y2Key),
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
           opacity: 0.5,
-          line: { shape: "spline" },
+          line: { shape: "spline", color: colors?.[1] },
           yaxis: "y2",
         },
       ],
@@ -289,8 +313,8 @@ const AreaChart = ({ typeString, dataset }) => {
     const [xKey, y1Key] = Object.keys(mockData[0]);
     charts.push({
       title: "Numeric Sequence Area Chart",
-      xAxisTitle: xKey,
-      yAxisTitle: y1Key,
+      xAxisTitle: xLabel || xKey,
+      yAxisTitle: yLabel || y1Key,
       data: [
         {
           x: mockData.map((item) => item[xKey]),
@@ -298,21 +322,22 @@ const AreaChart = ({ typeString, dataset }) => {
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
-          line: { shape: "spline" },
+          name: getLegendName(y1Key),
+          line: { shape: "spline", color: colors?.[0] },
           marker: { size: 6 },
         },
       ],
     });
-  } else if (type === "num_2_cat_1_temp_1") {
+  }  else if (type === "num_2_cat_1_temp_1") {
     const [xKey, catKey, y1Key, y2Key] = Object.keys(mockData[0]);
     const categories = [...new Set(mockData.map((item) => item[catKey]))];
     const years = [...new Set(mockData.map((item) => item[xKey]))];
     charts.push({
       title: "Time + Aggregation + Category (Stacked/Grouped)",
-      xAxisTitle: xKey,
-      yAxisTitle: `${y1Key} / ${y2Key}`,
+      xAxisTitle: xLabel || xKey,
+      yAxisTitle: yLabel || `${y1Key} / ${y2Key}`,
       data: [
-        ...categories.map((region) => ({
+        ...categories.map((region, i) => ({
           x: years,
           y: years.map(
             (year) =>
@@ -320,14 +345,14 @@ const AreaChart = ({ typeString, dataset }) => {
                 (item) => item[xKey] === year && item[catKey] === region
               ) || {})[y1Key] || 0
           ),
-          name: `${region} - ${y1Key}`,
+         name: getLegendName(`${region} - ${y1Key}`),
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
           opacity: 0.6,
-          line: { shape: "spline" },
+          line: { shape: "spline", color: colors?.[i % (colors?.length || 1)] },
         })),
-        ...categories.map((region) => ({
+        ...categories.map((region, i) => ({
           x: years,
           y: years.map(
             (year) =>
@@ -335,12 +360,16 @@ const AreaChart = ({ typeString, dataset }) => {
                 (item) => item[xKey] === year && item[catKey] === region
               ) || {})[y2Key] || 0
           ),
-          name: `${region} - ${y2Key}`,
+          name: getLegendName(`${region} - ${y2Key}`),
           type: "scatter",
           mode: "lines",
           fill: "tozeroy",
           opacity: 0.3,
-          line: { shape: "spline", dash: "dot" },
+          line: {
+            shape: "spline",
+            dash: "dot",
+            color: colors?.[(i + categories.length) % (colors?.length || 1)],
+          },
         })),
       ],
     });
@@ -403,7 +432,7 @@ const AreaChart = ({ typeString, dataset }) => {
           />
         ))
       ) : (
-        <div>No valid chart data available</div>
+       <div>No valid chart data available</div>
       )}
     </div>
   );

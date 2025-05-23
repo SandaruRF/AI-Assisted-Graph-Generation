@@ -27,20 +27,20 @@ const mockData2 = [
 // num_1_cat_1_temp_0  --  mockData1
 // num_1_cat_2_temp_0  --  mockData2
 
-const PieChart = ({ typeString, dataset }) => {
+
+
+const PieChart = ({ typeString, dataset, colors, legendLabels }) => {
   const type = typeString;
   const mockData = dataset;
   if (!mockData || mockData.length === 0) return null;
 
   const charts = [];
   const opacity = 0.9;
-  let data,
-    data1 = [];
-  let title,
-    title1,
-    numericKey,
-    categoryKey,
-    categoryKey1 = "";
+
+  const getLegendName = (name) => legendLabels?.[name] || name;
+  const getColor = (i) => (colors && colors[i]) || undefined;
+
+  let numericKey, categoryKey, categoryKey1;
 
   if (type === "num_1_cat_1_temp_0") {
     [numericKey, categoryKey] = Object.keys(mockData[0]);
@@ -49,39 +49,36 @@ const PieChart = ({ typeString, dataset }) => {
       data: [
         {
           values: mockData.map((item) => item[numericKey]),
-          labels: mockData.map((item) => item[categoryKey]),
+          labels: mockData.map((item) => getLegendName(item[categoryKey])),
           type: "pie",
-          opacity: opacity,
-          hole: hole,
-          showlegend: true,
-          legendgrouptitle: { text: categoryKey },
+          opacity,
+          hole,
+          marker: {
+            colors: colors || undefined,
+          },
           hoverinfo: "text",
           hovertext: mockData.map(
             (item) =>
-              `${categoryKey}: ${item[categoryKey]}<br>${numericKey}: ${item[numericKey]}`
+              `${getLegendName(categoryKey)}: ${getLegendName(item[categoryKey])}<br>${numericKey}: ${item[numericKey]}`
           ),
           text: mockData.map((item) => `${numericKey}: ${item[numericKey]}`),
         },
       ],
-      title: title,
+      title,
     });
 
     charts.push(createPieTrace(0.0, "Basic Pie Chart"));
     charts.push(createPieTrace(0.4, "Donut Chart"));
-  } else if (type === "num_1_cat_2_temp_0") {
+  }
+
+  else if (type === "num_1_cat_2_temp_0") {
     [numericKey, categoryKey, categoryKey1] = Object.keys(mockData[0]);
     let categories = [...new Set(mockData.map((item) => item[categoryKey]))];
     let categories1 = [...new Set(mockData.map((item) => item[categoryKey1]))];
 
-    // categories - keys of category which has less cardinality
-    // categories1 - keys of category which has high cardinality
     if (categories.length > categories1.length) {
-      let temp = categoryKey;
-      let temp1 = categories;
-      categoryKey = categoryKey1;
-      categoryKey1 = temp;
-      categories = categories1;
-      categories1 = temp1;
+      [categoryKey, categoryKey1] = [categoryKey1, categoryKey];
+      [categories, categories1] = [categories1, categories];
     }
 
     const labels = [];
@@ -91,92 +88,71 @@ const PieChart = ({ typeString, dataset }) => {
     const hovertext = [];
 
     const parentSums = {};
-    const parentNodes = new Set();
+    const totalSum = mockData.reduce((sum, item) => sum + item[numericKey], 0);
 
-    // First, calculate the parent sums
-    for (const row of mockData) {
-      const parent = row[categoryKey];
-      const value = row[numericKey];
-
+    mockData.forEach((item) => {
+      const parent = item[categoryKey];
+      const value = item[numericKey];
       parentSums[parent] = (parentSums[parent] || 0) + value;
-    }
+    });
 
-    // Add parent nodes
-    let totalSum = 0; // Sum of all values for percentage calculation
     for (const parent in parentSums) {
-      totalSum += parentSums[parent];
-    }
-
-    // Add parent nodes with percentage
-    for (const parent in parentSums) {
-      const percentage = (parentSums[parent] / totalSum) * 100;
-      labels.push(parent);
+      const val = parentSums[parent];
+      labels.push(getLegendName(parent));
       parents.push("");
-      values.push(parentSums[parent]);
-      text.push(`${percentage.toFixed(2)}%`);
+      values.push(val);
+      text.push(`${((val / totalSum) * 100).toFixed(2)}%`);
       hovertext.push(
-        `${categoryKey}: ${parent}<br>Total ${numericKey}: ${parentSums[parent]}`
+        `${getLegendName(categoryKey)}: ${getLegendName(parent)}<br>Total ${numericKey}: ${val}`
       );
-      parentNodes.add(parent);
     }
 
-    // Add unique child nodes with percentage
-    for (const row of mockData) {
-      const parent = row[categoryKey];
-      const child = row[categoryKey1];
+    mockData.forEach((row) => {
+      const parent = getLegendName(row[categoryKey]);
+      const child = getLegendName(row[categoryKey1]);
       const value = row[numericKey];
-
-      const uniqueLabel = `${parent} - ${child}`; // unique child
-      const percentage = (value / totalSum) * 100; // Calculate percentage for each child
-
-      labels.push(uniqueLabel);
+      labels.push(`${parent} - ${child}`);
       parents.push(parent);
       values.push(value);
-      text.push(`${percentage.toFixed(2)}%`);
+      text.push(`${((value / totalSum) * 100).toFixed(2)}%`);
       hovertext.push(
-        `${categoryKey}: ${parent}<br>${categoryKey1}: ${child}<br>${numericKey}: ${value}`
+        `${getLegendName(categoryKey)}: ${parent}<br>${getLegendName(categoryKey1)}: ${child}<br>${numericKey}: ${value}`
       );
-    }
-
-    data = [
-      {
-        type: "sunburst",
-        labels,
-        parents,
-        values,
-        branchvalues: "total",
-        text,
-        hovertext,
-        hoverinfo: "text",
-      },
-    ];
-    title = "Grouped Pie Chart (Sunburst)";
+    });
 
     charts.push({
-      data: data,
-      title: title,
+      data: [
+        {
+          type: "sunburst",
+          labels,
+          parents,
+          values,
+          branchvalues: "total",
+          text,
+          hovertext,
+          hoverinfo: "text",
+        },
+      ],
+      title: "Grouped Pie Chart (Sunburst)",
     });
 
-    /////////////////////////////////////////////////////////////
-
-    const category1Groups = {};
+    // Subplot pie chart
+    const groups = {};
     mockData.forEach((item) => {
-      if (!category1Groups[item[categoryKey1]]) {
-        category1Groups[item[categoryKey1]] = [];
-      }
-      category1Groups[item[categoryKey1]].push(item);
+      const key = item[categoryKey1];
+      groups[key] = groups[key] || [];
+      groups[key].push(item);
     });
+
     const nCols = 2;
     const nRows = Math.ceil(categories1.length / nCols);
 
-    const annotations = categories1.map((category1, i) => {
-      const j = i < 2 ? 0 : 1;
+    const annotations = categories1.map((cat, i) => {
+      const j = Math.floor(i / nCols);
       return {
-        text: category1,
+        text: getLegendName(cat),
         showarrow: false,
         font: { size: 14 },
-        // x: i * 1 + 1,
-        // y: i * 1 + 0.5,
         x: 0.18 + 0.63 * (i % 2),
         y: 0.51 - 0.55 * (j % 2),
         xref: "paper",
@@ -186,34 +162,33 @@ const PieChart = ({ typeString, dataset }) => {
     });
 
     const createSubPieTrace = (hole, title) => ({
-      data: categories1.map((category1, i) => {
-        const group = category1Groups[category1];
-        const labels = group.map((item) => item[categoryKey]);
-        const values = group.map((item) => item[numericKey]);
-
+      data: categories1.map((cat, i) => {
+        const group = groups[cat];
         return {
-          values: values,
-          labels: labels,
+          values: group.map((d) => d[numericKey]),
+          labels: group.map((d) => getLegendName(d[categoryKey])),
           type: "pie",
-          opacity: opacity,
-          hole: hole,
-          name: category1,
+          opacity,
+          hole,
+          name: getLegendName(cat),
           domain: {
             row: Math.floor(i / nCols),
             column: i % nCols,
           },
-          title: category1,
+          title: getLegendName(cat),
           showlegend: true,
-          legendgrouptitle: { text: categoryKey },
+          text: group.map((d) => `${numericKey}: ${d[numericKey]}`),
           hoverinfo: "label+percent+name+text",
-          text: values.map((val) => `${numericKey}: ${val}`),
+          marker: {
+            colors: colors || undefined,
+          },
         };
       }),
-      title: title,
+      title,
       height: 320 * nRows,
       rows: nRows,
       columns: nCols,
-      annotations: annotations,
+      annotations,
     });
 
     charts.push(createSubPieTrace(0.0, "Pie Chart Sub Plots"));
@@ -222,12 +197,12 @@ const PieChart = ({ typeString, dataset }) => {
 
   return (
     <div>
-      {charts.map((chart, index) => (
+      {charts.map((chart, i) => (
         <Plot
-          key={index}
+          key={i}
           data={chart.data}
           layout={{
-            width: 640, // Adjust width based on number of columns
+            width: 640,
             height: chart.height || 480,
             title: { text: chart.title },
             grid: { rows: chart.rows || 1, columns: chart.columns || 1 },
@@ -240,3 +215,6 @@ const PieChart = ({ typeString, dataset }) => {
 };
 
 export default PieChart;
+
+
+
