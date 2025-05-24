@@ -19,6 +19,7 @@ import {
   connectToDatabase,
   deleteConnection,
 } from "../services/api";
+import NavigationBar from "../components/NavigationBar";
 
 const ExistingDatabaseConnection = () => {
   const navigate = useNavigate();
@@ -75,7 +76,15 @@ const ExistingDatabaseConnection = () => {
   };
 
   return (
+    <Box sx={{ 
+          backgroundColor: "#F8F9FD",
+          minHeight: "100vh",
+          overflow: "hidden"
+        }}>
+          <NavigationBar />
+    
     <Box sx={{ maxWidth: 1200, margin: "auto", p: 3 }}>
+      
       <Typography variant="h4" fontWeight="600" mb={3}>
         Connections
       </Typography>
@@ -264,6 +273,7 @@ const ExistingDatabaseConnection = () => {
           {error}
         </Alert>
       </Snackbar>
+    </Box>
     </Box>
   );
 };

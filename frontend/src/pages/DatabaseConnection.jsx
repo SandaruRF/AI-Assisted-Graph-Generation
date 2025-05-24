@@ -15,6 +15,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import MemoryIcon from "@mui/icons-material/Memory";
 import { saveConnection } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import NavigationBar from "../components/NavigationBar";
 
 const databaseTypes = [
   "MySQL",
@@ -151,6 +152,12 @@ const NewConnection = () => {
   
 
   return (
+        <Box sx={{ 
+          backgroundColor: "#F8F9FD",
+          minHeight: "100vh",
+          overflow: "hidden"
+        }}>
+          <NavigationBar />
     <Box sx={{ maxWidth: 850, margin: "auto", p: 3 }}>
       <Paper sx={{ p: 3, mb: 3 }}>
         <Typography variant="h4" fontWeight="600" mb={3}>
@@ -312,6 +319,7 @@ const NewConnection = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+    </Box>
     </Box>
   );
 };
