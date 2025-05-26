@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -14,10 +14,17 @@ import {
   Container,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import UserProfileBtn from "./UserProfileBtn";
 
 const NavigationBar = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [jwtExists, setJwtExists] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setJwtExists(!!token); // true if token exists
+  }, []);
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -106,7 +113,9 @@ const NavigationBar = () => {
             </Box>
 
             {/* Auth Buttons */}
-            <Box sx={{ display: "flex", gap: 2 }}>
+            { jwtExists ? (
+              <UserProfileBtn />) :
+              <Box sx={{ display: "flex", gap: 2 }}>
               <Button
                 variant="outlined"
                 onClick={() => navigate("/login")}
@@ -121,7 +130,8 @@ const NavigationBar = () => {
               >
                 Sign Up
               </Button>
-            </Box>
+            </Box>}
+            
 
             {/* Mobile Menu Button */}
             <IconButton
@@ -162,12 +172,19 @@ const NavigationBar = () => {
           <ListItem button onClick={() => handleNavigation("/docs")}>
             <ListItemText primary="Docs" />
           </ListItem>
-          <ListItem button onClick={() => handleNavigation("/login")}>
-            <ListItemText primary="Login" />
-          </ListItem>
-          <ListItem button onClick={() => handleNavigation("/signup")}>
-            <ListItemText primary="Sign Up" />
-          </ListItem>
+          
+          {jwtExists ? (
+            <><UserProfileBtn /></>
+
+          ) :
+            <>
+              <ListItem button onClick={() => handleNavigation("/login")}>
+                <ListItemText primary="Login" />
+              </ListItem>
+              <ListItem button onClick={() => handleNavigation("/signup")}>
+                <ListItemText primary="Sign Up" />
+              </ListItem>
+            </>}
         </List>
       </Drawer>
     </>
