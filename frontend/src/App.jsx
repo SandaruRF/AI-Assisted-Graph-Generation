@@ -17,7 +17,7 @@ import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import ChartPage from "./pages/ChartPage";
+import ChartPreview from "./pages/ChartPreview";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -78,7 +78,7 @@ function App() {
               />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/github-callback" element={<GithubCallback />} />
-              <Route path="/chart" element={<ChartPage />} />
+              <Route path="/chart" element={<ChartPreview />} />
             </Routes>
           </Router>
         </div>

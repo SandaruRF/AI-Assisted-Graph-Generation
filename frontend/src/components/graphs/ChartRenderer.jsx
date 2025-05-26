@@ -6,7 +6,8 @@ import PieChart from "./PieChart";
 import ScatterPlot from "./ScatterPlot";
 import Histogram from "./Histogram";
 import CandlestickChart from "./CandlestickChart";
-
+import AreaChart from "./AreaChart";
+import BarChart from "./BarChart";
 
 const ChartRenderer = ({ typeString, dataset }) => {
   if (!typeString || !dataset || dataset.length === 0)
@@ -34,6 +35,14 @@ const ChartRenderer = ({ typeString, dataset }) => {
 
   if (typeString.includes("candle")) {
     return <CandlestickChart typeString={typeString} dataset={dataset} />;
+  }
+
+  if (typeString.includes("area")) {
+    return <AreaChart typeString={typeString} dataset={dataset} />;
+  }
+
+  if (typeString.includes("bar")) {
+    return <BarChart typeString={typeString} dataset={dataset} />;
   }
 
   // Fallback logic based on typeString patterns
