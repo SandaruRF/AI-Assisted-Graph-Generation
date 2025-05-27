@@ -174,7 +174,7 @@ const NavigationBar = () => {
           </ListItem>
           
           {jwtExists ? (
-            <><UserProfileBtn /></>
+            <></>
 
           ) :
             <>
