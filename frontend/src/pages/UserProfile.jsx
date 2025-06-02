@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavigationBar from "../components/NavigationBar";
 import {
   Box,
@@ -37,18 +37,34 @@ import {
   CheckCircle
 } from '@mui/icons-material';
 
+import {fetchUserProfile} from '../services/api'; 
+import { set } from 'mongoose';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const UserProfile = () => {
   const [profileData, setProfileData] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    mobile: '+1 (555) 123-4567',
+    firstName: 'Jack ',
+    lastName: 'Sparrow',
+    email: 'JackSparrow@blackpearl.com',
+    mobile: '1234567890',
     profilePhoto: null
   });
+  const [error, setError] = useState(""); 
+
+  useEffect(() => {
+    fetchUserProfile((data) => {
+      setProfileData({
+        firstName: data.first_name || '',
+        lastName: data.last_name || '',
+        email: data.email || '',
+        mobile: data.phone_number || '',
+        profilePhoto: data.user_profile_picture || null
+      });
+    }, setError);
+  }, []);
 
   const [originalData, setOriginalData] = useState({ ...profileData });
   const [isEditing, setIsEditing] = useState(false);

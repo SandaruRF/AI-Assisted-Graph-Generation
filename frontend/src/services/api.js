@@ -248,3 +248,19 @@ export const handleGitHubAuthCallback = async (code, Navigate) => {
       });
   }
 };
+
+// Function to fetch user profile data for profile page
+export const fetchUserProfile = async (setProfileData, setError) => {
+  const token = localStorage.getItem("token");
+  try {
+    // Changed endpoint from /api/user/profile to /api/profile
+    const response = await axios.get(`${API_BASE_URL}/api/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setProfileData(response.data);
+  } catch (error) {
+    setError("Failed to fetch user profile data: " + error.message);
+  }
+};

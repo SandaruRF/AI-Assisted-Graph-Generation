@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
 
 class UserCreatep1(BaseModel):
     email: EmailStr
@@ -28,3 +29,10 @@ class TokenModel(BaseModel):
 
 class GitHubAuthRequest(BaseModel):
     code: str
+    
+class userProfileDeails(BaseModel):
+    user_profile_picture: Optional[str] = None
+    email: EmailStr
+    first_name: str
+    last_name: str
+    phone_number: str

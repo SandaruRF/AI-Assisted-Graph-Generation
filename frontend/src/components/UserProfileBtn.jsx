@@ -20,28 +20,32 @@ const UserProfileBtn = () => {
     setAnchorEl(null);
   };
 
-    return (
-         <Box>
-          <IconButton onClick={handleClick} size="small">
-            <Avatar
-              alt="User"
-              src="https://i.pravatar.cc/300"
-              sx={{ width: 40, height: 40 }}
-            />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            onClick={handleClose}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <MenuItem onClick={() => navigate("/user-profile")}>Profile</MenuItem>
-            <MenuItem onClick={() => alert("Settings Clicked")}>Settings</MenuItem>
-            <MenuItem onClick={() => alert("Logout Clicked")}>Logout</MenuItem>
-          </Menu>
-        </Box>
-    )}
+  return (
+    <Box>
+      <IconButton onClick={handleClick} size="small">
+        <Avatar
+          alt="User"
+          src="https://i.pravatar.cc/300"
+          sx={{ width: 40, height: 40 }}
+        />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <MenuItem onClick={() => navigate("/user-profile")}>Profile</MenuItem>
+        <MenuItem onClick={() => alert("Settings Clicked")}>Settings</MenuItem>
+        <MenuItem onClick={() => {
+          localStorage.removeItem("token");
+          navigate("/login");
+        }}>Logout</MenuItem>
+      </Menu>
+    </Box>
+  )
+}
 
-    export default UserProfileBtn;
+export default UserProfileBtn;
