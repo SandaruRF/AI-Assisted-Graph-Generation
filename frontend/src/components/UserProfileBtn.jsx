@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   IconButton,
   Menu,
@@ -10,6 +11,7 @@ import {
 const UserProfileBtn = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -35,7 +37,7 @@ const UserProfileBtn = () => {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            <MenuItem onClick={() => alert("Profile Clicked")}>Profile</MenuItem>
+            <MenuItem onClick={() => navigate("/user-profile")}>Profile</MenuItem>
             <MenuItem onClick={() => alert("Settings Clicked")}>Settings</MenuItem>
             <MenuItem onClick={() => alert("Logout Clicked")}>Logout</MenuItem>
           </Menu>
