@@ -37,7 +37,7 @@ import {
   CheckCircle
 } from '@mui/icons-material';
 
-import {fetchUserProfile} from '../services/api'; 
+import {fetchUserProfile, updateUserProfile} from '../services/api'; 
 import { set } from 'mongoose';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -105,15 +105,15 @@ const UserProfile = () => {
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        const photoUrl = e.target.result;
+        const base64String = e.target.result; // This is already a base64 data URL
         if (isEditing) {
-          setEditData(prev => ({ ...prev, profilePhoto: photoUrl }));
+          setEditData(prev => ({ ...prev, profilePhoto: base64String }));
         } else {
-          setProfileData(prev => ({ ...prev, profilePhoto: photoUrl }));
+          setProfileData(prev => ({ ...prev, profilePhoto: base64String }));
           showSnackbar('Profile photo updated successfully!', 'success');
         }
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); // This will convert the image to base64
     }
   };
 
@@ -138,10 +138,8 @@ const UserProfile = () => {
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setProfileData({ ...editData });
+      // Pass form data to API for update
+      await updateUserProfile(editData, setProfileData, setError);
       setIsEditing(false);
       showSnackbar('Profile updated successfully!', 'success');
     } catch (error) {
@@ -256,6 +254,7 @@ const UserProfile = () => {
           <Box sx={{ position: 'relative' }}>
             <Avatar
               src={currentData.profilePhoto}
+              disabled={!isEditing}
               sx={{ 
                 width: 120, 
                 height: 120, 
@@ -341,7 +340,7 @@ const UserProfile = () => {
               type="email"
               value={currentData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              disabled={!isEditing}
+              disabled={true}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">

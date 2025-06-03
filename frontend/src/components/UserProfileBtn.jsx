@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   IconButton,
@@ -7,11 +7,21 @@ import {
   Avatar,
   Box,
 } from "@mui/material";
+import { fetchUserProfile } from "../services/api";
 
 const UserProfileBtn = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+
+  const [profilePhoto, setProfilePhoto] = useState(null);
+
+  useEffect(() => {
+    fetchUserProfile(
+      (data) => setProfilePhoto(data.user_profile_picture || null),
+      () => {}
+    );
+  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -25,7 +35,7 @@ const UserProfileBtn = () => {
       <IconButton onClick={handleClick} size="small">
         <Avatar
           alt="User"
-          src="https://i.pravatar.cc/300"
+          src={profilePhoto}
           sx={{ width: 40, height: 40 }}
         />
       </IconButton>

@@ -264,3 +264,32 @@ export const fetchUserProfile = async (setProfileData, setError) => {
     setError("Failed to fetch user profile data: " + error.message);
   }
 };
+
+
+
+//user detail update in user profile page
+export const updateUserProfile = async (
+  updatedData,
+  setProfileData,
+  setError
+) => {
+  const token = localStorage.getItem("token");
+  try {
+    // Map frontend fields to backend fields
+    const payload = {
+      first_name: updatedData.firstName,
+      last_name: updatedData.lastName,
+      email: updatedData.email,
+      phone_number: updatedData.mobile,
+      user_profile_picture: updatedData.profilePhoto,
+    };
+    const response = await axios.put(`${API_BASE_URL}/api/update/profile`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setProfileData(response.data);
+  } catch (error) {
+    setError("Failed to update user profile: " + error.message);
+  }
+};
