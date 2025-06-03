@@ -30,3 +30,5 @@ class State(BaseModel):
     x_label: Optional[str] = "X-Axis"
     y_label: Optional[str] = "Y-Axis"
     legend_labels: Optional[Dict[str, str]] = {}
+
+ 
