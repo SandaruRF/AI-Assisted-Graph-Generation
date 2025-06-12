@@ -1,142 +1,142 @@
 import React from "react";
 import Plot from "react-plotly.js";
 
-const mockData1 = [
-  { Month: "2025-01-01", Temperature: 4.2 },
-  { Month: "2025-02-01", Temperature: 5.0 },
-  { Month: "2025-03-01", Temperature: 9.3 },
-  { Month: "2025-04-01", Temperature: 14.8 },
-  { Month: "2025-05-01", Temperature: 19.6 },
-  { Month: "2025-06-01", Temperature: 24.1 },
-  { Month: "2025-07-01", Temperature: 27.3 },
-  { Month: "2025-08-01", Temperature: 26.8 },
-  { Month: "2025-09-01", Temperature: 22.5 },
-  { Month: "2025-10-01", Temperature: 16.0 },
-  { Month: "2025-11-01", Temperature: 9.4 },
-  { Month: "2025-12-01", Temperature: 5.1 },
-];
+// const mockData1 = [
+//   { Month: "2025-01-01", Temperature: 4.2 },
+//   { Month: "2025-02-01", Temperature: 5.0 },
+//   { Month: "2025-03-01", Temperature: 9.3 },
+//   { Month: "2025-04-01", Temperature: 14.8 },
+//   { Month: "2025-05-01", Temperature: 19.6 },
+//   { Month: "2025-06-01", Temperature: 24.1 },
+//   { Month: "2025-07-01", Temperature: 27.3 },
+//   { Month: "2025-08-01", Temperature: 26.8 },
+//   { Month: "2025-09-01", Temperature: 22.5 },
+//   { Month: "2025-10-01", Temperature: 16.0 },
+//   { Month: "2025-11-01", Temperature: 9.4 },
+//   { Month: "2025-12-01", Temperature: 5.1 },
+// ];
 
-const mockData2 = [
-  { month: "2025-01", region: "North", sales: 230 },
-  { month: "2025-01", region: "South", sales: 180 },
-  { month: "2025-01", region: "East", sales: 210 },
-  { month: "2025-02", region: "North", sales: 250 },
-  { month: "2025-02", region: "South", sales: 190 },
-  { month: "2025-02", region: "East", sales: 220 },
-  { month: "2025-03", region: "North", sales: 270 },
-  { month: "2025-03", region: "South", sales: 200 },
-  { month: "2025-03", region: "East", sales: 230 },
-];
+// const mockData2 = [
+//   { month: "2025-01", region: "North", sales: 230 },
+//   { month: "2025-01", region: "South", sales: 180 },
+//   { month: "2025-01", region: "East", sales: 210 },
+//   { month: "2025-02", region: "North", sales: 250 },
+//   { month: "2025-02", region: "South", sales: 190 },
+//   { month: "2025-02", region: "East", sales: 220 },
+//   { month: "2025-03", region: "North", sales: 270 },
+//   { month: "2025-03", region: "South", sales: 200 },
+//   { month: "2025-03", region: "East", sales: 230 },
+// ];
 
-const mockData3 = [
-  {
-    month: "2011-01",
-    hospital: "City Hospital",
-    department: "Cardiology",
-    visits: 1200,
-  },
-  {
-    month: "2011-01",
-    hospital: "Metro Care",
-    department: "Orthopedics",
-    visits: 950,
-  },
-  {
-    month: "2011-01",
-    hospital: "HealthPlus",
-    department: "Pediatrics",
-    visits: 1100,
-  },
-  {
-    month: "2011-02",
-    hospital: "City Hospital",
-    department: "Cardiology",
-    visits: 1250,
-  },
-  {
-    month: "2011-02",
-    hospital: "Metro Care",
-    department: "Orthopedics",
-    visits: 970,
-  },
-  {
-    month: "2011-02",
-    hospital: "HealthPlus",
-    department: "Pediatrics",
-    visits: 1150,
-  },
-];
+// const mockData3 = [
+//   {
+//     month: "2011-01",
+//     hospital: "City Hospital",
+//     department: "Cardiology",
+//     visits: 1200,
+//   },
+//   {
+//     month: "2011-01",
+//     hospital: "Metro Care",
+//     department: "Orthopedics",
+//     visits: 950,
+//   },
+//   {
+//     month: "2011-01",
+//     hospital: "HealthPlus",
+//     department: "Pediatrics",
+//     visits: 1100,
+//   },
+//   {
+//     month: "2011-02",
+//     hospital: "City Hospital",
+//     department: "Cardiology",
+//     visits: 1250,
+//   },
+//   {
+//     month: "2011-02",
+//     hospital: "Metro Care",
+//     department: "Orthopedics",
+//     visits: 970,
+//   },
+//   {
+//     month: "2011-02",
+//     hospital: "HealthPlus",
+//     department: "Pediatrics",
+//     visits: 1150,
+//   },
+// ];
 
-const mockData4 = [
-  { month: "2024-01", traffic: 12000, revenue: 3500 },
-  { month: "2024-02", traffic: 13500, revenue: 3900 },
-  { month: "2024-03", traffic: 15000, revenue: 4200 },
-  { month: "2024-04", traffic: 16000, revenue: 4500 },
-  { month: "2024-05", traffic: 15500, revenue: 4400 },
-  { month: "2024-06", traffic: 17000, revenue: 4700 },
-  { month: "2024-07", traffic: 18000, revenue: 4900 },
-  { month: "2024-08", traffic: 17500, revenue: 4800 },
-  { month: "2024-09", traffic: 19000, revenue: 5200 },
-  { month: "2024-10", traffic: 20000, revenue: 5500 },
-  { month: "2024-11", traffic: 21000, revenue: 5800 },
-  { month: "2024-12", traffic: 22000, revenue: 6100 },
-];
+// const mockData4 = [
+//   { month: "2024-01", traffic: 12000, revenue: 3500 },
+//   { month: "2024-02", traffic: 13500, revenue: 3900 },
+//   { month: "2024-03", traffic: 15000, revenue: 4200 },
+//   { month: "2024-04", traffic: 16000, revenue: 4500 },
+//   { month: "2024-05", traffic: 15500, revenue: 4400 },
+//   { month: "2024-06", traffic: 17000, revenue: 4700 },
+//   { month: "2024-07", traffic: 18000, revenue: 4900 },
+//   { month: "2024-08", traffic: 17500, revenue: 4800 },
+//   { month: "2024-09", traffic: 19000, revenue: 5200 },
+//   { month: "2024-10", traffic: 20000, revenue: 5500 },
+//   { month: "2024-11", traffic: 21000, revenue: 5800 },
+//   { month: "2024-12", traffic: 22000, revenue: 6100 },
+// ];
 
-const mockData5 = [
-  { Epoch: 1, Accuracy: 0.55 },
-  { Epoch: 2, Accuracy: 0.6 },
-  { Epoch: 3, Accuracy: 0.65 },
-  { Epoch: 4, Accuracy: 0.69 },
-  { Epoch: 5, Accuracy: 0.73 },
-  { Epoch: 6, Accuracy: 0.76 },
-  { Epoch: 7, Accuracy: 0.78 },
-  { Epoch: 8, Accuracy: 0.81 },
-  { Epoch: 9, Accuracy: 0.83 },
-  { Epoch: 10, Accuracy: 0.85 },
-];
+// const mockData5 = [
+//   { Epoch: 1, Accuracy: 0.55 },
+//   { Epoch: 2, Accuracy: 0.6 },
+//   { Epoch: 3, Accuracy: 0.65 },
+//   { Epoch: 4, Accuracy: 0.69 },
+//   { Epoch: 5, Accuracy: 0.73 },
+//   { Epoch: 6, Accuracy: 0.76 },
+//   { Epoch: 7, Accuracy: 0.78 },
+//   { Epoch: 8, Accuracy: 0.81 },
+//   { Epoch: 9, Accuracy: 0.83 },
+//   { Epoch: 10, Accuracy: 0.85 },
+// ];
 
-const mockData6 = [
-  { education: "High School", satisfaction_score: 65 },
-  { education: "Associate Degree", satisfaction_score: 70 },
-  { education: "Bachelor's", satisfaction_score: 78 },
-  { education: "Master's", satisfaction_score: 82 },
-  { education: "PhD", satisfaction_score: 88 },
-];
+// const mockData6 = [
+//   { education: "High School", satisfaction_score: 65 },
+//   { education: "Associate Degree", satisfaction_score: 70 },
+//   { education: "Bachelor's", satisfaction_score: 78 },
+//   { education: "Master's", satisfaction_score: 82 },
+//   { education: "PhD", satisfaction_score: 88 },
+// ];
 
-const mockData7 = [
-  {
-    month: "2025-01",
-    region: "North America",
-    visits: 12000,
-    conversions: 480,
-  },
-  { month: "2025-01", region: "Europe", visits: 9500, conversions: 380 },
-  { month: "2025-01", region: "Asia", visits: 15000, conversions: 510 },
-  {
-    month: "2025-02",
-    region: "North America",
-    visits: 13000,
-    conversions: 520,
-  },
-  { month: "2025-02", region: "Europe", visits: 9700, conversions: 390 },
-  { month: "2025-02", region: "Asia", visits: 15800, conversions: 540 },
-  {
-    month: "2025-03",
-    region: "North America",
-    visits: 12500,
-    conversions: 510,
-  },
-  { month: "2025-03", region: "Europe", visits: 9400, conversions: 370 },
-  { month: "2025-03", region: "Asia", visits: 16200, conversions: 560 },
-  {
-    month: "2025-04",
-    region: "North America",
-    visits: 13500,
-    conversions: 550,
-  },
-  { month: "2025-04", region: "Europe", visits: 9900, conversions: 400 },
-  { month: "2025-04", region: "Asia", visits: 17000, conversions: 590 },
-];
+// const mockData7 = [
+//   {
+//     month: "2025-01",
+//     region: "North America",
+//     visits: 12000,
+//     conversions: 480,
+//   },
+//   { month: "2025-01", region: "Europe", visits: 9500, conversions: 380 },
+//   { month: "2025-01", region: "Asia", visits: 15000, conversions: 510 },
+//   {
+//     month: "2025-02",
+//     region: "North America",
+//     visits: 13000,
+//     conversions: 520,
+//   },
+//   { month: "2025-02", region: "Europe", visits: 9700, conversions: 390 },
+//   { month: "2025-02", region: "Asia", visits: 15800, conversions: 540 },
+//   {
+//     month: "2025-03",
+//     region: "North America",
+//     visits: 12500,
+//     conversions: 510,
+//   },
+//   { month: "2025-03", region: "Europe", visits: 9400, conversions: 370 },
+//   { month: "2025-03", region: "Asia", visits: 16200, conversions: 560 },
+//   {
+//     month: "2025-04",
+//     region: "North America",
+//     visits: 13500,
+//     conversions: 550,
+//   },
+//   { month: "2025-04", region: "Europe", visits: 9900, conversions: 400 },
+//   { month: "2025-04", region: "Asia", visits: 17000, conversions: 590 },
+// ];
 
 // num_1_cat_0_temp_1 --  mockData1
 // num_1_cat_1_temp_1 --  mockData2

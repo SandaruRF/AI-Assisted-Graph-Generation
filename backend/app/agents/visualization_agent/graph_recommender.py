@@ -7,13 +7,13 @@ from app.state import State
 
 SUPPORTED_GRAPH_TYPES = {
     "num_0_cat_1_temp_0": ["Histogram"],
-    "num_1_cat_0_temp_0": ["Area Chart", "Histogram", "Normalized Histogram", "Line Chart"],
+    "num_1_cat_0_temp_0": ["Area Chart", "Box Plot", "Histogram", "Normalized Histogram", "Line Chart"],
     "num_n_cat_0_temp_0": ["Histogram", "Stacked Histogram"],
-    "num_1_cat_0_temp_1": ["Area Chart", "Bar Chart", "Histogram", "Line Chart", "Scatter Plot"],
-    "num_1_cat_1_temp_0": ["Area Chart", "Bar Chart", "Grouped Histogram", "Stacked Histogram", "Line Chart", "Pie Chart", "Donut Chart"],
+    "num_1_cat_0_temp_1": ["Area Chart", "Box Plot", "Bar Chart", "Histogram", "Line Chart", "Scatter Plot"],
+    "num_1_cat_1_temp_0": ["Area Chart", "Box Plot", "Bar Chart", "Grouped Histogram", "Stacked Histogram", "Line Chart", "Pie Chart", "Donut Chart"],
     "num_1_cat_1_temp_1": ["Area Chart", "Stacked Bar Chart", "Grouped Bar Chart", "Line Chart"],
     "num_n_cat_1_temp_0": ["Stacked Bar Chart", "Grouped Bar Chart"],
-    "num_1_cat_2_temp_0": ["Stacked Bar Chart", "Grouped Bar Chart", "Pie Chart", "Donut Chart"],
+    "num_1_cat_2_temp_0": ["Stacked Bar Chart", "Grouped Bar Chart", "Box Plot", "Pie Chart", "Donut Chart"],
     "num_1_cat_2_temp_1": ["Line Chart"],
     "num_2_cat_0_temp_0": ["Area Chart", "Scatter Plot"],
     "num_2_cat_0_temp_1": ["Area Chart", "Line Chart", "Scatter Plot"],

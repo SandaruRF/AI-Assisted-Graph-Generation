@@ -1,28 +1,28 @@
 import React from "react";
 import Plot from "react-plotly.js";
 
-const mockData1 = [
-  { Value: 450, Category: "Tech" },
-  { Value: 300, Category: "Finance" },
-  { Value: 200, Category: "Healthcare" },
-  { Value: 150, Category: "Energy" },
-  { Value: 100, Category: "Retail" },
-];
+// const mockData1 = [
+//   { Value: 450, Category: "Tech" },
+//   { Value: 300, Category: "Finance" },
+//   { Value: 200, Category: "Healthcare" },
+//   { Value: 150, Category: "Energy" },
+//   { Value: 100, Category: "Retail" },
+// ];
 
-const mockData2 = [
-  { Value: 120, Region: "North", Product: "Electronics" },
-  { Value: 80, Region: "North", Product: "Furniture" },
-  { Value: 60, Region: "North", Product: "Clothing" },
-  { Value: 100, Region: "South", Product: "Electronics" },
-  { Value: 90, Region: "South", Product: "Furniture" },
-  { Value: 50, Region: "South", Product: "Clothing" },
-  { Value: 110, Region: "East", Product: "Electronics" },
-  { Value: 70, Region: "East", Product: "Furniture" },
-  { Value: 40, Region: "East", Product: "Clothing" },
-  { Value: 130, Region: "West", Product: "Electronics" },
-  { Value: 85, Region: "West", Product: "Furniture" },
-  { Value: 55, Region: "West", Product: "Clothing" },
-];
+// const mockData2 = [
+//   { Value: 120, Region: "North", Product: "Electronics" },
+//   { Value: 80, Region: "North", Product: "Furniture" },
+//   { Value: 60, Region: "North", Product: "Clothing" },
+//   { Value: 100, Region: "South", Product: "Electronics" },
+//   { Value: 90, Region: "South", Product: "Furniture" },
+//   { Value: 50, Region: "South", Product: "Clothing" },
+//   { Value: 110, Region: "East", Product: "Electronics" },
+//   { Value: 70, Region: "East", Product: "Furniture" },
+//   { Value: 40, Region: "East", Product: "Clothing" },
+//   { Value: 130, Region: "West", Product: "Electronics" },
+//   { Value: 85, Region: "West", Product: "Furniture" },
+//   { Value: 55, Region: "West", Product: "Clothing" },
+// ];
 
 // num_1_cat_1_temp_0  --  mockData1
 // num_1_cat_2_temp_0  --  mockData2
@@ -34,10 +34,8 @@ const PieChart = ({ typeString, dataset }) => {
 
   const charts = [];
   const opacity = 0.9;
-  let data,
-    data1 = [];
+  let data = [];
   let title,
-    title1,
     numericKey,
     categoryKey,
     categoryKey1 = "";
