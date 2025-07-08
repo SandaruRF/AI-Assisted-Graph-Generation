@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+import logging
 from app.config import settings
 from app.api.database import router as database_router
 from app.api.users import router as user_router
@@ -9,6 +9,9 @@ from app.api.sql_database import router as database_connection_router
 from app.api.web_socket import router as stream_ws_router
 from app.api.googleauth import router as google_auth_router
 from app.api.githubauth import router as github_auth_router
+
+logging.getLogger("pymongo").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 app = FastAPI(
     title="AI Assisted Graph Generation - VizGen",

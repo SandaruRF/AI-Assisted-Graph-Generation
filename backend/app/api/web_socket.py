@@ -1,12 +1,17 @@
-from fastapi import WebSocket, WebSocketDisconnect, APIRouter, HTTPException
+from fastapi import WebSocket, WebSocketDisconnect, APIRouter, HTTPException,Depends
 import json
+from app.api.users import login
 
 from app.graph import State, workflow
 from app.utils.logging import logger
 from app.utils.decimal_encoder import DecimalEncoder
 from app.state import connected_clients
+from app.utils.auth import get_current_user
+from app.agents.sql_agent.query_log import log_query
+
 
 router = APIRouter()
+
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -50,6 +55,14 @@ async def websocket_endpoint(websocket: WebSocket):
                 )
                 
                 result = await workflow.ainvoke(state)  # Get final state
+                # Only log if result.sql_query is not None or empty
+                if getattr(result, "sql_query", None):
+                    log_query(
+                        session_id=result.session_id,
+                        prompt=result.prompt,
+                        sql_query=result.sql_query,
+                        date_run=None,
+                    )
                 
                 # Send final result
                 await websocket.send_text(json.dumps({
