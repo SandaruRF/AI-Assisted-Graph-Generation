@@ -1,60 +1,191 @@
 import React from "react";
+import Plot from "react-plotly.js";
 
-import BoxPlotChart from "./BoxPlot";
-import LineChart from "./LineChart";
-import PieChart from "./PieChart";
-import ScatterPlot from "./ScatterPlot";
-import Histogram from "./Histogram";
-import CandlestickChart from "./CandlestickChart";
-import AreaChart from "./AreaChart";
-import BarChart from "./BarChart";
-
-const ChartRenderer = ({ typeString, dataset }) => {
-  if (!typeString || !dataset || dataset.length === 0)
-    return <div>No data or chart type provided</div>;
-
-  if (typeString.includes("box")) {
-    return <BoxPlotChart typeString={typeString} dataset={dataset} />;
+export default function ChartRenderer({ data, state }) {
+  console.log("ChartRenderer called with:", { data, state });
+  
+  if (!data || !state) {
+    console.log("ChartRenderer: Missing data or state");
+    return null;
   }
 
-  if (typeString.includes("line")) {
-    return <LineChart typeString={typeString} dataset={dataset} />;
+  const { 
+    graph_type, 
+    x_label, 
+    y_label, 
+    legend_label, 
+    title, 
+    color,
+    use_multiple_colors,
+    colors 
+  } = state;
+
+  // Default colors for multiple categories
+  const defaultColors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ffa500", "#800080"];
+
+  // Auto-detect and map data format
+  let processedData = data;
+  if (Array.isArray(data) && data.length > 0) {
+    const firstItem = data[0];
+    const keys = Object.keys(firstItem);
+    
+    // If data doesn't have x/y format, try to auto-map
+    if (!('x' in firstItem && 'y' in firstItem)) {
+      // Find string column (for labels) and number column (for values)
+      let xKey = keys.find(k => typeof firstItem[k] === 'string');
+      let yKey = keys.find(k => typeof firstItem[k] === 'number');
+      
+      if (xKey && yKey) {
+        processedData = data.map(d => ({ x: d[xKey], y: d[yKey] }));
+        console.log("Mapped data:", processedData); // Debug log
+      }
+    }
   }
 
-  if (typeString.includes("pie")) {
-    return <PieChart typeString={typeString} dataset={dataset} />;
+  let plotData = [];
+  let layout = {
+    title: title || "Generated Graph",
+    xaxis: { 
+      title: x_label || "X Axis",
+      showgrid: true,
+      gridcolor: "#f0f0f0"
+    },
+    yaxis: { 
+      title: y_label || "Y Axis",
+      showgrid: true,
+      gridcolor: "#f0f0f0"
+    },
+    legend: { 
+      title: { text: legend_label || "Legend" },
+      x: 0.5,
+      y: -0.2,
+      xanchor: "center",
+      orientation: "h"
+    },
+    autosize: true,
+    margin: { l: 60, r: 30, t: 60, b: 80 },
+    plot_bgcolor: "white",
+    paper_bgcolor: "white",
+    font: { size: 12 }
+  };
+
+  switch (graph_type) {
+    case "bar":
+      plotData = [
+        {
+          x: processedData.map(d => d.x),
+          y: processedData.map(d => d.y),
+          type: "bar",
+          marker: { 
+            color: use_multiple_colors ? (colors || defaultColors) : (color || "#3366cc"),
+            line: { color: "#333", width: 1 }
+          },
+          name: legend_label || "Data",
+          text: processedData.map(d => d.y),
+          textposition: "auto",
+        },
+      ];
+      break;
+
+    case "scatter":
+      plotData = [
+        {
+          x: processedData.map(d => d.x),
+          y: processedData.map(d => d.y),
+          mode: "markers",
+          type: "scatter",
+          marker: { 
+            color: color || "#3366cc",
+            size: 8,
+            line: { color: "#333", width: 1 }
+          },
+          name: legend_label || "Data",
+        },
+      ];
+      break;
+
+    case "pie":
+      plotData = [
+        {
+          labels: processedData.map(d => d.x),
+          values: processedData.map(d => d.y),
+          type: "pie",
+          marker: { 
+            colors: use_multiple_colors ? (colors || defaultColors) : [color || "#3366cc"],
+            line: { color: "#333", width: 2 }
+          },
+          name: legend_label || "Data",
+          textinfo: "label+percent",
+          textposition: "outside",
+        },
+      ];
+      break;
+
+    case "area":
+      plotData = [
+        {
+          x: processedData.map(d => d.x),
+          y: processedData.map(d => d.y),
+          type: "scatter",
+          mode: "lines",
+          fill: "tonexty",
+          fillcolor: color || "#3366cc",
+          line: { color: color || "#3366cc", width: 2 },
+          name: legend_label || "Data",
+        },
+      ];
+      break;
+
+    case "histogram":
+      plotData = [
+        {
+          x: processedData.map(d => d.y),
+          type: "histogram",
+          marker: { 
+            color: color || "#3366cc",
+            line: { color: "#333", width: 1 }
+          },
+          name: legend_label || "Data",
+          nbinsx: Math.min(20, processedData.length),
+        },
+      ];
+      break;
+
+    case "line":
+    default:
+      plotData = [
+        {
+          x: processedData.map(d => d.x),
+          y: processedData.map(d => d.y),
+          type: "scatter",
+          mode: "lines+markers",
+          marker: { 
+            color: color || "#3366cc",
+            size: 6,
+            line: { color: "#333", width: 1 }
+          },
+          line: { color: color || "#3366cc", width: 2 },
+          name: legend_label || "Data",
+        },
+      ];
+      break;
   }
 
-  if (typeString.includes("scatter")) {
-    return <ScatterPlot typeString={typeString} dataset={dataset} />;
-  }
+  console.log("Plot data:", plotData);
+  console.log("Layout:", layout);
 
-  if (typeString.includes("hist")) {
-    return <Histogram typeString={typeString} dataset={dataset} />;
-  }
-
-  if (typeString.includes("candle")) {
-    return <CandlestickChart typeString={typeString} dataset={dataset} />;
-  }
-
-  if (typeString.includes("area")) {
-    return <AreaChart typeString={typeString} dataset={dataset} />;
-  }
-
-  if (typeString.includes("bar")) {
-    return <BarChart typeString={typeString} dataset={dataset} />;
-  }
-
-  // Fallback logic based on typeString patterns
-  if (typeString.startsWith("num_3_cat_2")) {
-    return <ScatterPlot typeString={typeString} dataset={dataset} />;
-  } else if (typeString.startsWith("num_2_cat_1") && typeString.includes("temp_1")) {
-    return <LineChart typeString={typeString} dataset={dataset} />;
-  } else if (typeString.startsWith("num_1_cat_2")) {
-    return <BoxPlotChart typeString={typeString} dataset={dataset} />;
-  }
-
-  return <div>Unknown chart type: {typeString}</div>;
-};
-
-export default ChartRenderer;
+  return (
+    <Plot
+      data={plotData}
+      layout={layout}
+      style={{ width: "100%", height: "400px" }}
+      useResizeHandler={true}
+      config={{ 
+        responsive: true,
+        displayModeBar: true,
+        modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d'],
+        displaylogo: false
+      }}
+    />
+  );
+}

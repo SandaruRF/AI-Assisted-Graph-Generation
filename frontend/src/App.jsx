@@ -19,6 +19,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import ChartPreview from "./pages/ChartPreview";
 
+
+
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -86,5 +88,7 @@ function App() {
     </div>
   );
 }
+
+
 
 export default App;

@@ -12,12 +12,19 @@ import {
 import TypewriterWords from "../components/chat_interface/TypewriterWords";
 import TraceTimeline from "../components/chat_interface/TraceTimeline";
 import Graph from "../components/chat_interface/Graph";
+import ChartRenderer from "../components/graphs/ChartRenderer"; // Add this import
 
 const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
   <Stack spacing={2}>
     {/* Prompt Suggestions */}
     <Stack direction="row" spacing={1} flexWrap="wrap">
-      {["Show sales trends for Q1", "Find anomalies in customer behavior"].map(
+      {[
+        "Show sales trends for Q1", 
+        "Find anomalies in customer behavior",
+        "Change title to 'Sales Analysis'", // Add customization examples
+        "Make it red",
+        "Switch to bar chart"
+      ].map(
         (prompt, index) => (
           <Chip
             key={index}
@@ -39,7 +46,7 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
     >
       <TextField
         fullWidth
-        placeholder="What would you like to explore today?"
+        placeholder="What would you like to explore today? Or customize the graph (e.g., 'change title to Sales Data', 'make it red', 'switch to bar chart')"
         value={userPrompt}
         onChange={(e) => setUserPrompt(e.target.value)}
         onKeyDown={(e) => {
@@ -80,49 +87,95 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
 
 const VisualizationPage = () => {
   const location = useLocation();
-  const sessionId = location.state?.sessionId;
+  const sessionId = location.state?.sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; // Add fallback
   const [userPrompt, setUserPrompt] = useState("");
   const [promptHistory, setPromptHistory] = useState([]);
   const [resultHistory, setResultHistory] = useState([]);
-  const [tracesHistory, setTracesHistory] = useState({});
+  const [tracesHistory, setTracesHistory] = useState({}); // Keep as object
   const [isFirstSend, setIsFirstSend] = useState(true);
   const scrollContainerRef = useRef(null);
   const lastPromptRef = useRef(null);
   const socketRef = useRef(null);
   const latestIndexRef = useRef(0);
 
+  // Add graph state for customization
+  const [currentGraphState, setCurrentGraphState] = useState(null);
+
   useEffect(() => {
     socketRef.current = new WebSocket("ws://localhost:8000/ws");
+
+    socketRef.current.onopen = () => {
+      console.log("WebSocket connected successfully");
+    };
+
+    socketRef.current.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
 
     socketRef.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // console.log("Received message:", data); // For debugging
 
         if (data.type === "update") {
           const currentIndex = latestIndexRef.current;
-          // console.log("Current latest index:", currentIndex);
           setTracesHistory((prev) => ({
             ...prev,
             [currentIndex]: [...(prev[currentIndex] || []), data.message],
           }));
         } else if (data.type === "final") {
-          // console.log("Final result received:", data.result);
-          setResultHistory((prev) => [...prev, data.result]);
+          const result = data.result;
+          
+          // Check if this is a customization response
+          if (result.is_customization) {
+            // Update the current graph state
+            setCurrentGraphState(result.graph_state);
+          } else {
+            // Regular graph generation - store the graph state for customization
+            if (result.rearranged_data) {
+              setCurrentGraphState({
+                graph_type: result.ranked_graphs[0] || "line",
+                x_label: "X Axis",
+                y_label: "Y Axis",
+                legend_label: "Legend",
+                title: "Generated Graph",
+                color: "#3366cc",
+                data: result.rearranged_data,
+                num_numeric: result.num_numeric,
+                num_cat: result.num_cat,
+                num_temporal: result.num_temporal,
+                ranked_graphs: result.ranked_graphs
+              });
+            }
+          }
+          
+          setResultHistory((prev) => [...prev, result]);
         } else if (data.type === "error") {
           console.error("Error from server:", data.message);
-          setTracesHistory((prev) => [...prev, `Error: ${data.message}`]);
+          const currentIndex = latestIndexRef.current;
+          setTracesHistory((prev) => ({
+            ...prev,
+            [currentIndex]: [...(prev[currentIndex] || []), `Error: ${data.message}`],
+          }));
         } else {
-          // Handle legacy format (your original format)
+          // Handle legacy format
           if (data.result) {
             setResultHistory((prev) => [...prev, data.result]);
           }
           if (data.message) {
-            setTracesHistory((prev) => [...prev, data.message]);
+            const currentIndex = latestIndexRef.current;
+            setTracesHistory((prev) => ({
+              ...prev,
+              [currentIndex]: [...(prev[currentIndex] || []), data.message],
+            }));
           }
         }
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);
+        const currentIndex = latestIndexRef.current;
+        setTracesHistory((prev) => ({
+          ...prev,
+          [currentIndex]: [...(prev[currentIndex] || []), `Error: ${error.message}`],
+        }));
       }
     };
 
@@ -142,20 +195,16 @@ const VisualizationPage = () => {
       setIsFirstSend(false);
     }
 
-    // Create the message object similar to what you were sending with Axios
     const messageObject = {
       user_prompt: userPrompt,
       session_id: sessionId,
     };
 
-    // Convert the object to a JSON string for WebSocket transmission
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify(messageObject));
 
-      // Add the user prompt to history
       setPromptHistory((prev) => {
         const newLength = prev.length;
-        // Update both the state and the ref
         latestIndexRef.current = newLength;
         return [...prev, userPrompt];
       });
@@ -187,6 +236,9 @@ const VisualizationPage = () => {
         <Box sx={{ textAlign: "center", mt: 25 }}>
           <Typography variant="h4" component="h1">
             Hi there! 👋 I'm your Data Assistant.
+          </Typography>
+          <Typography variant="body1" sx={{ mt: 2, color: "text.secondary" }}>
+            Ask me to generate graphs or customize existing ones with natural language!
           </Typography>
         </Box>
       )}
@@ -257,13 +309,28 @@ const VisualizationPage = () => {
                   }}
                 >
                   <TypewriterWords text={resultHistory[index].response} />
-                  <Graph
-                    num_numeric={resultHistory[index].num_numeric}
-                    num_cat={resultHistory[index].num_cat}
-                    num_temporal={resultHistory[index].num_temporal}
-                    types={resultHistory[index].ranked_graphs}
-                    data={resultHistory[index].rearranged_data}
-                  />
+                  
+                  {/* Show either the original Graph component or the customized ChartRenderer */}
+                  {resultHistory[index].is_customization ? (
+                    // Customization response - show updated chart
+                    currentGraphState && currentGraphState.data && (
+                      <Box sx={{ width: "100%", mt: 2 }}>
+                        <ChartRenderer 
+                          data={currentGraphState.data} 
+                          state={currentGraphState} 
+                        />
+                      </Box>
+                    )
+                  ) : (
+                    // Regular graph generation - show original Graph component
+                    <Graph
+                      num_numeric={resultHistory[index].num_numeric}
+                      num_cat={resultHistory[index].num_cat}
+                      num_temporal={resultHistory[index].num_temporal}
+                      types={resultHistory[index].ranked_graphs}
+                      data={resultHistory[index].rearranged_data}
+                    />
+                  )}
                 </Box>
               )}
             </React.Fragment>
