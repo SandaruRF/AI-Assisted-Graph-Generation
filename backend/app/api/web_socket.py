@@ -8,6 +8,7 @@ from app.utils.decimal_encoder import DecimalEncoder
 from app.state import connected_clients
 from app.utils.auth import get_current_user
 from app.agents.sql_agent.query_log import log_query
+from app.agents.sql_agent.log_summerizer import query_log_summerizer
 
 
 router = APIRouter()
@@ -63,6 +64,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         sql_query=result.sql_query,
                         date_run=None,
                     )
+                query_log_summerizer(session_id)
                 
                 # Send final result
                 await websocket.send_text(json.dumps({
