@@ -47,4 +47,4 @@ class LogSummerizer:
         """
         response = self.model.generate_content(prompt)
         logger.info(f"Summerized logs: {response.text}")
-        return response    
+        return response.text
