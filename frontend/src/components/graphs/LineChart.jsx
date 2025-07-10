@@ -146,182 +146,192 @@ const mockData7 = [
 // num_1_cat_1_temp_0 --  mockData6
 // num_2_cat_1_temp_1 --  mockData7
 
-
-
-const LineChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }) => {
+const LineChart = ({ typeString, dataset }) => {
   const type = typeString;
   const mockData = dataset;
-
-  const getLegendName = (name) => legendLabels?.[name] || name;
-  const getColor = (index) => (colors && colors[index]) || undefined;
-
   let chart = null;
 
   if (type === "num_1_cat_0_temp_1") {
     const [xKey, yKey] = Object.keys(mockData[0]);
-    const x = mockData.map(item => item[xKey]);
-    const y = mockData.map(item => item[yKey]);
+    const x = mockData.map((item) => item[xKey]);
+    const y = mockData.map((item) => item[yKey]);
 
     chart = {
       title: "Simple Univariate Time Series",
-      xAxisTitle: xLabel || xKey,
-      yAxisTitle: yLabel || yKey,
+      xAxisTitle: xKey,
+      yAxisTitle: yKey,
       data: [
-        {
-          x, y,
-          type: "scatter",
-          mode: "lines+markers",
-          marker: { size: 6, color: getColor(0) }
-        }
+        { x, y, type: "scatter", mode: "lines+markers", marker: { size: 6 } },
       ],
     };
-  }
-
-  else if (type === "num_1_cat_1_temp_1") {
+  } else if (type === "num_1_cat_1_temp_1") {
     const [xKey, catKey, yKey] = Object.keys(mockData[0]);
-    const categories = [...new Set(mockData.map(item => item[catKey]))];
-    const dates = [...new Set(mockData.map(item => item[xKey]))];
+    const categories = [...new Set(mockData.map((item) => item[catKey]))];
+    const dates = [...new Set(mockData.map((item) => item[xKey]))];
 
-    const lineData = categories.map((category, i) => ({
+    const lineData = categories.map((category) => ({
       x: dates,
-      y: dates.map(date => {
-        const item = mockData.find(d => d[xKey] === date && d[catKey] === category);
-        return item ? item[yKey] : null;
+      y: dates.map((date) => {
+        const foundItem = mockData.find(
+          (item) => item[xKey] === date && item[catKey] === category
+        );
+        return foundItem ? foundItem[yKey] : null;
       }),
       type: "scatter",
       mode: "lines+markers",
-      name: getLegendName(category),
-      marker: { size: 6, color: getColor(i) },
+      name: category,
+      marker: { size: 6 },
     }));
 
     chart = {
-      title: "Time Series by Category",
-      xAxisTitle: xLabel || xKey,
-      yAxisTitle: yLabel || yKey,
+      title: "Time Series by Category (Grouped Time Series)",
+      xAxisTitle: xKey,
+      yAxisTitle: yKey,
       data: lineData,
     };
-  }
-
-  else if (type === "num_1_cat_2_temp_1") {
+  } else if (type === "num_1_cat_2_temp_1") {
     const [xKey, catKey1, catKey2, yKey] = Object.keys(mockData[0]);
-    const cat1s = [...new Set(mockData.map(item => item[catKey1]))];
-    const cat2s = [...new Set(mockData.map(item => item[catKey2]))];
-    const dates = [...new Set(mockData.map(item => item[xKey]))];
+    const categories1 = [...new Set(mockData.map((item) => item[catKey1]))];
+    const categories2 = [...new Set(mockData.map((item) => item[catKey2]))];
+    const dates = [...new Set(mockData.map((item) => item[xKey]))];
 
-    const lineData = cat1s.flatMap((cat1, i) =>
-      cat2s.map((cat2, j) => {
-        const groupName = `${getLegendName(cat1)} - ${getLegendName(cat2)}`;
+    const lineData = categories1.flatMap((cat1) =>
+      categories2.map((cat2) => {
+        const groupName = `${cat1} - ${cat2}`;
         return {
           x: dates,
-          y: dates.map(date => {
-            const item = mockData.find(
-              d => d[xKey] === date && d[catKey1] === cat1 && d[catKey2] === cat2
+          y: dates.map((date) => {
+            const foundItem = mockData.find(
+              (item) =>
+                item[xKey] === date &&
+                item[catKey1] === cat1 &&
+                item[catKey2] === cat2
             );
-            return item ? item[yKey] : null;
+            return foundItem ? foundItem[yKey] : null;
           }),
-          name: groupName,
           type: "scatter",
           mode: "lines+markers",
-          marker: { size: 6, color: getColor(i * cat2s.length + j) },
+          name: groupName,
+          marker: { size: 6 },
         };
       })
-    ).filter(series => series.y.some(val => val !== null));
+    );
+
+    const validLineData = lineData.filter((series) =>
+      series.y.some((val) => val !== null)
+    );
 
     chart = {
-      title: "Multi-Series Categorical Trends",
-      xAxisTitle: xLabel || xKey,
-      yAxisTitle: yLabel || yKey,
-      data: lineData,
+      title: "Multi-Series Categorical Time Trends",
+      xAxisTitle: xKey,
+      yAxisTitle: yKey,
+      data: validLineData,
     };
-  }
-
-  else if (type === "num_2_cat_0_temp_1") {
+  } else if (type === "num_2_cat_0_temp_1") {
     const [xKey, yKey1, yKey2] = Object.keys(mockData[0]);
-    const x = mockData.map(item => item[xKey]);
+    const x = mockData.map((item) => item[xKey]);
+    const y1 = mockData.map((item) => item[yKey1]);
+    const y2 = mockData.map((item) => item[yKey2]);
 
     chart = {
       title: "Dual-Axis Time Series",
-      xAxisTitle: xLabel || xKey,
-      yAxisTitle1: getLegendName(yKey1),
-      yAxisTitle2: getLegendName(yKey2),
+      xAxisTitle: xKey,
+      yAxisTitle1: yKey1,
+      yAxisTitle2: yKey2,
       data: [
         {
-          x, y: mockData.map(item => item[yKey1]),
+          x,
+          y: y1,
           type: "scatter",
           mode: "lines+markers",
-          name: getLegendName(yKey1),
+          name: yKey1,
           yaxis: "y1",
-          marker: { size: 6, color: getColor(0) },
+          marker: { size: 6 },
         },
         {
-          x, y: mockData.map(item => item[yKey2]),
+          x,
+          y: y2,
           type: "scatter",
           mode: "lines+markers",
-          name: getLegendName(yKey2),
+          name: yKey2,
           yaxis: "y2",
-          marker: { size: 6, color: getColor(1) },
+          marker: { size: 6 },
         },
       ],
     };
-  }
-
-  else if (type === "num_1_cat_0_temp_0" || type === "num_1_cat_1_temp_0") {
+  } else if (type === "num_1_cat_0_temp_0") {
     const [xKey, yKey] = Object.keys(mockData[0]);
-    const x = mockData.map(item => item[xKey]);
-    const y = mockData.map(item => item[yKey]);
+    const x = mockData.map((item) => item[xKey]);
+    const y = mockData.map((item) => item[yKey]);
 
     chart = {
-      title: "Sequential Line Chart",
-      xAxisTitle: xLabel || xKey,
-      yAxisTitle: yLabel || yKey,
+      title: "Sequentially Ordered Numeric (Non-Time)",
+      xAxisTitle: xKey,
+      yAxisTitle: yKey,
+      data: [
+        { x, y, type: "scatter", mode: "lines+markers", marker: { size: 6 } },
+      ],
+    };
+  } else if (type === "num_1_cat_1_temp_0") {
+    const [xKey, yKey] = Object.keys(mockData[0]);
+    const x = mockData.map((item) => item[xKey]);
+    const y = mockData.map((item) => item[yKey]);
+
+    chart = {
+      title: "Category + Ordered Numeric Sequence",
+      xAxisTitle: xKey,
+      yAxisTitle: yKey,
       data: [
         {
-          x, y,
+          x,
+          y,
           type: "scatter",
           mode: "lines+markers",
-          marker: { size: 6, color: getColor(0) }
+          marker: { size: 6 },
         },
       ],
     };
-  }
-
-  else if (type === "num_2_cat_1_temp_1") {
+  } else if (type === "num_2_cat_1_temp_1") {
     const [xKey, catKey, yKey1, yKey2] = Object.keys(mockData[0]);
-    const categories = [...new Set(mockData.map(item => item[catKey]))];
-    const dates = [...new Set(mockData.map(item => item[xKey]))];
+    const categories = [...new Set(mockData.map((item) => item[catKey]))];
+    const dates = [...new Set(mockData.map((item) => item[xKey]))];
 
-    const lineData = categories.flatMap((cat, i) => [
+    const lineData = categories.flatMap((category) => [
       {
         x: dates,
-        y: dates.map(date => {
-          const item = mockData.find(d => d[xKey] === date && d[catKey] === cat);
-          return item ? item[yKey1] : null;
+        y: dates.map((date) => {
+          const foundItem = mockData.find(
+            (item) => item[xKey] === date && item[catKey] === category
+          );
+          return foundItem ? foundItem[yKey1] : null;
         }),
-        name: `${getLegendName(cat)} - ${getLegendName(yKey1)}`,
         type: "scatter",
         mode: "lines+markers",
+        name: `${category} - ${yKey1}`,
         yaxis: "y1",
-        marker: { size: 6, color: getColor(i * 2) },
+        marker: { size: 6 },
       },
       {
         x: dates,
-        y: dates.map(date => {
-          const item = mockData.find(d => d[xKey] === date && d[catKey] === cat);
-          return item ? item[yKey2] : null;
+        y: dates.map((date) => {
+          const foundItem = mockData.find(
+            (item) => item[xKey] === date && item[catKey] === category
+          );
+          return foundItem ? foundItem[yKey2] : null;
         }),
-        name: `${getLegendName(cat)} - ${getLegendName(yKey2)}`,
         type: "scatter",
         mode: "lines+markers",
+        name: `${category} - ${yKey2}`,
         yaxis: "y2",
-        marker: { size: 6, color: getColor(i * 2 + 1) },
+        marker: { size: 6 },
       },
     ]);
 
     chart = {
       title: "Grouped Dual-Metric Time Series",
-      xAxisTitle: xLabel || xKey,
-      yAxisTitle1: getLegendName(yKey1),
-      yAxisTitle2: getLegendName(yKey2),
+      xAxisTitle: xKey,
+      yAxisTitle1: yKey1,
+      yAxisTitle2: yKey2,
       data: lineData,
     };
   }
@@ -337,7 +347,12 @@ const LineChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }
             title: { text: chart.title, font: { size: 18 } },
             xaxis: {
               title: { text: chart.xAxisTitle, font: { size: 14 } },
-              type: type.includes("temp_1") ? "date" : "category",
+              type:
+                type === "num_1_cat_1_temp_0"
+                  ? "category"
+                  : type.includes("temp_0") && type !== "num_1_cat_1_temp_0"
+                  ? "linear"
+                  : "date",
               tickangle: 45,
               tickfont: { size: 12 },
               automargin: true,
@@ -348,15 +363,15 @@ const LineChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }
                 font: { size: 14 },
               },
               tickfont: { size: 12 },
+              range: type === "num_2_cat_1_temp_1" ? [9000, 18000] : undefined,
             },
-            yaxis2: chart.yAxisTitle2
-              ? {
-                  title: { text: chart.yAxisTitle2, font: { size: 14 } },
-                  overlaying: "y",
-                  side: "right",
-                  tickfont: { size: 12 },
-                }
-              : undefined,
+            yaxis2: {
+              title: { text: chart.yAxisTitle2 || "", font: { size: 14 } },
+              tickfont: { size: 12 },
+              overlaying: "y",
+              side: "right",
+              range: type === "num_2_cat_1_temp_1" ? [350, 650] : undefined,
+            },
             legend: {
               x: 1.05,
               y: 1,
@@ -368,7 +383,6 @@ const LineChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }
               borderwidth: 1,
             },
             margin: { l: 60, r: 60, t: 60, b: 80 },
-            hovermode: "x unified",
           }}
         />
       ) : (
@@ -377,8 +391,5 @@ const LineChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }
     </div>
   );
 };
-
-
-
 
 export default LineChart;

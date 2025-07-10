@@ -46,7 +46,7 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
     >
       <TextField
         fullWidth
-        placeholder="What would you like to explore today? Or customize the graph (e.g., 'change title to Sales Data', 'make it red', 'switch to bar chart')"
+        placeholder="What would you like to explore today?"
         value={userPrompt}
         onChange={(e) => setUserPrompt(e.target.value)}
         onKeyDown={(e) => {
@@ -237,9 +237,7 @@ const VisualizationPage = () => {
           <Typography variant="h4" component="h1">
             Hi there! 👋 I'm your Data Assistant.
           </Typography>
-          <Typography variant="body1" sx={{ mt: 2, color: "text.secondary" }}>
-            Ask me to generate graphs or customize existing ones with natural language!
-          </Typography>
+          
         </Box>
       )}
 

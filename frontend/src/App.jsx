@@ -17,7 +17,7 @@ import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import ChartPreview from "./pages/ChartPreview";
+
 
 
 
@@ -80,7 +80,7 @@ function App() {
               />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/github-callback" element={<GithubCallback />} />
-              <Route path="/chart" element={<ChartPreview />} />
+              
             </Routes>
           </Router>
         </div>

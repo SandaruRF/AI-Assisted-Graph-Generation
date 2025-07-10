@@ -11,7 +11,7 @@ import Histogram from "../../components/graphs/Histogram";
 import PieChart from "../../components/graphs/PieChart";
 import ScatterPlot from "../../components/graphs/ScatterPlot";
 
-const Graph = ({ num_numeric, num_cat, num_temporal, types, data, chart_type, colors, x_label, y_label, legend_labels }) => {
+const Graph = ({ num_numeric, num_cat, num_temporal, types, data }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const typeString =
@@ -53,18 +53,6 @@ const Graph = ({ num_numeric, num_cat, num_temporal, types, data, chart_type, co
     if (graphType) {
       setSelectedGraph(graphType);
     }
-  };
-
-  if (!graphTypes.length || !selectedGraph) return null;
-
-  // Common props to pass to all chart components
-  const chartProps = {
-    typeString,
-    dataset: data,
-    colors,
-    xLabel: x_label,
-    yLabel: y_label,
-    legendLabels: legend_labels,
   };
 
   return (
@@ -123,15 +111,31 @@ const Graph = ({ num_numeric, num_cat, num_temporal, types, data, chart_type, co
         ))}
       </Menu>
 
- <Box sx={{ mt: 3 }}>
-        {selectedGraph === "Candlestick Chart" && <CandlestickChart {...chartProps} />}
-        {selectedGraph === "Area Chart" && <AreaChart {...chartProps} />}
-        {selectedGraph === "Line Chart" && <LineChart {...chartProps} />}
-        {selectedGraph === "Bar Chart" && <BarChart {...chartProps} />}
-        {selectedGraph === "Box Plot" && <BoxPlot {...chartProps} />}
-        {selectedGraph === "Histogram" && <Histogram {...chartProps} />}
-        {selectedGraph === "Pie Chart" && <PieChart {...chartProps} />}
-        {selectedGraph === "Scatter Plot" && <ScatterPlot {...chartProps} />}
+      <Box sx={{ mt: 3 }}>
+        {selectedGraph === "Candlestick Chart" && (
+          <CandlestickChart typeString={typeString} dataset={data} />
+        )}
+        {selectedGraph === "Area Chart" && (
+          <AreaChart typeString={typeString} dataset={data} />
+        )}
+        {selectedGraph === "Line Chart" && (
+          <LineChart typeString={typeString} dataset={data} />
+        )}
+        {selectedGraph === "Bar Chart" && (
+          <BarChart typeString={typeString} dataset={data} />
+        )}
+        {selectedGraph === "Box Plot" && (
+          <BoxPlot typeString={typeString} dataset={data} />
+        )}
+        {selectedGraph === "Histogram" && (
+          <Histogram typeString={typeString} dataset={data} />
+        )}
+        {selectedGraph === "Pie Chart" && (
+          <PieChart typeString={typeString} dataset={data} />
+        )}
+        {selectedGraph === "Scatter Plot" && (
+          <ScatterPlot typeString={typeString} dataset={data} />
+        )}
       </Box>
     </Box>
   );

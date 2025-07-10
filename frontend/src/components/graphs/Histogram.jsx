@@ -118,155 +118,286 @@ const mockData5 = [
 // num_n_cat_0_temp_0  --  mockData4
 // num_0_cat_1_temp_0  --  mockData5
 
-
-
-const Histogram = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }) => {
+const Histogram = ({ typeString, dataset }) => {
   const type = typeString;
   const mockData = dataset;
   if (!mockData || mockData.length === 0) return null;
 
   const charts = [];
   const opacity = 0.7;
-  const getLegendName = (name) => legendLabels?.[name] || name;
-  const getColor = (index) => (colors && colors[index]) || undefined;
-
-  let data, data1, data2, data3 = [];
-  let title, title1, barmode, barmode1;
-  let xKey, yKey, yKey1, categoryKey, categoryKey1, timeKey = "";
+  let data,
+    data1,
+    data2,
+    data3 = [];
+  let title,
+    title1,
+    barmode,
+    barmode1,
+    xKey,
+    yKey,
+    yKey1,
+    categoryKey,
+    categoryKey1,
+    timeKey = "";
 
   if (type === "num_1_cat_0_temp_0") {
     [xKey] = Object.keys(mockData[0]);
-    yKey = yLabel || "Frequency";
+    yKey = "Frequency";
     yKey1 = "Probability";
     const totalItems = mockData.length;
 
-    data = [{ x: mockData.map((item) => item[xKey]), type: "histogram", opacity }];
-    data1 = [{ y: mockData.map((item) => item[xKey]), type: "histogram", opacity }];
-    data2 = [{ x: mockData.map((item) => item[xKey]), type: "histogram", opacity, histnorm: "probability" }];
-    data3 = [{ y: mockData.map((item) => item[xKey]), type: "histogram", opacity, histnorm: "probability" }];
+    data = [
+      {
+        x: mockData.map((item) => item[xKey]),
+        type: "histogram",
+        opacity: opacity,
+      },
+    ];
+    data1 = [
+      {
+        y: mockData.map((item) => item[xKey]),
+        type: "histogram",
+        opacity: opacity,
+      },
+    ];
+    data2 = [
+      {
+        x: mockData.map((item) => item[xKey]),
+        type: "histogram",
+        opacity: opacity,
+        histnorm: "probability",
+      },
+    ];
+    data3 = [
+      {
+        y: mockData.map((item) => item[xKey]),
+        type: "histogram",
+        opacity: opacity,
+        histnorm: "probability",
+      },
+    ];
 
     title = "Basic Histogram";
     title1 = "Normalized Histogram";
 
-    charts.push({ data, title, xKey, yKey });
-    charts.push({ data: data1, title, yKey: xKey, xKey: yKey });
-    charts.push({ data: data2, title: title1, xKey, yKey: yKey1 });
-    charts.push({ data: data3, title: title1, yKey: xKey, xKey: yKey1 });
-  }
-
-  else if (type === "num_1_cat_1_temp_0") {
+    charts.push({
+      data: data,
+      title: title,
+      xKey: xKey,
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title,
+      yKey: xKey,
+      xKey: yKey,
+    });
+    charts.push({
+      data: data2,
+      title: title1,
+      xKey: xKey,
+      yKey: yKey1,
+    });
+    charts.push({
+      data: data3,
+      title: title1,
+      yKey: xKey,
+      xKey: yKey1,
+    });
+  } else if (type === "num_1_cat_1_temp_0") {
     [xKey, categoryKey] = Object.keys(mockData[0]);
-    yKey = yLabel || "Frequency";
+    yKey = "Frequency";
     const categories = [...new Set(mockData.map((item) => item[categoryKey]))];
 
-    data = categories.map((category, i) => ({
-      x: mockData.filter(item => item[categoryKey] === category).map(item => item[xKey]),
-      type: "histogram",
-      opacity,
-      name: getLegendName(category),
-      marker: { color: getColor(i) },
-      showlegend: true,
-      ...(i === 0 && { legendgrouptitle: { text: getLegendName(categoryKey) } }),
-    }));
-
-    data1 = categories.map((category, i) => ({
-      y: mockData.filter(item => item[categoryKey] === category).map(item => item[xKey]),
-      type: "histogram",
-      opacity,
-      name: getLegendName(category),
-      marker: { color: getColor(i) },
-      showlegend: true,
-      ...(i === 0 && { legendgrouptitle: { text: getLegendName(categoryKey) } }),
-    }));
+    data = categories.map((category, i) => {
+      const filtered = mockData.filter(
+        (item) => item[categoryKey] === category
+      );
+      return {
+        x: filtered.map((item) => item[xKey]),
+        type: "histogram",
+        opacity: 0.6,
+        name: category,
+        showlegend: true,
+        ...(i === 0 && { legendgrouptitle: { text: categoryKey } }),
+      };
+    });
+    data1 = categories.map((category, i) => {
+      const filtered = mockData.filter(
+        (item) => item[categoryKey] === category
+      );
+      return {
+        y: filtered.map((item) => item[xKey]),
+        type: "histogram",
+        opacity: 0.6,
+        name: category,
+        showlegend: true,
+        ...(i === 0 && { legendgrouptitle: { text: categoryKey } }),
+      };
+    });
 
     title = "Grouped Histogram";
     title1 = "Grouped Stacked Histogram";
     barmode = "overlay";
     barmode1 = "stack";
 
-    charts.push({ data, title, barmode, xKey, yKey });
-    charts.push({ data: data1, title, barmode, yKey: xKey, xKey: yKey });
-    charts.push({ data, title: title1, barmode: barmode1, xKey, yKey });
-    charts.push({ data: data1, title: title1, barmode: barmode1, yKey: xKey, xKey: yKey });
-  }
-
-  else if (type === "num_1_cat_0_temp_1") {
+    charts.push({
+      data: data,
+      title: title,
+      barmode: barmode,
+      xKey: xKey,
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title,
+      barmode: barmode,
+      yKey: xKey,
+      xKey: yKey,
+    });
+    charts.push({
+      data: data,
+      title: title1,
+      barmode: barmode1,
+      xKey: xKey,
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title1,
+      barmode: barmode1,
+      yKey: xKey,
+      xKey: yKey,
+    });
+  } else if (type === "num_1_cat_0_temp_1") {
     [yKey, xKey] = Object.keys(mockData[0]);
-
-    data = [{
-      x: mockData.map(item => item[xKey]),
-      y: mockData.map(item => item[yKey]),
-      type: "bar",
-      opacity
-    }];
+    data = [
+      {
+        x: mockData.map((item) => item[xKey]),
+        y: mockData.map((item) => item[yKey]),
+        type: "bar",
+        opacity: opacity,
+        histfunc: "sum",
+      },
+    ];
 
     title = "Time-Based Histogram";
-    charts.push({ data, title, xKey, yKey });
-  }
 
-  else if (type === "num_n_cat_0_temp_0") {
+    charts.push({
+      data: data,
+      title: title,
+      xKey: xKey,
+      yKey: yKey,
+    });
+  } else if (type === "num_n_cat_0_temp_0") {
     const numerics = Object.keys(mockData[0]);
-    yKey = yLabel || "Frequency";
+    yKey = "Frequency";
 
-    data = numerics.map((numKey, i) => ({
-      x: mockData.map(item => item[numKey]),
-      type: "histogram",
-      name: getLegendName(numKey),
-      marker: { color: getColor(i) },
-      showlegend: true,
-      opacity,
-      ...(i === 0 && { legendgrouptitle: { text: "Fields" } }),
-    }));
+    data = numerics.map((numeric, i) => {
+      return {
+        x: mockData.map((item) => item[numeric]),
+        type: "histogram",
+        opacity: 0.6,
+        name: numeric,
+        showlegend: true,
+        ...(i === 0 && {
+          legendgrouptitle: { text: "Numeric Fields" },
+        }),
+      };
+    });
+    data1 = numerics.map((numeric, i) => {
+      return {
+        y: mockData.map((item) => item[numeric]),
+        type: "histogram",
+        opacity: 0.6,
+        name: numeric,
+        showlegend: true,
+        ...(i === 0 && {
+          legendgrouptitle: { text: "Numeric Fields" },
+        }),
+      };
+    });
 
-    data1 = numerics.map((numKey, i) => ({
-      y: mockData.map(item => item[numKey]),
-      type: "histogram",
-      name: getLegendName(numKey),
-      marker: { color: getColor(i) },
-      showlegend: true,
-      opacity,
-      ...(i === 0 && { legendgrouptitle: { text: "Fields" } }),
-    }));
-
-    title = "Multi-Numeric Histogram";
-    title1 = "Stacked Histogram";
+    title = "Multi-Numeric Series Histogram";
+    title1 = "Multi-Numeric Series Stacked Histogram";
     barmode = "overlay";
     barmode1 = "stack";
 
-    charts.push({ data, title, barmode, xKey: "Value", yKey });
-    charts.push({ data: data1, title, barmode, xKey: yKey, yKey: "Value" });
-    charts.push({ data, title: title1, barmode: barmode1, xKey: "Value", yKey });
-    charts.push({ data: data1, title: title1, barmode: barmode1, xKey: yKey, yKey: "Value" });
-  }
-
-  else if (type === "num_0_cat_1_temp_0") {
+    charts.push({
+      data: data,
+      title: title,
+      barmode: barmode,
+      xKey: "Value",
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title,
+      barmode: barmode,
+      xKey: yKey,
+      yKey: "Value",
+    });
+    charts.push({
+      data: data,
+      title: title1,
+      barmode: barmode1,
+      xKey: "Value",
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title1,
+      barmode: barmode1,
+      xKey: yKey,
+      yKey: "Value",
+    });
+  } else if (type === "num_0_cat_1_temp_0") {
     [categoryKey] = Object.keys(mockData[0]);
-    yKey = yLabel || "Count";
-    const categories = [...new Set(mockData.map(item => item[categoryKey]))];
+    yKey = "Count";
+    const categories = [...new Set(mockData.map((item) => item[categoryKey]))];
 
-    data = categories.map((category, i) => ({
-      x: mockData.filter(item => item[categoryKey] === category).map(item => item[categoryKey]),
-      type: "histogram",
-      name: getLegendName(category),
-      marker: { color: getColor(i) },
-      showlegend: false,
-      opacity,
-    }));
+    data = categories.map((category, i) => {
+      const filtered = mockData.filter(
+        (item) => item[categoryKey] === category
+      );
+      return {
+        x: filtered.map((item) => item[categoryKey]),
+        type: "histogram",
+        name: category,
+        showlegend: false,
+        opacity: opacity,
+      };
+    });
+    data1 = categories.map((category, i) => {
+      const filtered = mockData.filter(
+        (item) => item[categoryKey] === category
+      );
+      return {
+        y: filtered.map((item) => item[categoryKey]),
+        type: "histogram",
+        name: category,
+        showlegend: false,
+        opacity: opacity,
+      };
+    });
 
-    data1 = categories.map((category, i) => ({
-      y: mockData.filter(item => item[categoryKey] === category).map(item => item[categoryKey]),
-      type: "histogram",
-      name: getLegendName(category),
-      marker: { color: getColor(i) },
-      showlegend: false,
-      opacity,
-    }));
-
-    title = "Categorical Histogram";
+    title = "Categorical Count Histogram";
     barmode = "overlay";
 
-    charts.push({ data, title, barmode, xKey: categoryKey, yKey });
-    charts.push({ data: data1, title, barmode, yKey: categoryKey, xKey: yKey });
+    charts.push({
+      data: data,
+      title: title,
+      barmode: barmode,
+      xKey: categoryKey,
+      yKey: yKey,
+    });
+    charts.push({
+      data: data1,
+      title: title,
+      barmode: barmode,
+      yKey: categoryKey,
+      xKey: yKey,
+    });
   }
 
   return (
@@ -279,8 +410,8 @@ const Histogram = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }
             width: 640,
             height: 480,
             title: { text: chart.title },
-            xaxis: { title: { text: xLabel || chart.xKey } },
-            yaxis: { title: { text: yLabel || chart.yKey } },
+            xaxis: { title: { text: chart.xKey } },
+            yaxis: { title: { text: chart.yKey } },
             barmode: chart.barmode,
           }}
         />
@@ -288,8 +419,5 @@ const Histogram = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }
     </div>
   );
 };
-
-
-
 
 export default Histogram;

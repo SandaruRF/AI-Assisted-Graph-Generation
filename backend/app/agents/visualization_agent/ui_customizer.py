@@ -23,6 +23,10 @@ def parse_customization_prompt(prompt: str):
         updates["graph_type"] = "area"
     elif any(word in prompt_lower for word in ["histogram", "switch to histogram", "change to histogram"]):
         updates["graph_type"] = "histogram"
+    elif any(word in prompt_lower for word in ["candlestick", "candlestick chart", "candlestick graph", "switch to candlestick", "change to candlestick"]):
+        updates["graph_type"] = "candlestick"
+    elif any(word in prompt_lower for word in ["boxplot", "box plot", "boxplot chart", "boxplot graph", "box plot chart", "box plot graph", "switch to boxplot", "switch to box plot", "change to boxplot", "change to box plot", "box"]):
+        updates["graph_type"] = "boxplot"
 
     # X label changes
     x_patterns = [

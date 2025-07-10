@@ -69,8 +69,7 @@ const generateGroupedOrStackedAxis = (type, axis, data, orientation = "v") => {
   const xKey = Object.keys(data[0])[0];
   let yKey;
 
-
-   if (type === "num_1_cat_2_temp_0" || type === "num_1_cat_1_temp_1") {
+  if (type === "num_1_cat_2_temp_0" || type === "num_1_cat_1_temp_1") {
     yKey = Object.keys(data[0])[2];
   } else if (type === "num_n_cat_1_temp_0") {
     yKey = undefined;
@@ -87,7 +86,6 @@ const generateGroupedOrStackedData = (type, data, orientation = "v") => {
     const legendGroupTitle = Object.keys(data[0])[1];
     const cat1 = [...new Set(data.map((item) => Object.values(item)[0]))];
     const cat2 = [...new Set(data.map((item) => Object.values(item)[1]))];
-
 
     return cat2.map((cat_2_val, i) => ({
       [orientation === "v" ? "x" : "y"]: cat1,
@@ -110,7 +108,6 @@ const generateGroupedOrStackedData = (type, data, orientation = "v") => {
     const cat = data.map((item) => Object.values(item)[0]);
     const metrics = Object.keys(data[0]).slice(1);
 
-
     return metrics.map((metric) => ({
       [orientation === "v" ? "x" : "y"]: cat,
       [orientation === "v" ? "y" : "x"]: data.map((item) => item[metric]),
@@ -121,102 +118,63 @@ const generateGroupedOrStackedData = (type, data, orientation = "v") => {
   }
 };
 
-// ✅ BarChart with customization support
-const BarChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }) => {
+const BarChart = ({ typeString, dataset }) => {
   const type = typeString;
   const mockData = dataset;
   const charts = [];
 
-  // ✅ Add legend name mapper
-  const getLegendName = (name) => legendLabels?.[name] || name;
-
-
-   // Basic bar chart (1 num + 1 cat or 1 temp)
   if (type === "num_1_cat_1_temp_0" || type === "num_1_cat_0_temp_1") {
     const [xKey, yKey] = Object.keys(mockData[0]);
-    const x = mockData.map((item) => item[xKey]);
-    const y = mockData.map((item) => item[yKey]);
+    const x = mockData.map((item) => Object.values(item)[0]);
+    const y = mockData.map((item) => Object.values(item)[1]);
 
     charts.push({
       title: "Basic Bar Chart",
-      xAxisTitle: xLabel || xKey,
-      yAxisTitle: yLabel || yKey,
-      data: [
-        {
-          x,
-          y,
-          type: "bar",
-          name: getLegendName(yKey),
-          marker: { color: colors?.[0] },
-        },
-      ],
+      xAxisTitle: xKey,
+      yAxisTitle: yKey,
+      data: [{ x, y, type: "bar" }],
     });
 
     charts.push({
       title: "Horizontal Basic Bar Chart",
-      xAxisTitle: yLabel || yKey,
-      yAxisTitle: xLabel || xKey,
-      data: [
-        {
-          x: y,
-          y: x,
-          type: "bar",
-          orientation: "h",
-          name: getLegendName(yKey),
-          marker: { color: colors?.[0] },
-        },
-      ],
+      xAxisTitle: yKey,
+      yAxisTitle: xKey,
+      data: [{ x: y, y: x, type: "bar", orientation: "h" }],
     });
-  
   } else if (
     type === "num_1_cat_2_temp_0" ||
     type === "num_1_cat_1_temp_1" ||
     type === "num_n_cat_1_temp_0"
   ) {
-
-    const groupedData = generateGroupedOrStackedData(type, mockData, "v").map((trace, index) => ({
-      ...trace,
-      name: getLegendName(trace.name),
-      marker: { color: colors?.[index % (colors?.length || 1)] },
-    }));
-
-    const groupedDataH = generateGroupedOrStackedData(type, mockData, "h").map((trace, index) => ({
-      ...trace,
-      name: getLegendName(trace.name),
-      marker: { color: colors?.[index % (colors?.length || 1)] },
-    }));
-
     charts.push({
       title: "Grouped Bar Chart",
-      xAxisTitle: xLabel || generateGroupedOrStackedAxis(type, "x", mockData, "v"),
-      yAxisTitle: yLabel || generateGroupedOrStackedAxis(type, "y", mockData, "v"),
-      data: groupedData,
+      xAxisTitle: generateGroupedOrStackedAxis(type, "x", mockData, "v"),
+      yAxisTitle: generateGroupedOrStackedAxis(type, "y", mockData, "v"),
+      data: generateGroupedOrStackedData(type, mockData, "v"),
       barmode: "group",
     });
 
-   charts.push({
+    charts.push({
       title: "Stacked Bar Chart",
-      xAxisTitle: xLabel || generateGroupedOrStackedAxis(type, "x", mockData, "v"),
-      yAxisTitle: yLabel || generateGroupedOrStackedAxis(type, "y", mockData, "v"),
-      data: groupedData,
+      xAxisTitle: generateGroupedOrStackedAxis(type, "x", mockData, "v"),
+      yAxisTitle: generateGroupedOrStackedAxis(type, "y", mockData, "v"),
+      data: generateGroupedOrStackedData(type, mockData, "v"),
       barmode: "stack",
     });
-
 
     charts.push({
       title: "Horizontal Stacked Bar Chart",
-      xAxisTitle: yLabel || generateGroupedOrStackedAxis(type, "x", mockData, "h"),
-      yAxisTitle: xLabel || generateGroupedOrStackedAxis(type, "y", mockData, "h"),
-      data: groupedDataH,
+      xAxisTitle: generateGroupedOrStackedAxis(type, "x", mockData, "h"),
+      yAxisTitle: generateGroupedOrStackedAxis(type, "y", mockData, "h"),
+      data: generateGroupedOrStackedData(type, mockData, "h"),
       barmode: "stack",
     });
 
-
     charts.push({
       title: "Horizontal Grouped Bar Chart",
-      xAxisTitle: yLabel || generateGroupedOrStackedAxis(type, "x", mockData, "h"),
-      yAxisTitle: xLabel || generateGroupedOrStackedAxis(type, "y", mockData, "h"),
-      data: groupedDataH,
+      xAxisTitle: generateGroupedOrStackedAxis(type, "x", mockData, "h"),
+      yAxisTitle: generateGroupedOrStackedAxis(type, "y", mockData, "h"),
+      data: generateGroupedOrStackedData(type, mockData, "h"),
       barmode: "group",
     });
   }
@@ -231,8 +189,16 @@ const BarChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels })
             width: 640,
             height: 480,
             title: { text: chart.title },
-            xaxis: { title: { text: chart.xAxisTitle } },
-            yaxis: { title: { text: chart.yAxisTitle } },
+            xaxis: {
+              title: {
+                text: chart.xAxisTitle,
+              },
+            },
+            yaxis: {
+              title: {
+                text: chart.yAxisTitle,
+              },
+            },
             barmode: chart.barmode,
           }}
         />

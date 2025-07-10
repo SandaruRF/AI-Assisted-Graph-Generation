@@ -195,21 +195,17 @@ const mockData8 = [
 // num_1_cat_1_temp_0_outliers --  mockData7
 // num_1_cat_1_temp_0_ordered --  mockData8
 
-
-
-const BoxPlotChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabels }) => {
+const BoxPlotChart = ({ typeString, dataset }) => {
   const type = typeString;
   const mockData = dataset;
   const charts = [];
-
-  const getLegendName = (name) => legendLabels?.[name] || name;
 
   if (type === "num_1_cat_0_temp_0") {
     const [yKey] = Object.keys(mockData[0]);
     charts.push({
       title: "Box Plot: Distribution of " + yKey,
-      xAxisTitle: xLabel || "",
-      yAxisTitle: yLabel || yKey,
+      xAxisTitle: "",
+      yAxisTitle: yKey,
       data: [
         {
           y: mockData.map((item) => item[yKey]),
@@ -217,8 +213,8 @@ const BoxPlotChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabel
           boxpoints: "all",
           jitter: 0.5,
           pointpos: 0,
-          name: getLegendName(yKey),
-          marker: { color: colors?.[0] },
+          name: yKey,
+          marker: { color: "#3b7ddd" },
         },
       ],
     });
@@ -227,16 +223,17 @@ const BoxPlotChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabel
     const categories = [...new Set(mockData.map((item) => item[catKey]))];
     charts.push({
       title: `Box Plot: ${yKey} by ${catKey}`,
-      xAxisTitle: xLabel || catKey,
-      yAxisTitle: yLabel || yKey,
-      data: categories.map((category, index) => ({
-        y: mockData.filter((item) => item[catKey] === category).map((item) => item[yKey]),
-        name: getLegendName(category),
+      xAxisTitle: catKey,
+      yAxisTitle: yKey,
+      data: categories.map((category) => ({
+        y: mockData
+          .filter((item) => item[catKey] === category)
+          .map((item) => item[yKey]),
+        name: category,
         type: "box",
         boxpoints: "all",
         jitter: 0.5,
         pointpos: 0,
-        marker: { color: colors?.[index % (colors?.length || 1)] },
       })),
     });
   } else if (type === "num_1_cat_0_temp_1") {
@@ -244,55 +241,63 @@ const BoxPlotChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabel
     const timeBuckets = [...new Set(mockData.map((item) => item[xKey]))];
     charts.push({
       title: `Box Plot: ${yKey} by ${xKey}`,
-      xAxisTitle: xLabel || xKey,
-      yAxisTitle: yLabel || yKey,
-      data: timeBuckets.map((tb, index) => ({
-        y: mockData.filter((item) => item[xKey] === tb).map((item) => item[yKey]),
-        name: getLegendName(tb),
+      xAxisTitle: xKey,
+      yAxisTitle: yKey,
+      data: timeBuckets.map((tb) => ({
+        y: mockData
+          .filter((item) => item[xKey] === tb)
+          .map((item) => item[yKey]),
+        name: tb,
         type: "box",
         boxpoints: "outliers",
         jitter: 0.5,
         pointpos: 0,
-        marker: { color: colors?.[index % (colors?.length || 1)] },
       })),
     });
   } else if (type === "num_1_cat_2_temp_0") {
     const [cat1Key, cat2Key, yKey] = Object.keys(mockData[0]);
     const cat1s = [...new Set(mockData.map((item) => item[cat1Key]))];
     const cat2s = [...new Set(mockData.map((item) => item[cat2Key]))];
+
     charts.push({
       title: `Box Plot: ${yKey} by ${cat1Key} and ${cat2Key}`,
-      xAxisTitle: xLabel || cat1Key,
-      yAxisTitle: yLabel || yKey,
-      data: cat2s.map((subcat, i) => ({
+      xAxisTitle: cat1Key,
+      yAxisTitle: yKey,
+      data: cat2s.map((subcat) => ({
         y: cat1s.flatMap((cat1) =>
-          mockData.filter((item) => item[cat1Key] === cat1 && item[cat2Key] === subcat).map((item) => item[yKey])
+          mockData
+            .filter(
+              (item) => item[cat1Key] === cat1 && item[cat2Key] === subcat
+            )
+            .map((item) => item[yKey])
         ),
         x: cat1s.flatMap((cat1) =>
-          Array(mockData.filter((item) => item[cat1Key] === cat1 && item[cat2Key] === subcat).length).fill(cat1)
+          Array(
+            mockData.filter(
+              (item) => item[cat1Key] === cat1 && item[cat2Key] === subcat
+            ).length
+          ).fill(cat1)
         ),
-        name: getLegendName(subcat),
+        name: subcat,
         type: "box",
         boxpoints: "all",
         jitter: 0.5,
         pointpos: 0,
-        marker: { color: colors?.[i % (colors?.length || 1)] },
       })),
     });
   } else if (type === "num_gt1_cat_0_temp_0") {
     const numericKeys = Object.keys(mockData[0]);
     charts.push({
       title: "Box Plot: Multiple Numeric Variables",
-      xAxisTitle: xLabel || "Variable",
-      yAxisTitle: yLabel || "Value",
-      data: numericKeys.map((numKey, i) => ({
+      xAxisTitle: "Variable",
+      yAxisTitle: "Value",
+      data: numericKeys.map((numKey) => ({
         y: mockData.map((item) => item[numKey]),
-        name: getLegendName(numKey),
+        name: numKey,
         type: "box",
         boxpoints: "all",
         jitter: 0.5,
         pointpos: 0,
-        marker: { color: colors?.[i % (colors?.length || 1)] },
       })),
     });
   } else if (type === "num_1_cat_1_temp_0_outliers") {
@@ -300,33 +305,43 @@ const BoxPlotChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabel
     const categories = [...new Set(mockData.map((item) => item[catKey]))];
     charts.push({
       title: `Box Plot (Outlier Detection): ${yKey} by ${catKey}`,
-      xAxisTitle: xLabel || catKey,
-      yAxisTitle: yLabel || yKey,
-      data: categories.map((category, i) => ({
-        y: mockData.filter((item) => item[catKey] === category).map((item) => item[yKey]),
-        name: getLegendName(category),
+      xAxisTitle: catKey,
+      yAxisTitle: yKey,
+      data: categories.map((category) => ({
+        y: mockData
+          .filter((item) => item[catKey] === category)
+          .map((item) => item[yKey]),
+        name: category,
         type: "box",
         boxpoints: "outliers",
         jitter: 0.5,
         pointpos: 0,
-        marker: { color: colors?.[i % (colors?.length || 1)] || "#d62728" },
+        marker: { color: "#d62728" },
       })),
     });
   } else if (type === "num_1_cat_1_temp_0_ordered") {
+    // Get keys: category (ordered) and numeric
     const [catKey, yKey] = Object.keys(mockData[0]);
-    const orderedCategories = [...new Set(mockData.map((item) => item[catKey]))];
+    // If you want a custom order, define it here:
+    // const orderedCategories = ["Small", "Medium", "Large", "XLarge"];
+    // Otherwise, use the order of first appearance:
+    const orderedCategories = [
+      ...new Set(mockData.map((item) => item[catKey])),
+    ];
+
     charts.push({
       title: `Box Plot: ${yKey} by Ordered ${catKey}`,
-      xAxisTitle: xLabel || catKey,
-      yAxisTitle: yLabel || yKey,
-      data: orderedCategories.map((category, i) => ({
-        y: mockData.filter((item) => item[catKey] === category).map((item) => item[yKey]),
-        name: getLegendName(category),
+      xAxisTitle: catKey,
+      yAxisTitle: yKey,
+      data: orderedCategories.map((category) => ({
+        y: mockData
+          .filter((item) => item[catKey] === category)
+          .map((item) => item[yKey]),
+        name: category,
         type: "box",
         boxpoints: "all",
         jitter: 0.5,
         pointpos: 0,
-        marker: { color: colors?.[i % (colors?.length || 1)] },
       })),
     });
   }
@@ -348,13 +363,13 @@ const BoxPlotChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabel
                 tickangle: 0,
                 tickfont: { size: 12 },
                 automargin: true,
-                showticklabels: true,
+                showticklabels: false,
               },
               yaxis: {
                 title: { text: chart.yAxisTitle, font: { size: 14 } },
                 tickfont: { size: 12 },
               },
-              showlegend: true,
+              showlegend: false,
               margin: { l: 60, r: 60, t: 60, b: 60 },
             }}
           />
@@ -365,8 +380,5 @@ const BoxPlotChart = ({ typeString, dataset, colors, xLabel, yLabel, legendLabel
     </div>
   );
 };
-
-
-
 
 export default BoxPlotChart;

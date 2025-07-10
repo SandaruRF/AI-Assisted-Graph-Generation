@@ -151,6 +151,38 @@ export default function ChartRenderer({ data, state }) {
       ];
       break;
 
+    case "candlestick":
+      // Expecting processedData to have open, high, low, close, and x (date/time)
+      plotData = [
+        {
+          x: processedData.map(d => d.x),
+          open: processedData.map(d => d.open),
+          high: processedData.map(d => d.high),
+          low: processedData.map(d => d.low),
+          close: processedData.map(d => d.close),
+          type: "candlestick",
+          name: legend_label || "Data",
+        },
+      ];
+      break;
+
+    case "boxplot":
+    case "box":
+      // Expecting processedData to have y values (and optionally x for grouping)
+      plotData = [
+        {
+          y: processedData.map(d => d.y),
+          x: processedData[0] && processedData[0].x !== undefined ? processedData.map(d => d.x) : undefined,
+          type: "box",
+          name: legend_label || "Data",
+          marker: { color: color || "#3366cc" },
+          boxpoints: "all",
+          jitter: 0.5,
+          whiskerwidth: 0.2,
+        },
+      ];
+      break;
+
     case "line":
     default:
       plotData = [
