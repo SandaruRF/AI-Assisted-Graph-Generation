@@ -3,7 +3,7 @@ import google.generativeai as genai
 
 from app.config import settings
 from app.utils.logging import logger
-from app.agents.sql_agent.embedding_generator import generate_embedding
+
 from app.agents.sql_agent.metadata_retriever import get_cached_metadata
 from app.config import db
 from app.agents.sql_agent.vectordb_functions.vectordb import add_to_vectordb
@@ -46,5 +46,5 @@ class LogSummerizer:
                 -Write possible business and functional purposes of the query
         """
         response = self.model.generate_content(prompt)
-        result = generate_embedding(response.text)
-        return result    
+        logger.info(f"Summerized logs: {response.text}")
+        return response    
