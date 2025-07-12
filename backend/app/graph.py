@@ -14,6 +14,7 @@ from app.agents.visualization_agent.feature_extractor import process_and_clean_d
 from app.agents.visualization_agent.graph_recommender import get_graph_types, GraphRecommender
 from app.state import connected_clients
 from app.utils.decimal_encoder import DecimalEncoder
+from app.agents.sql_agent.table_selector import tableSelector
 
 # Helper function for sending WebSocket updates
 async def send_websocket_update(session_id, message):
@@ -63,9 +64,11 @@ async def sql_generator(state: State):
         await send_websocket_update(state.session_id, update_message)
 
     sql_query_generator = SQLQueryGenerator()
+    table_selector = tableSelector()
     db_info = get_cached_metadata(state.session_id)
     metadata = db_info["metadata"]
     sql_dialect = db_info["sql_dialect"]
+    table_selection = table_selector.select_tables()
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect)
     response = sql_query
     

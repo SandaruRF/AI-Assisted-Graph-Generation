@@ -2,15 +2,17 @@ import google.generativeai as genai
 
 from app.config import settings
 from app.utils.logging import logger
+from app.agents.sql_agent.table_selector import tableSelector
+
+schema = tableSelector()
 
 class SQLQueryGenerator:
     def __init__(self):
         genai.configure(api_key=settings.GEMINI_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
-    def generate_sql_query(self, nl_query: str, metadata: str, sql_dialect: str) -> str:
+    def generate_sql_query(self, nl_query: str, sql_dialect: str) -> str:
         print(f"Question: {nl_query}")
-        print(f"Schema: {metadata}")
         print(f"SQL Dialect: {sql_dialect}")
         prompt = f"""
         You are an elite SQL query generator specialized in translating natural language requests into highly optimized SQL queries for data visualization purposes. Your expertise spans query optimization, schema interpretation, and generating visualization-ready data structures.
@@ -119,7 +121,7 @@ class SQLQueryGenerator:
                 
         Now analyze the input question and generate the appropriate SQL query:
                 QUESTIOIN: {nl_query}
-                SCHEMA: {metadata}
+                SCHEMA: {schema.select_tables()}
                 DIALECT: {sql_dialect}
         """
 

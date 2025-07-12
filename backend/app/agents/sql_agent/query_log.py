@@ -3,7 +3,7 @@ from app.config import db
 
 query_logs_collection = db["sql_query_log"]
 
-def log_query(session_id, prompt, sql_query, date_run=None):
+async def log_query(session_id, prompt, sql_query, date_run=None):
     """
     Logs SQL query metadata to the MongoDB collection 'query_logs'.
     Args:
@@ -23,6 +23,7 @@ def log_query(session_id, prompt, sql_query, date_run=None):
         "time_run": time_run,
         "query": sql_query,
     }
-    query_logs_collection.insert_one(log_entry)
+    
+    await query_logs_collection.insert_one(log_entry)
 
 

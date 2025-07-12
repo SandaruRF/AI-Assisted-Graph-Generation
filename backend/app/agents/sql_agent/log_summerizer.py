@@ -10,8 +10,10 @@ from app.agents.sql_agent.vectordb_functions.vectordb import add_to_vectordb
 
 
 def query_log_summerizer(session_id: str):
+    print("WTF session id ", session_id)
     previous_query_log = db["sql_query_log"]
-    previous_queries = previous_query_log.query.find_one({"session_id": session_id})
+    previous_queries = previous_query_log.find_one({"session_id": session_id})
+    logger.info("query log data retrever", previous_queries)
     log_summerizer = LogSummerizer()
     summerized_logs = log_summerizer.summarize_logs(previous_queries,session_id)
     add_to_vectordb(session_id,summerized_logs)
@@ -24,6 +26,7 @@ class LogSummerizer:
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
     def summarize_logs(self, previous_queries,session_id):
+        logger.info("previous queries in summerized logs", previous_queries, session_id)
         
         prompt = f"""
                         You are a helpful assistant that can help document SQL queries.
