@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from langchain.tools import tool
+from langchain_core.tools import tool
 import stumpy
 import numpy as np
 

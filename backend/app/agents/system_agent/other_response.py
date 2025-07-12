@@ -6,7 +6,7 @@ from app.state import State
 
 class System:
     def __init__(self):
-        genai.configure(api_key=settings.GEMINI_API_KEY)
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
     def other_response(self, state: State) -> str:

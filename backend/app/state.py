@@ -23,3 +23,5 @@ class State(BaseModel):
     ranked_graphs: List[str]
     response: str
     messages: List[BaseMessage]
+    insights: List[str]
+    tool_results: Dict[str, Any]
