@@ -97,8 +97,41 @@ class SQLQueryGenerator:
 
                 ### Output Format
 
-                RESPONSE FORMAT:  
-                **1. SQL QUERY:** The complete, executable query
+                
+                    1. SQL QUERY: The complete, executable query
+
+                    ### Example 1 Inputs and Outputs
+
+                    INPUT:
+                    QUESTION: "Show me monthly sales trends for the past year"
+                    SCHEMA: sales(id, date, amount, product_id, customer_id), products(id, name, category)
+                    DIALECT: PostgreSQL
+
+                    OUTPUT: SELECT
+                            DATE_TRUNC('month', date) AS month,
+                            SUM(amount) AS monthly_sales
+                            FROM sales
+                            WHERE
+                            date >= CURRENT_DATE - INTERVAL '1 year'
+                            AND amount IS NOT NULL
+                            GROUP BY month
+                            ORDER BY month ASC;
+
+                    ### Example 2 Inputs and Outputs
+
+                    INPUT:
+                    QUESTION: "Plot the top 20 customers based on total spending."
+                    DIALECT: MYSQL
+                    EXPECTED DATAFORMAT BY QUERY: {{'Name': 'Helena Holy', 'TotalSpending': 49.62}}
+
+                    OUTPUT: SELECT c.CustomerName, SUM(o.TotalAmount) AS TotalSpent
+                            FROM Customers c
+                            INNER JOIN Orders o ON c.CustomerID = o.CustomerID
+                            GROUP BY c.CustomerID, c.CustomerName
+                            ORDER BY TotalSpent DESC
+                            LIMIT 20;
+
+        #####
 
                 ---
 
