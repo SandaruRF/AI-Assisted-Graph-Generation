@@ -28,31 +28,39 @@ def parse_customization_prompt(prompt: str):
     elif any(word in prompt_lower for word in ["boxplot", "box plot", "boxplot chart", "boxplot graph", "box plot chart", "box plot graph", "switch to boxplot", "switch to box plot", "change to boxplot", "change to box plot", "box"]):
         updates["graph_type"] = "boxplot"
 
-    # X label changes
+    # X label changes - use original prompt to preserve case
     x_patterns = [
         r"x.?label\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?",
         r"x.?axis\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?",
-        r"horizontal\s+label\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?"
+        r"horizontal\s+label\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?",
+        r"change\s+x\s+label\s+to\s+['\"]?([^'\"]+)['\"]?",
+        r"change\s+x.?axis\s+to\s+['\"]?([^'\"]+)['\"]?",
+        r"x\s+label\s+to\s+['\"]?([^'\"]+)['\"]?",
+        r"x.?axis\s+to\s+['\"]?([^'\"]+)['\"]?"
     ]
     for pattern in x_patterns:
-        match = re.search(pattern, prompt_lower)
+        match = re.search(pattern, prompt, re.IGNORECASE)  # Use original prompt with case-insensitive flag
         if match:
             updates["x_label"] = match.group(1).strip()
             break
 
-    # Y label changes
+    # Y label changes - use original prompt to preserve case
     y_patterns = [
         r"y.?label\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?",
         r"y.?axis\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?",
-        r"vertical\s+label\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?"
+        r"vertical\s+label\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?",
+        r"change\s+y\s+label\s+to\s+['\"]?([^'\"]+)['\"]?",
+        r"change\s+y.?axis\s+to\s+['\"]?([^'\"]+)['\"]?",
+        r"y\s+label\s+to\s+['\"]?([^'\"]+)['\"]?",
+        r"y.?axis\s+to\s+['\"]?([^'\"]+)['\"]?"
     ]
     for pattern in y_patterns:
-        match = re.search(pattern, prompt_lower)
+        match = re.search(pattern, prompt, re.IGNORECASE)  # Use original prompt with case-insensitive flag
         if match:
             updates["y_label"] = match.group(1).strip()
             break
 
-    # Title changes
+    # Title changes - use original prompt to preserve case
     title_patterns = [
         r"title\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?",
         r"graph\s+title\s+(?:to|as|change\s+to)\s+['\"]?([^'\"]+)['\"]?",
@@ -60,7 +68,7 @@ def parse_customization_prompt(prompt: str):
         r"rename\s+(?:title|graph)\s+to\s+['\"]?([^'\"]+)['\"]?"
     ]
     for pattern in title_patterns:
-        match = re.search(pattern, prompt_lower)
+        match = re.search(pattern, prompt, re.IGNORECASE)  # Use original prompt with case-insensitive flag
         if match:
             updates["title"] = match.group(1).strip()
             updates["legend_label"] = match.group(1).strip()

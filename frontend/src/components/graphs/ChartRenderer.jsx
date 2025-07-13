@@ -20,6 +20,18 @@ export default function ChartRenderer({ data, state }) {
     colors 
   } = state;
 
+  console.log("ChartRenderer extracted values:", { 
+    graph_type, 
+    x_label, 
+    y_label, 
+    legend_label, 
+    title, 
+    color 
+  });
+
+  console.log("ChartRenderer x_label value:", x_label);
+  console.log("ChartRenderer y_label value:", y_label);
+
   // Default colors for multiple categories
   const defaultColors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ffa500", "#800080"];
 
@@ -44,16 +56,48 @@ export default function ChartRenderer({ data, state }) {
 
   let plotData = [];
   let layout = {
-    title: title || "Generated Graph",
+    title: {
+      text: title || "Generated Graph",
+      font: {
+        size: 18,
+        color: "#333333"
+      },
+      x: 0.5,
+      xanchor: "center",
+      y: 0.95,
+      yanchor: "top"
+    },
     xaxis: { 
-      title: x_label || "X Axis",
+      title: {
+        text: x_label || "X Axis",
+        font: {
+          size: 14,
+          color: "#333333"
+        },
+        standoff: 20
+      },
       showgrid: true,
-      gridcolor: "#f0f0f0"
+      gridcolor: "#f0f0f0",
+      tickfont: {
+        size: 12,
+        color: "#666666"
+      }
     },
     yaxis: { 
-      title: y_label || "Y Axis",
+      title: {
+        text: y_label || "Y Axis",
+        font: {
+          size: 14,
+          color: "#333333"
+        },
+        standoff: 20
+      },
       showgrid: true,
-      gridcolor: "#f0f0f0"
+      gridcolor: "#f0f0f0",
+      tickfont: {
+        size: 12,
+        color: "#666666"
+      }
     },
     legend: { 
       title: { text: legend_label || "Legend" },
@@ -63,11 +107,15 @@ export default function ChartRenderer({ data, state }) {
       orientation: "h"
     },
     autosize: true,
-    margin: { l: 60, r: 30, t: 60, b: 80 },
+    margin: { l: 60, r: 30, t: 80, b: 80 }, // Increased top margin for title
     plot_bgcolor: "white",
     paper_bgcolor: "white",
     font: { size: 12 }
   };
+
+  console.log("ChartRenderer layout:", layout); // Debug log
+  console.log("ChartRenderer xaxis title:", layout.xaxis.title); // Debug log
+  console.log("ChartRenderer yaxis title:", layout.yaxis.title); // Debug log
 
   switch (graph_type) {
     case "bar":
@@ -210,7 +258,7 @@ export default function ChartRenderer({ data, state }) {
     <Plot
       data={plotData}
       layout={layout}
-      style={{ width: "100%", height: "400px" }}
+      style={{ width: "100%", height: "500px" }} // Increased height to accommodate title
       useResizeHandler={true}
       config={{ 
         responsive: true,

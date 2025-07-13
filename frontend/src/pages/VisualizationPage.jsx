@@ -124,9 +124,11 @@ const VisualizationPage = () => {
           }));
         } else if (data.type === "final") {
           const result = data.result;
+          console.log("Received final result:", result); // Debug log
           
           // Check if this is a customization response
           if (result.is_customization) {
+            console.log("Processing customization response:", result); // Debug log
             // Add the customized graph state to history
             setGraphHistory((prev) => {
               const newHistory = [...prev];
@@ -135,6 +137,7 @@ const VisualizationPage = () => {
                 newHistory.push(null);
               }
               newHistory[result.prompt_index] = result.graph_state;
+              console.log("Updated graph history:", newHistory); // Debug log
               return newHistory;
             });
           } else {
@@ -253,7 +256,18 @@ const VisualizationPage = () => {
 
   // Helper function to get graph state for a specific index
   const getGraphStateForIndex = (index) => {
+    console.log(`getGraphStateForIndex called with index: ${index}`);
+    console.log(`graphHistory length: ${graphHistory.length}`);
+    console.log(`graphHistory:`, graphHistory);
     return graphHistory[index] || null;
+  };
+
+  // Helper function to get graph state by prompt index
+  const getGraphStateByPromptIndex = (promptIndex) => {
+    console.log(`getGraphStateByPromptIndex called with promptIndex: ${promptIndex}`);
+    console.log(`graphHistory length: ${graphHistory.length}`);
+    console.log(`graphHistory:`, graphHistory);
+    return graphHistory[promptIndex] || null;
   };
 
   return (
@@ -336,10 +350,22 @@ const VisualizationPage = () => {
                   
                   {/* Get the graph state for this specific index */}
                   {(() => {
-                    const graphState = getGraphStateForIndex(index);
+                    const result = resultHistory[index];
                     
-                    if (resultHistory[index].is_customization) {
+                    // Use prompt_index from result if available, otherwise fall back to array index
+                    const graphStateIndex = result.prompt_index !== undefined ? result.prompt_index : index;
+                    const graphState = getGraphStateByPromptIndex(graphStateIndex);
+                    
+                    console.log(`Rendering for index ${index}:`, {
+                      result,
+                      graphStateIndex,
+                      graphState,
+                      isCustomization: result.is_customization
+                    });
+                    
+                    if (result.is_customization) {
                       // Customization response - show updated chart using ChartRenderer
+                      console.log("Showing ChartRenderer for customization");
                       return graphState && graphState.data ? (
                         <Box sx={{ width: "100%", mt: 2 }}>
                           <ChartRenderer 
@@ -347,16 +373,23 @@ const VisualizationPage = () => {
                             state={graphState} 
                           />
                         </Box>
-                      ) : null;
+                      ) : (
+                        <Box sx={{ width: "100%", mt: 2, p: 2, backgroundColor: "#f0f0f0" }}>
+                          <Typography>Graph state not available for customization</Typography>
+                          <Typography variant="body2">Graph state index: {graphStateIndex}</Typography>
+                          <Typography variant="body2">Graph state: {JSON.stringify(graphState)}</Typography>
+                        </Box>
+                      );
                     } else {
                       // Regular graph generation - show original Graph component
+                      console.log("Showing Graph component for regular generation");
                       return (
                         <Graph
-                          num_numeric={resultHistory[index].num_numeric}
-                          num_cat={resultHistory[index].num_cat}
-                          num_temporal={resultHistory[index].num_temporal}
-                          types={resultHistory[index].ranked_graphs}
-                          data={resultHistory[index].rearranged_data}
+                          num_numeric={result.num_numeric}
+                          num_cat={result.num_cat}
+                          num_temporal={result.num_temporal}
+                          types={result.ranked_graphs}
+                          data={result.rearranged_data}
                         />
                       );
                     }

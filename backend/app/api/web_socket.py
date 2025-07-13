@@ -61,6 +61,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     # Parse customization updates
                     updates = parse_customization_prompt(user_prompt)
                     print(f"Parsed updates: {updates}")
+                    print(f"User prompt: {user_prompt}")
+                    print(f"Updates keys: {list(updates.keys())}")
+                    if "x_label" in updates:
+                        print(f"X-label update found: {updates['x_label']}")
+                    if "y_label" in updates:
+                        print(f"Y-label update found: {updates['y_label']}")
+                    if "title" in updates:
+                        print(f"Title update found: {updates['title']}")
                     
                     # Create a new customized graph state based on the last one
                     try:
