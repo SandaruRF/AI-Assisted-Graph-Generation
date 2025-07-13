@@ -3,6 +3,12 @@ from langgraph.graph import StateGraph
 
 from app.state import State, connected_clients
 from app.utils.web_socket_update import send_websocket_update
+from app.utils.response_formatters import (
+    generate_metadata_response,
+    generate_system_response, 
+    generate_customization_response,
+    generate_analysis_response
+)
 from app.agents.intent_agent.intent_classifier import IntentClassifier
 from app.agents.system_agent.other_response import System
 from app.agents.sql_agent.metadata_retriever import get_cached_metadata
@@ -177,37 +183,44 @@ async def system(state: State):
     })
  
 
-# Need to remove. For testing only.
 async def response_generator(state: State):
-    """Generate the final response to the user."""
-    update_message = f"Ranked graphs: "
+    """Generate the final response based on detected intents."""
+    update_message = "Generating final response..."
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
         print(f"Sending WebSocket message: {update_message}")
         await send_websocket_update(state.session_id, update_message)
 
-    state = state.copy(update={
-        "messages": messages
-    })
-    response = (f"Original dataset: {state.original_data[0]}\n\n"
-                    f"Rearranged dataset: {state.rearranged_data[0]}\n\n"
-                    f"Suitable graph types: {state.suitable_graphs}\n\n"
-                    f"Recommended graph types: {state.ranked_graphs}\n\n"
-                    f"Insights: {state.insights}\n\n"
-                    f"Tool results: {state.tool_results}\n\n"
-                    f"Response: {state.insights_response}")
-
-    return state.copy(update={"response": response})
-
-
-async def temp_response_generator(state: State):
-    """Generate responses if intent classifier identifies intent as 'other'."""
-    system = System()
-    response = system.other_response(state)
-    print(response)
+    intents = state.intents
+    response = ""
     
-    return state.copy(update={"response": response})
+    # Handle different intent combinations
+    if "other" in intents:
+        # Handle 'other' intent (previously temp_response_generator)
+        system = System()
+        response = system.other_response(state)
+        
+    elif "metadata" in intents:
+        # Handle metadata requests
+        response = generate_metadata_response(state)
+        
+    elif "system" in intents:
+        # Handle system requests
+        response = generate_system_response(state)
+        
+    elif "customization" in intents:
+        # Handle customization requests
+        response = generate_customization_response(state)
+        
+    else:
+        # Handle visualization, insight, and explanation intents
+        response = generate_analysis_response(state, intents)
+
+    return state.copy(update={
+        "messages": messages,
+        "response": response
+    })
 
 
 async def route_intent(state: State):
