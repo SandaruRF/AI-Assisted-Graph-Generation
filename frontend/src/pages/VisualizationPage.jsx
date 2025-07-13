@@ -98,8 +98,8 @@ const VisualizationPage = () => {
   const socketRef = useRef(null);
   const latestIndexRef = useRef(0);
 
-  // Add graph state for customization
-  const [currentGraphState, setCurrentGraphState] = useState(null);
+  // Replace single graph state with graph history array
+  const [graphHistory, setGraphHistory] = useState([]);
 
   useEffect(() => {
     socketRef.current = new WebSocket("ws://localhost:8000/ws");
@@ -127,12 +127,20 @@ const VisualizationPage = () => {
           
           // Check if this is a customization response
           if (result.is_customization) {
-            // Update the current graph state
-            setCurrentGraphState(result.graph_state);
+            // Add the customized graph state to history
+            setGraphHistory((prev) => {
+              const newHistory = [...prev];
+              // Ensure we have enough space in the array
+              while (newHistory.length <= result.prompt_index) {
+                newHistory.push(null);
+              }
+              newHistory[result.prompt_index] = result.graph_state;
+              return newHistory;
+            });
           } else {
-            // Regular graph generation - store the graph state for customization
+            // Regular graph generation - create new graph state
             if (result.rearranged_data) {
-              setCurrentGraphState({
+              const newGraphState = {
                 graph_type: result.ranked_graphs[0] || "line",
                 x_label: "X Axis",
                 y_label: "Y Axis",
@@ -143,7 +151,20 @@ const VisualizationPage = () => {
                 num_numeric: result.num_numeric,
                 num_cat: result.num_cat,
                 num_temporal: result.num_temporal,
-                ranked_graphs: result.ranked_graphs
+                ranked_graphs: result.ranked_graphs,
+                prompt_index: result.prompt_index, // Use prompt_index from backend
+                is_customization: false
+              };
+              
+              // Add the new graph state to history
+              setGraphHistory((prev) => {
+                const newHistory = [...prev];
+                // Ensure we have enough space in the array
+                while (newHistory.length <= result.prompt_index) {
+                  newHistory.push(null);
+                }
+                newHistory[result.prompt_index] = newGraphState;
+                return newHistory;
               });
             }
           }
@@ -186,7 +207,7 @@ const VisualizationPage = () => {
     return () => {
       socketRef.current?.close();
     };
-  }, []);
+  }, []); // Remove resultHistory.length dependency to prevent WebSocket recreation
 
   const handleSend = async () => {
     if (userPrompt.trim() === "") return;
@@ -229,6 +250,11 @@ const VisualizationPage = () => {
       });
     }
   }, [promptHistory]);
+
+  // Helper function to get graph state for a specific index
+  const getGraphStateForIndex = (index) => {
+    return graphHistory[index] || null;
+  };
 
   return (
     <>
@@ -308,27 +334,33 @@ const VisualizationPage = () => {
                 >
                   <TypewriterWords text={resultHistory[index].response} />
                   
-                  {/* Show either the original Graph component or the customized ChartRenderer */}
-                  {resultHistory[index].is_customization ? (
-                    // Customization response - show updated chart
-                    currentGraphState && currentGraphState.data && (
-                      <Box sx={{ width: "100%", mt: 2 }}>
-                        <ChartRenderer 
-                          data={currentGraphState.data} 
-                          state={currentGraphState} 
+                  {/* Get the graph state for this specific index */}
+                  {(() => {
+                    const graphState = getGraphStateForIndex(index);
+                    
+                    if (resultHistory[index].is_customization) {
+                      // Customization response - show updated chart using ChartRenderer
+                      return graphState && graphState.data ? (
+                        <Box sx={{ width: "100%", mt: 2 }}>
+                          <ChartRenderer 
+                            data={graphState.data} 
+                            state={graphState} 
+                          />
+                        </Box>
+                      ) : null;
+                    } else {
+                      // Regular graph generation - show original Graph component
+                      return (
+                        <Graph
+                          num_numeric={resultHistory[index].num_numeric}
+                          num_cat={resultHistory[index].num_cat}
+                          num_temporal={resultHistory[index].num_temporal}
+                          types={resultHistory[index].ranked_graphs}
+                          data={resultHistory[index].rearranged_data}
                         />
-                      </Box>
-                    )
-                  ) : (
-                    // Regular graph generation - show original Graph component
-                    <Graph
-                      num_numeric={resultHistory[index].num_numeric}
-                      num_cat={resultHistory[index].num_cat}
-                      num_temporal={resultHistory[index].num_temporal}
-                      types={resultHistory[index].ranked_graphs}
-                      data={resultHistory[index].rearranged_data}
-                    />
-                  )}
+                      );
+                    }
+                  })()}
                 </Box>
               )}
             </React.Fragment>

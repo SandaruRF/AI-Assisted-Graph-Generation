@@ -22,6 +22,7 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             text_data = await websocket.receive_text()
+            print(f"Received text data: {text_data}")
             data = json.loads(text_data)
             user_prompt = data.get("user_prompt", "")
             session_id = data.get("session_id", str(uuid.uuid4()))  # Generate session_id if not provided
@@ -31,43 +32,80 @@ async def websocket_endpoint(websocket: WebSocket):
             connected_clients[session_id] = websocket
             
             # Check if this is a customization prompt
-            if is_customization_prompt(user_prompt):
+            is_custom = is_customization_prompt(user_prompt)
+            print(f"Is customization prompt: {is_custom}")
+            if is_custom:
                 await websocket.send_text(json.dumps({
                     "type": "update",
                     "message": "Processing customization request..."
                 }, cls=DecimalEncoder))
                 
                 try:
-                    # Get current state
-                    current_state = graph_state_manager.get_state(session_id)
+                    print("Processing customization request...")
+                    # Get the current prompt index (length of existing history)
+                    current_prompt_index = len(graph_state_manager.get_history(session_id))
+                    print(f"Current prompt index: {current_prompt_index}")
+                    
+                    # Get the last graph state to base customization on
+                    last_graph_state = graph_state_manager.get_state(session_id)
+                    print(f"Last graph state: {last_graph_state}")
+                    
+                    if not last_graph_state or not last_graph_state.get("data"):
+                        print("No previous graph found to customize")
+                        await websocket.send_text(json.dumps({
+                            "type": "error",
+                            "message": "No previous graph found to customize. Please generate a graph first."
+                        }, cls=DecimalEncoder))
+                        continue
                     
                     # Parse customization updates
                     updates = parse_customization_prompt(user_prompt)
+                    print(f"Parsed updates: {updates}")
                     
-                    # Update the state
-                    new_state = graph_state_manager.update_state(updates, session_id)
+                    # Create a new customized graph state based on the last one
+                    try:
+                        new_graph_state = graph_state_manager.add_customized_graph(
+                            last_graph_state, 
+                            updates, 
+                            session_id, 
+                            current_prompt_index
+                        )
+                        print(f"New graph state created: {new_graph_state}")
+                    except Exception as e:
+                        print(f"Error in add_customized_graph: {e}")
+                        raise
                     
                     # Generate response message
-                    response_message = generate_customization_response(updates, current_state)
+                    response_message = generate_customization_response(updates, last_graph_state)
+                    print(f"Response message: {response_message}")
                     
                     # Create result object for frontend
                     customization_result = {
                         "response": response_message,
                         "is_customization": True,
-                        "graph_state": new_state,
-                        "num_numeric": current_state.get("num_numeric", 0),
-                        "num_cat": current_state.get("num_cat", 0),
-                        "num_temporal": current_state.get("num_temporal", 0),
-                        "ranked_graphs": [new_state.get("graph_type", "line")],
-                        "rearranged_data": current_state.get("data", [])
+                        "graph_state": new_graph_state,
+                        "prompt_index": current_prompt_index,
+                        "num_numeric": new_graph_state.get("num_numeric", 0),
+                        "num_cat": new_graph_state.get("num_cat", 0),
+                        "num_temporal": new_graph_state.get("num_temporal", 0),
+                        "ranked_graphs": [new_graph_state.get("graph_type", "line")],
+                        "rearranged_data": new_graph_state.get("data", [])
                     }
+                    print(f"Customization result: {customization_result}")
                     
                     # Send final result
-                    await websocket.send_text(json.dumps({
-                        "type": "final",
-                        "message": "Customization applied successfully!",
-                        "result": customization_result,
-                    }, cls=DecimalEncoder))
+                    try:
+                        final_message = {
+                            "type": "final",
+                            "message": "Customization applied successfully!",
+                            "result": customization_result,
+                        }
+                        print(f"Sending final message: {final_message}")
+                        await websocket.send_text(json.dumps(final_message, cls=DecimalEncoder))
+                        print("Final message sent successfully")
+                    except Exception as e:
+                        print(f"Error sending final message: {e}")
+                        raise
                     
                 except Exception as e:
                     error_message = str(e)
@@ -85,6 +123,9 @@ async def websocket_endpoint(websocket: WebSocket):
                 }, cls=DecimalEncoder))
                 
                 try:
+                    # Get the current prompt index
+                    current_prompt_index = len(graph_state_manager.get_history(session_id))
+                    
                     # Initialize state
                     state = State(
                         session_id=session_id,
@@ -139,26 +180,36 @@ async def websocket_endpoint(websocket: WebSocket):
                     print(f"Result dict keys: {result_dict.keys()}")
                     print(f"Rearranged data: {result_dict.get('rearranged_data')}")
                     
-                    # Store the generated graph data in state manager
+                    # Create a new graph state for this prompt
                     if result_dict.get('rearranged_data'):
-                        graph_state_manager.set_graph_data(
-                            result_dict['rearranged_data'], 
-                            session_id
-                        )
-                        # Update graph state with generated data
-                        graph_state_manager.update_state({
+                        new_graph_state = {
+                            "graph_type": result_dict.get('ranked_graphs', ['line'])[0] if result_dict.get('ranked_graphs') else "line",
+                            "x_label": "X Axis",
+                            "y_label": "Y Axis",
+                            "legend_label": "Legend",
+                            "title": "Generated Graph",
+                            "color": "#3366cc",
+                            "data": result_dict['rearranged_data'],
                             "num_numeric": result_dict.get('num_numeric', 0),
                             "num_cat": result_dict.get('num_cat', 0),
                             "num_temporal": result_dict.get('num_temporal', 0),
                             "ranked_graphs": result_dict.get('ranked_graphs', []),
-                            "graph_type": result_dict.get('ranked_graphs', ['line'])[0] if result_dict.get('ranked_graphs') else "line"
-                        }, session_id)
+                            "session_id": session_id,
+                            "prompt_index": current_prompt_index,
+                            "is_customization": False
+                        }
+                        
+                        # Add the new graph state to history
+                        graph_state_manager.add_new_graph(new_graph_state, session_id, current_prompt_index)
                     
                     # Send final result
                     await websocket.send_text(json.dumps({
                         "type": "final",
                         "message": "Prompt processed successfully!",
-                        "result": result_dict,
+                        "result": {
+                            **result_dict,
+                            "prompt_index": current_prompt_index
+                        },
                     }, cls=DecimalEncoder))
                     
                 except Exception as e:
