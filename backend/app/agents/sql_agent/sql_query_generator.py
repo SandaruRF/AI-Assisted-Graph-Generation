@@ -102,7 +102,9 @@ class SQLQueryGenerator:
 
                 ---
 
-                Now analyze the input and generate the optimized SQL query:"""
+                Now analyze the input and generate the optimized SQL query:
+
+        """
 
         
         try:

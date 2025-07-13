@@ -1,5 +1,4 @@
-from langgraph.constants import START, END
-from langgraph.types import Send
+from langgraph.constants import START, END, Send
 from langgraph.graph import StateGraph
 from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
@@ -48,7 +47,7 @@ async def metadata_retriever(state: State):
     """Retrieve metadata from the database."""
     update_message = "Retrieving metadata..."
     messages = state.messages.copy()
-    messages.append(AIMessage(content=update_message))
+    messages.append(update_message)
     if state.session_id in connected_clients:
         await send_websocket_update(state.session_id, update_message)
 
@@ -64,7 +63,7 @@ async def sql_generator(state: State):
     """Generates an SQL query for retrieve data from the database."""
     update_message = f"Generating SQL query..."
     messages = state.messages.copy()
-    messages.append(AIMessage(content=update_message))
+    messages.append(update_message)
     if state.session_id in connected_clients:
         await send_websocket_update(state.session_id, update_message)
 
@@ -75,25 +74,17 @@ async def sql_generator(state: State):
     metadata = db_info["metadata"]
     sql_dialect = db_info["sql_dialect"]
 
+
+       
+        
     #querying and run sql query
     top_n_tables = query_vectordb(state.user_prompt, 20)
     top_k_tables = table_selector.select_tables(top_n_tables, state.user_prompt, 20)
-    sql_query = sql_query_generator.generate_sql_query(state.user_prompt, top_k_tables, sql_dialect, metadata)
-
-    # Check if SQL query is valid before proceeding
-    if sql_query == "SCHEMA_INSUFFICIENT" or not sql_query or sql_query.strip() == "":
-        error_message = "Unable to generate a valid SQL query. Please check your database schema and try again."
-        messages.append(AIMessage(content=error_message))
-        return state.copy(update={
-            "messages": messages,
-            "metadata": metadata,
-            "sql_dialect": sql_dialect,
-            "sql_query": None,
-            "response": error_message
-        })
+    sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect, top_k_tables)
 
     #store in veector db and log summerize
     query_log_summerizer(state.session_id, metadata, sql_query)
+
     response = sql_query
     
     return state.copy(update={
@@ -107,19 +98,9 @@ async def sql_generator(state: State):
 
 async def sql_executor(state: State):
     """Execute the generated SQL query and fetch data from the database."""
-    # Check if we have a valid SQL query
-    if not state.sql_query:
-        error_message = "No valid SQL query to execute."
-        messages = state.messages.copy()
-        messages.append(AIMessage(content=error_message))
-        return state.copy(update={
-            "messages": messages,
-            "response": error_message
-        })
-
     update_message = f"Executing SQL query..."
     messages = state.messages.copy()
-    messages.append(AIMessage(content=update_message))
+    messages.append(update_message)
     if state.session_id in connected_clients:
         await send_websocket_update(state.session_id, update_message)
 
@@ -135,7 +116,7 @@ async def data_preprocessor(state: State):
     """Clean, preprocess and rearrange the dataset."""
     update_message = f"Preprocessing data..."
     messages = state.messages.copy()
-    messages.append(AIMessage(content=update_message))
+    messages.append(update_message)
     if state.session_id in connected_clients:
         await send_websocket_update(state.session_id, update_message)
 
@@ -161,7 +142,7 @@ async def graph_ranker(state: State):
     """Rank the graphs based on the data."""
     update_message = f"Ranking suitable graphs..."
     messages = state.messages.copy()
-    messages.append(AIMessage(content=update_message))
+    messages.append(update_message)
     if state.session_id in connected_clients:
         await send_websocket_update(state.session_id, update_message)
 
@@ -179,7 +160,7 @@ async def temp_response_generator(state: State):
     ranked_graphs = recommender.recommend_graphs(state)
     update_message = f"Ranked graphs: {ranked_graphs}"
     messages = state.messages.copy()
-    messages.append(AIMessage(content=update_message))
+    messages.append(update_message)
     if state.session_id in connected_clients:
         print(f"Sending WebSocket message: {update_message}")
         await send_websocket_update(state.session_id, update_message)
