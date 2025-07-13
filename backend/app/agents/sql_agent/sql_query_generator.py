@@ -11,7 +11,7 @@ class SQLQueryGenerator:
         genai.configure(api_key=settings.GEMINI_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
-    def generate_sql_query(self, nl_query: str, sql_dialect: str) -> str:
+    def generate_sql_query(self, nl_query: str,table_selection: str, sql_dialect: str) -> str:
         print(f"Question: {nl_query}")
         print(f"SQL Dialect: {sql_dialect}")
         prompt = f"""
@@ -121,7 +121,7 @@ class SQLQueryGenerator:
                 
         Now analyze the input question and generate the appropriate SQL query:
                 QUESTIOIN: {nl_query}
-                SCHEMA: {schema.select_tables()}
+                SCHEMA: {table_selection}
                 DIALECT: {sql_dialect}
         """
 

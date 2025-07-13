@@ -1,13 +1,11 @@
-from cmd import PROMPT
+
 import google.generativeai as genai
 
 from app.config import settings
 from app.utils.logging import logger
-from app.agents.sql_agent.vectordb_functions.querying_vectordb import query_vectordb
 
-table_schemas = query_vectordb(prompt,20)
-question = PROMPT
-top_n = 20
+
+
 
 
 
@@ -16,7 +14,7 @@ class tableSelector:
         genai.configure(api_key=settings.GEMINI_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
 
-    def select_tables(self):
+    def select_tables(self,table_schemas, question, top_n):
         prompt = f"""You are a data scientist that can help select the most relevant tables for SQL query tasks.
 
                     Please select the most relevant table(s) that can be used to generate SQL query for the question.

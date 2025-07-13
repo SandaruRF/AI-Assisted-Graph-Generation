@@ -4,19 +4,12 @@ import google.generativeai as genai
 from app.config import settings
 from app.utils.logging import logger
 
-from app.agents.sql_agent.metadata_retriever import get_cached_metadata
+
 from app.config import db
 from app.agents.sql_agent.vectordb_functions.vectordb import add_to_vectordb
 
 
-def query_log_summerizer(session_id: str):
-    print("WTF session id ", session_id)
-    previous_query_log = db["sql_query_log"]
-    previous_queries = previous_query_log.find_one({"session_id": session_id})
-    logger.info("query log data retrever", previous_queries)
-    log_summerizer = LogSummerizer()
-    summerized_logs = log_summerizer.summarize_logs(previous_queries,session_id)
-    add_to_vectordb(session_id,summerized_logs)
+
     
 
 
@@ -25,8 +18,8 @@ class LogSummerizer:
         genai.configure(api_key=settings.GEMINI_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
-    def summarize_logs(self, previous_queries,session_id):
-        logger.info("previous queries in summerized logs", previous_queries, session_id)
+    def summarize_logs(self, metadata, sql_query):
+        
         
         prompt = f"""
                         You are a helpful assistant that can help document SQL queries.
@@ -34,10 +27,10 @@ class LogSummerizer:
                 Please document below SQL query by the given table schemas.
 
                 ===SQL Query
-                {previous_queries}
+                {sql_query}
 
                 ===Table Schemas
-                {get_cached_metadata(session_id)}
+                {metadata}
 
                 ===Response Guidelines
                 Please provide the following list of descriptions for the query:
@@ -51,3 +44,14 @@ class LogSummerizer:
         response = self.model.generate_content(prompt)
         logger.info(f"Summerized logs: {response.text}")
         return response.text
+
+
+def query_log_summerizer(session_id: str, metadata, sql_query):
+    print("WTF session id ", session_id)
+    previous_query_log = db["sql_query_log"]
+    previous_queries = previous_query_log.find_one({"session_id": session_id})
+    logger.info("query log data retrever", previous_queries)
+    log_summerizer = LogSummerizer()
+    summerized_logs = log_summerizer.summarize_logs( metadata, sql_query)
+    logger.info("summerized queries", summerized_logs) 
+    add_to_vectordb(session_id,summerized_logs)

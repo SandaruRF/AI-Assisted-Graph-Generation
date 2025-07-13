@@ -57,25 +57,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 )
                 
                 result = await workflow.ainvoke(state)  # Get final state
-                # Only log if result.sql_query is not None or empty
-                if isinstance(result, dict) and result.get("sql_query"):
-                    query_log_summerizer(result.get("session_id"))
-                    await log_query(
-                        session_id=result.get("session_id"),
-                        prompt=user_prompt,
-                        sql_query=result.get("sql_query"),
-                        date_run=None,
-                    )
-                    
-                    
-
-                elif hasattr(result, "sql_query") and getattr(result, "sql_query", None):
-                    await log_query(
-                        session_id=getattr(result, "session_id", None),
-                        prompt=getattr(result, "prompt", None),
-                        sql_query=getattr(result, "sql_query", None),
-                        date_run=None,
-                    )
+                
                 
                 # Send final result
                 await websocket.send_text(json.dumps({

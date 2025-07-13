@@ -3,6 +3,7 @@ from langgraph.graph import StateGraph
 from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 import json
+from app.config import db
 
 from app.state import State
 from app.agents.intent_agent.intent_classifier import IntentClassifier
@@ -15,6 +16,9 @@ from app.agents.visualization_agent.graph_recommender import get_graph_types, Gr
 from app.state import connected_clients
 from app.utils.decimal_encoder import DecimalEncoder
 from app.agents.sql_agent.table_selector import tableSelector
+from app.agents.sql_agent.vectordb_functions.querying_vectordb import query_vectordb
+from app.agents.sql_agent.vectordb_functions.vectordb import add_to_vectordb
+from app.agents.sql_agent.log_summerizer import query_log_summerizer
 
 # Helper function for sending WebSocket updates
 async def send_websocket_update(session_id, message):
@@ -65,11 +69,28 @@ async def sql_generator(state: State):
 
     sql_query_generator = SQLQueryGenerator()
     table_selector = tableSelector()
+
     db_info = get_cached_metadata(state.session_id)
     metadata = db_info["metadata"]
     sql_dialect = db_info["sql_dialect"]
-    table_selection = table_selector.select_tables()
-    sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect)
+
+
+    if(db['sql_query_log'].find_one({"session_id": state.session_id})):
+        print('======session in db ========')
+       
+        
+        #querying and run sql query
+        top_n_tables = query_vectordb(state.user_prompt, 20)
+        top_k_tables = table_selector.select_tables(top_n_tables, state.user_prompt, 20)
+        sql_query = sql_query_generator.generate_sql_query(state.user_prompt, top_k_tables, sql_dialect)
+
+         #store in veector db and log summerize
+        query_log_summerizer(state.session_id, metadata, sql_query)
+    else:
+        print('======session NOT in db ========')
+        sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect)
+        #store in veector db and log summerize
+        query_log_summerizer(state.session_id, metadata, sql_query)
     response = sql_query
     
     return state.copy(update={
@@ -90,6 +111,7 @@ async def sql_executor(state: State):
         await send_websocket_update(state.session_id, update_message)
 
     original_data = execute_query_with_session(state.session_id, state.sql_query)
+    add_to_vectordb(state.session_id, state.sql_query)
     
     return state.copy(update={
         "messages": messages,
