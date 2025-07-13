@@ -16,4 +16,4 @@ def query_vectordb(user_prompt,n=10):
         print("vector db query results ", results)
         return results
     except Exception as e:
-        logger.error("Vector database querying fail", e)
+        logger.error("Vector database querying fail: %s", e)

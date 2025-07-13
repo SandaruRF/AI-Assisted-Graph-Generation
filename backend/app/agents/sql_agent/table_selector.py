@@ -30,5 +30,5 @@ class tableSelector:
                     ===Question
                     {question}"""
         response = self.model.generate_content(prompt)
-        logger.info(f"Summerized logs: {response.text}")
+        logger.info(f"Selected tables: {response.text}")
         return response.text
