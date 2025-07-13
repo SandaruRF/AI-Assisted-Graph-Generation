@@ -25,3 +25,5 @@ class State(BaseModel):
     messages: List[BaseMessage]
     insights: List[str]
     tool_results: Dict[str, Any]
+    insights_response: str
+    explanation: str

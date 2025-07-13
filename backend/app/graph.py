@@ -1,12 +1,8 @@
-from langgraph.constants import START, END, Send
-from langgraph.graph import StateGraph, MessagesState
-from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
-from langchain_anthropic import ChatAnthropic
-from langchain_google_genai import ChatGoogleGenerativeAI
-import asyncio
-import json
+from langgraph.constants import START, END
+from langgraph.graph import StateGraph
 
 from app.state import State, connected_clients
+from app.utils.web_socket_update import send_websocket_update
 from app.agents.intent_agent.intent_classifier import IntentClassifier
 from app.agents.system_agent.other_response import System
 from app.agents.sql_agent.metadata_retriever import get_cached_metadata
@@ -15,20 +11,6 @@ from app.agents.sql_agent.query_executor import execute_query_with_session
 from app.agents.visualization_agent.feature_extractor import process_and_clean_dataset
 from app.agents.visualization_agent.graph_recommender import get_graph_types, GraphRecommender
 from app.agents.explanation_agent.insight_generator import generate_insights
-from app.utils.decimal_encoder import DecimalEncoder
-
-# Helper function for sending WebSocket updates
-async def send_websocket_update(session_id, message):
-    if session_id in connected_clients:
-        websocket = connected_clients[session_id]
-        try:
-            await websocket.send_text(json.dumps({
-                "type": "update",
-                "message": message,
-                "result": {"response": message}
-            }, cls=DecimalEncoder))
-        except Exception as e:
-            print(f"Error sending WebSocket update: {e}")
 
 
 # Nodes
@@ -69,14 +51,12 @@ async def sql_generator(state: State):
     metadata = db_info["metadata"]
     sql_dialect = db_info["sql_dialect"]
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect)
-    response = sql_query
     
     return state.copy(update={
         "messages": messages,
         "metadata": metadata,
         "sql_dialect": sql_dialect,
-        "sql_query": sql_query,
-        "response": response
+        "sql_query": sql_query
     })
 
 
@@ -130,10 +110,13 @@ async def graph_ranker(state: State):
         await send_websocket_update(state.session_id, update_message)
 
     suitable_graphs = get_graph_types(state.num_numeric, state.num_cat, state.num_temporal)
-    
+    recommender = GraphRecommender()
+    ranked_graphs = recommender.recommend_graphs(state, suitable_graphs)
+
     return state.copy(update={
         "messages": messages,
-        "suitable_graphs": suitable_graphs
+        "suitable_graphs": suitable_graphs,
+        "ranked_graphs": ranked_graphs
     })
 
 async def insight_generator(state: State):
@@ -147,22 +130,57 @@ async def insight_generator(state: State):
     # Call generate_insights and extract results
     insights_state = await generate_insights(state)
     
-    # Merge the results with current state
-    final_messages = messages + insights_state.messages
-    
     return state.copy(update={
-        "messages": final_messages,
+        "messages": insights_state.messages,
         "insights": insights_state.insights,
         "tool_results": insights_state.tool_results,
-        "response": insights_state.response
+        "insights_response": insights_state.insights_response
+    })
+
+async def explanation_generator(state: State):
+    """Generate explanations for the insights."""
+    update_message = "Generating explanations for insights..."
+    messages = state.messages.copy()
+    messages.append(update_message)
+    if state.session_id in connected_clients:
+        await send_websocket_update(state.session_id, update_message)
+
+    explanation = "This is a placeholder for the explanation generation logic."
+    
+    return state.copy(update={
+        "messages": messages,
+        "explanation": explanation
+    })
+
+async def customizer(state: State):
+    """Customize the generated graph based on user prompts."""
+    update_message = "Customizing the graph..."
+    messages = state.messages.copy()
+    messages.append(update_message)
+    if state.session_id in connected_clients:
+        await send_websocket_update(state.session_id, update_message)
+    
+    return state.copy(update={
+        "messages": messages
+    })
+
+async def system(state: State):
+    """Handle system-level operations like connecting to a different database or exporting the graph."""
+    update_message = "Handling system operations..."
+    messages = state.messages.copy()
+    messages.append(update_message)
+    if state.session_id in connected_clients:
+        await send_websocket_update(state.session_id, update_message)
+    
+    return state.copy(update={
+        "messages": messages
     })
  
 
 # Need to remove. For testing only.
-async def temp_response_generator(state: State):
-    recommender = GraphRecommender()
-    ranked_graphs = recommender.recommend_graphs(state)
-    update_message = f"Ranked graphs: {ranked_graphs}"
+async def response_generator(state: State):
+    """Generate the final response to the user."""
+    update_message = f"Ranked graphs: "
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
@@ -170,20 +188,20 @@ async def temp_response_generator(state: State):
         await send_websocket_update(state.session_id, update_message)
 
     state = state.copy(update={
-        "messages": messages,
-        "ranked_graphs": ranked_graphs
+        "messages": messages
     })
     response = (f"Original dataset: {state.original_data[0]}\n\n"
                     f"Rearranged dataset: {state.rearranged_data[0]}\n\n"
                     f"Suitable graph types: {state.suitable_graphs}\n\n"
                     f"Recommended graph types: {state.ranked_graphs}\n\n"
                     f"Insights: {state.insights}\n\n"
-                    f"Tool results: {state.tool_results}\n\n")
+                    f"Tool results: {state.tool_results}\n\n"
+                    f"Response: {state.insights_response}")
 
     return state.copy(update={"response": response})
 
 
-async def response_generator(state: State):
+async def temp_response_generator(state: State):
     """Generate responses if intent classifier identifies intent as 'other'."""
     system = System()
     response = system.other_response(state)
@@ -193,14 +211,77 @@ async def response_generator(state: State):
 
 
 async def route_intent(state: State):
-    if "metadata" in state.intents:
-        return "metadata"
-    elif "visualization" in state.intents:
-        return "visualization"
-    elif "insight" in state.intents:
-        return "insight"
-    elif "other" in state.intents:
-        return "other"
+    intents = state.intents
+    
+    # Handle single intents first
+    if len(intents) == 1:
+        if "metadata" in intents:
+            return "metadata"
+        elif "visualization" in intents:
+            return "visualization"
+        elif "insight" in intents:
+            return "insight"
+        elif "explanation" in intents:
+            return "explanation"
+        elif "customization" in intents:
+            return "customization"
+        elif "system" in intents:
+            return "system"
+        else:
+            return "other"
+    
+    # Handle multiple intent combinations
+    elif len(intents) > 1:
+        if "visualization" in intents and "insight" in intents and "explanation" in intents:
+            return "visualization_insight_explanation"
+        elif "visualization" in intents and "insight" in intents:
+            return "visualization_insight"
+        elif "visualization" in intents and "explanation" in intents:
+            return "visualization_explanation"
+        elif "insight" in intents and "explanation" in intents:
+            return "insight_explanation"
+        else:
+            # Default fallback for other combinations
+            return "other"
+    
+    return "other"
+
+async def route_after_preprocessor(state: State):
+    intents = state.intents
+    
+    if "visualization" in intents and "insight" in intents and "explanation" in intents:
+        return "graph_ranker"
+    elif "visualization" in intents and "insight" in intents:
+        return "graph_ranker"
+    elif "visualization" in intents and "explanation" in intents:
+        return "graph_ranker"
+    elif "visualization" in intents:
+        return "graph_ranker"
+    elif "insight" in intents and "explanation" in intents:
+        return "insight_generator"
+    elif "insight" in intents:
+        return "insight_generator"
+    elif "explanation" in intents:
+        return "insight_generator"
+    else:
+        return "response_generator"
+
+async def route_after_graph_ranker(state: State):
+    intents = state.intents
+    
+    if "insight" in intents or "explanation" in intents:
+        return "insight_generator"
+    else:
+        return "response_generator"
+
+async def route_after_insight_generator(state: State):
+    intents = state.intents
+    
+    if "explanation" in intents:
+        return "explanation_generator"
+    else:
+        return "response_generator"
+
 
 
 builder = StateGraph(State)
@@ -211,28 +292,72 @@ builder.add_node("sql_executor", sql_executor)
 builder.add_node("data_preprocessor", data_preprocessor)
 builder.add_node("graph_ranker", graph_ranker)
 builder.add_node("insight_generator", insight_generator)
+builder.add_node("explanation_generator", explanation_generator)
 builder.add_node("response_generator", response_generator)
-builder.add_node("temp_response_generator", temp_response_generator)
+builder.add_node("customizer", customizer)
+builder.add_node("system", system)
 
 
+# Initial routing
 builder.add_edge(START, "intent_classifier")
 builder.add_conditional_edges(
     "intent_classifier",
     route_intent, 
-    {   # Name returned by route_intent : Name of next node to visit
+    {
         "metadata": "metadata_retriever",
         "visualization": "sql_generator",
-        "insight": "sql_generator",
+        "insight": "sql_generator", 
+        "explanation": "sql_generator",
+        "customization": "customizer",
+        "system": "system",
         "other": "response_generator",
+        "visualization_insight": "sql_generator",
+        "visualization_explanation": "sql_generator", 
+        "insight_explanation": "sql_generator",
+        "visualization_insight_explanation": "sql_generator",
     },
 )
-builder.add_edge("metadata_retriever", "response_generator")
+
+# Linear path for SQL operations
 builder.add_edge("sql_generator", "sql_executor")
 builder.add_edge("sql_executor", "data_preprocessor")
-builder.add_edge("data_preprocessor", "graph_ranker")
-builder.add_edge("graph_ranker", "insight_generator")
-builder.add_edge("insight_generator", "temp_response_generator")
-builder.add_edge("temp_response_generator", END)
+
+# Conditional routing after data preprocessing
+builder.add_conditional_edges(
+    "data_preprocessor",
+    route_after_preprocessor,
+    {
+        "graph_ranker": "graph_ranker",
+        "insight_generator": "insight_generator",
+        "response_generator": "response_generator",
+    }
+)
+
+# Conditional routing after graph ranking
+builder.add_conditional_edges(
+    "graph_ranker",
+    route_after_graph_ranker,
+    {
+        "insight_generator": "insight_generator",
+        "response_generator": "response_generator",
+    }
+)
+
+# Conditional routing after insight generation
+builder.add_conditional_edges(
+    "insight_generator",
+    route_after_insight_generator,
+    {
+        "explanation_generator": "explanation_generator",
+        "response_generator": "response_generator",
+    }
+)
+
+# Terminal edges
+builder.add_edge("metadata_retriever", "response_generator")
+builder.add_edge("explanation_generator", "response_generator")
+builder.add_edge("customizer", END)
+builder.add_edge("system", END)
 builder.add_edge("response_generator", END)
 
 workflow = builder.compile()

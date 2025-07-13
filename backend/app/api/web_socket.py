@@ -48,7 +48,9 @@ async def websocket_endpoint(websocket: WebSocket):
                     response="",
                     messages=[],
                     insights=[],
-                    tool_results={}
+                    tool_results={},
+                    insights_response="",
+                    explanation=""
                 )
                 
                 result = await workflow.ainvoke(state)  # Get final state

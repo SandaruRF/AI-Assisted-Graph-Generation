@@ -3,7 +3,8 @@ from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from app.state import State
+from app.state import State, connected_clients
+from app.utils.web_socket_update import send_websocket_update
 from app.agents.analysis_agents.anomaly_detection_agent.pyod_anomaly_detector import (
     detect_anomalies_iforest, detect_anomalies_autoencoder, detect_anomalies_hbos, detect_anomalies_knn, detect_anomalies_lof, detect_anomalies_ocsvm
 )
@@ -69,6 +70,7 @@ async def generate_insights(state: State):
     tool_messages = [HumanMessage(content=analysis_prompt)]
     
     try:
+        messages = state.messages.copy()
         # Get LLM response with tool calls
         response = await llm_with_tools.ainvoke(tool_messages)
         
@@ -81,17 +83,22 @@ async def generate_insights(state: State):
                 tool_name = tool_call["name"]
                 tool_args = tool_call["args"]
                 
-                # update_message = f"Executing {tool_name}..."
-                # if state.session_id in connected_clients:
-                #     await send_websocket_update(state.session_id, update_message)
+                update_message = f"Executing {tool_name}..."
+                print("==================================================")
+                print(f"Update message:")
+                print(update_message)
+                print("==================================================")
+                messages.append(update_message)
+                if state.session_id in connected_clients:
+                    await send_websocket_update(state.session_id, update_message)
                 
                 # Execute the selected tool
                 try:
                     tool_function = tools_by_name[tool_name]
-                    print("==================================================")
-                    print(f"Tool function:")
-                    print(tool_function)
-                    print("==================================================")
+                    # print("==================================================")
+                    # print(f"Tool function:")
+                    # print(tool_function)
+                    # print("==================================================")
                     
                     # Prepare arguments with data
                     final_args = {"data": state.rearranged_data}
@@ -101,20 +108,19 @@ async def generate_insights(state: State):
                             if key != "data":  # Don't overwrite the data
                                 final_args[key] = value
                     
-                    print("==================================================")
-                    print(f"Rearranged data:")
-                    print(state.rearranged_data)
-                    print("==================================================")
-                    print("==================================================")
-                    print(f"Final args:")
-                    print(final_args)
-                    print("==================================================")
+                    # print("==================================================")
+                    # print(f"Rearranged data:")
+                    # print(state.rearranged_data)
+                    # print("==================================================")
+                    # print(f"Final args:")
+                    # print(final_args)
+                    # print("==================================================")
                     # Execute tool
                     result = tool_function.invoke(final_args)
-                    print("==================================================")
-                    print(f"Tool result:")
-                    print(result)
-                    print("==================================================")
+                    # print("==================================================")
+                    # print(f"Tool result:")
+                    # print(result)
+                    # print("==================================================")
                     tool_results[tool_name] = result
                     
                     # Generate insight from result
@@ -136,19 +142,19 @@ async def generate_insights(state: State):
             final_response = await generate_direct_insight(state.user_prompt, data_context)
         
         return state.copy(update={
-            # "messages": messages,
+            "messages": messages,
             "insights": insights,
             "tool_results": tool_results,
-            "response": final_response
+            "insights_response": final_response
         })
         
     except Exception as e:
         error_response = f"Error in insight generation: {str(e)}"
         return state.copy(update={
-            # "messages": messages,
+            "messages": messages,
             "insights": [],
             "tool_results": {},
-            "response": error_response
+            "insights_response": error_response
         })
 
 async def generate_insight_from_tool_result(tool_name, result, user_prompt):

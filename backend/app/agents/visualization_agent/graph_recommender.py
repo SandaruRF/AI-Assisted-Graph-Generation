@@ -1,5 +1,5 @@
 import google.generativeai as genai
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from app.config import settings
 from app.utils.logging import logger
@@ -43,7 +43,7 @@ class GraphRecommender:
         genai.configure(api_key=settings.GOOGLE_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
-    def recommend_graphs(self, state: State) -> Dict[str, Any]:
+    def recommend_graphs(self, state: State, suitable_graphs: List[str]) -> Dict[str, Any]:
         prompt = f'''
         You are an intelligent graph recommendation assistant in a system called "AI-Assisted Graph Generator".
         Your goal is to recommend and rank the most suitable graph types for visualizing a dataset, based only on the given information.
@@ -58,7 +58,7 @@ class GraphRecommender:
             - Number of rows: {state.num_rows}
             - Column cardinalities: {state.cardinalities}
 
-        Only consider and choose from this list of supported graph types: {state.suitable_graphs}
+        Only consider and choose from this list of supported graph types: {suitable_graphs}
 
         Your task:
         - Understand the user intent and dataset structure.
