@@ -81,6 +81,7 @@ async def sql_executor(state: State):
         "original_data": original_data
     })
 
+
 async def data_preprocessor(state: State):
     """Clean, preprocess and rearrange the dataset."""
     update_message = f"Preprocessing data..."
@@ -107,6 +108,7 @@ async def data_preprocessor(state: State):
         "cardinalities": cardinalities
     })
 
+
 async def graph_ranker(state: State):
     """Rank the graphs based on the data."""
     update_message = f"Ranking suitable graphs..."
@@ -124,6 +126,7 @@ async def graph_ranker(state: State):
         "suitable_graphs": suitable_graphs,
         "ranked_graphs": ranked_graphs
     })
+
 
 async def insight_generator(state: State):
     """Generate insights using autonomous tool selection based on user prompt and data."""
@@ -143,20 +146,40 @@ async def insight_generator(state: State):
         "insights_response": insights_state.insights_response
     })
 
+
 async def explanation_generator(state: State):
-    """Generate explanations for the insights."""
+    """Generate explanations for detected insights with external context."""
     update_message = "Generating explanations for insights..."
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
         await send_websocket_update(state.session_id, update_message)
 
-    explanation = "This is a placeholder for the explanation generation logic."
+    # Extract insights and analysis results
+    insights = state.insights
+    tool_results = state.tool_results
+    user_prompt = state.user_prompt
+    
+    # Identify explanation needs
+    explanation_queries = await identify_explanation_needs(insights, tool_results)
+    
+    # Search external sources for context
+    external_context = await search_external_context(explanation_queries)
+    
+    # Generate comprehensive explanations
+    explanations = await generate_contextual_explanations(
+        insights, tool_results, external_context, user_prompt
+    )
+    
+    # Format and structure response
+    formatted_explanation = await format_explanation_response(explanations)
     
     return state.copy(update={
         "messages": messages,
-        "explanation": explanation
+        "explanation": formatted_explanation,
+        "external_context": external_context
     })
+
 
 async def customizer(state: State):
     """Customize the generated graph based on user prompts."""
@@ -169,6 +192,7 @@ async def customizer(state: State):
     return state.copy(update={
         "messages": messages
     })
+
 
 async def system(state: State):
     """Handle system-level operations like connecting to a different database or exporting the graph."""
