@@ -3,6 +3,8 @@ from langgraph.graph import StateGraph
 from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 import json
+
+from sqlalchemy import sql
 from app.config import db
 from app.utils.logging import logger
 
@@ -85,6 +87,7 @@ async def sql_generator(state: State):
     logger.critical(f"top_k tables : {top_k_tables}")
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect, top_k_tables)
     logger.critical(f"generated sql query: {sql_query}")
+
 
     #store in veector db and log summerize
     query_log_summerizer(state.session_id, top_k_tables, sql_query)
