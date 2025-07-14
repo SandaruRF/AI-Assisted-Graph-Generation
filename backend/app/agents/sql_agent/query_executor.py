@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.sql import text
 from sqlalchemy import create_engine
 from typing import List, Dict, Any
+from app.utils.logging import logger
 
 from app.api.sql_database import session_store
 
@@ -20,6 +21,7 @@ def execute_query_with_session(session_id:str, sql_query:str) -> List[Dict[str, 
 
         columns = result.keys()
         records = [dict(zip(columns, row)) for row in data]
+        logger.info(f"final output records: {records}")
 
         return records
     

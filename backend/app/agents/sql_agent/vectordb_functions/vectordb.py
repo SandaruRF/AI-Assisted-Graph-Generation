@@ -8,7 +8,6 @@ collection = client.get_or_create_collection(name="summerized_logs")
 
 def add_to_vectordb(session_id:str, summerized_logs:str):
 
-    print("vector db collection created")
     try:
         collection.add(
             documents=[summerized_logs],

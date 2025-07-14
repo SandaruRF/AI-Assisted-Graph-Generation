@@ -4,6 +4,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 import json
 from app.config import db
+from app.utils.logging import logger
 
 from app.state import State
 from app.agents.intent_agent.intent_classifier import IntentClassifier
@@ -19,6 +20,7 @@ from app.agents.sql_agent.table_selector import tableSelector
 from app.agents.sql_agent.vectordb_functions.querying_vectordb import query_vectordb
 from app.agents.sql_agent.vectordb_functions.vectordb import add_to_vectordb
 from app.agents.sql_agent.log_summerizer import query_log_summerizer
+from app.agents.sql_agent.vectordb_functions.vectordb import add_to_vectordb
 
 # Helper function for sending WebSocket updates
 async def send_websocket_update(session_id, message):
@@ -73,21 +75,23 @@ async def sql_generator(state: State):
     db_info = get_cached_metadata(state.session_id)
     metadata = db_info["metadata"]
     sql_dialect = db_info["sql_dialect"]
+      
 
-
-       
-        
+    add_to_vectordb(state.session_id, str(metadata))
     #querying and run sql query
     top_n_tables = query_vectordb(state.user_prompt, 20)
+    logger.critical(f"top_n tables : {top_n_tables}")
     top_k_tables = table_selector.select_tables(top_n_tables, state.user_prompt, 20)
+    logger.critical(f"top_k tables : {top_k_tables}")
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect, top_k_tables)
+    logger.critical(f"generated sql query: {sql_query}")
 
     #store in veector db and log summerize
-    query_log_summerizer(state.session_id, metadata, sql_query)
+    query_log_summerizer(state.session_id, top_k_tables, sql_query)
 
     response = sql_query
     
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages,
         "metadata": metadata,
         "sql_dialect": sql_dialect,

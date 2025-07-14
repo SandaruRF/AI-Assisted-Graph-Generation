@@ -42,7 +42,7 @@ class LogSummerizer:
                 -Write possible business and functional purposes of the query
         """
         response = self.model.generate_content(prompt)
-        logger.info(f"Summerized logs: {response.text}")
+        #logger.info(f"Summerized logs: {response.text}")
         return response.text
 
 
@@ -50,8 +50,8 @@ def query_log_summerizer(session_id: str, metadata, sql_query):
     print("WTF session id ", session_id)
     previous_query_log = db["sql_query_log"]
     previous_queries = previous_query_log.find_one({"session_id": session_id})
-    logger.info("query log data retrever", previous_queries)
+    #logger.info(f"query log data retrever: {previous_queries}")
     log_summerizer = LogSummerizer()
     summerized_logs = log_summerizer.summarize_logs( metadata, sql_query)
-    logger.info("summerized queries", summerized_logs) 
+    #logger.info("summerized queries", summerized_logs) 
     add_to_vectordb(session_id,summerized_logs)
