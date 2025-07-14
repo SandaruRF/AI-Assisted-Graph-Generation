@@ -36,25 +36,7 @@ const Logo = styled("div")(({ theme }) => ({
   },
 }));
 
-// Custom styled button for SSO providers
-const SSOButton = styled(Button)(({ theme }) => ({
-  width: "100%",
-  padding: theme.spacing(1.5),
-  marginBottom: theme.spacing(1.5),
-  color: "#333",
-  justifyContent: "flex-start",
-  textAlign: "left",
-  border: "1px solid rgba(0,0,0,0.15)",
-  borderRadius: "4px",
-  backgroundColor: "#fff",
-  "&:hover": {
-    backgroundColor: "rgba(0,0,0,0.03)",
-    border: "1px solid rgba(0,0,0,0.25)",
-  },
-  "& .MuiButton-startIcon": {
-    marginRight: theme.spacing(2),
-  },
-}));
+
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -113,8 +95,7 @@ const LoginPage = () => {
           {/* Left side with background image */}
           <Grid
             item
-            xs={12}
-            md={6}
+            size={{ xs: 12, md: 6 }}
             sx={{
               position: "relative",
               backgroundImage:
@@ -207,8 +188,7 @@ const LoginPage = () => {
           {/* Right side with login form */}
           <Grid
             item
-            xs={12}
-            md={6}
+            size={{ xs: 12, md: 6 }}
             sx={{
               display: "flex",
               flexDirection: "column",

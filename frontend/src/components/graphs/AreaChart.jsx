@@ -1,121 +1,121 @@
 import React from "react";
 import Plot from "react-plotly.js";
 
-const mockData1 = [
-  { Month: "2025-01-01", Temperature: 4.2 },
-  { Month: "2025-02-01", Temperature: 5.0 },
-  { Month: "2025-03-01", Temperature: 9.3 },
-  { Month: "2025-04-01", Temperature: 14.8 },
-  { Month: "2025-05-01", Temperature: 19.6 },
-  { Month: "2025-06-01", Temperature: 24.1 },
-  { Month: "2025-07-01", Temperature: 27.3 },
-  { Month: "2025-08-01", Temperature: 26.8 },
-  { Month: "2025-09-01", Temperature: 22.5 },
-  { Month: "2025-10-01", Temperature: 16.0 },
-  { Month: "2025-11-01", Temperature: 9.4 },
-  { Month: "2025-12-01", Temperature: 5.1 },
-];
+// const mockData1 = [
+//   { Month: "2025-01-01", Temperature: 4.2 },
+//   { Month: "2025-02-01", Temperature: 5.0 },
+//   { Month: "2025-03-01", Temperature: 9.3 },
+//   { Month: "2025-04-01", Temperature: 14.8 },
+//   { Month: "2025-05-01", Temperature: 19.6 },
+//   { Month: "2025-06-01", Temperature: 24.1 },
+//   { Month: "2025-07-01", Temperature: 27.3 },
+//   { Month: "2025-08-01", Temperature: 26.8 },
+//   { Month: "2025-09-01", Temperature: 22.5 },
+//   { Month: "2025-10-01", Temperature: 16.0 },
+//   { Month: "2025-11-01", Temperature: 9.4 },
+//   { Month: "2025-12-01", Temperature: 5.1 },
+// ];
 
-const mockData2 = [
-  { month: "2025-01", region: "North", sales: 230 },
-  { month: "2025-01", region: "South", sales: 180 },
-  { month: "2025-01", region: "East", sales: 210 },
-  { month: "2025-02", region: "North", sales: 250 },
-  { month: "2025-02", region: "South", sales: 190 },
-  { month: "2025-02", region: "East", sales: 220 },
-  { month: "2025-03", region: "North", sales: 270 },
-  { month: "2025-03", region: "South", sales: 200 },
-  { month: "2025-03", region: "East", sales: 230 },
-];
+// const mockData2 = [
+//   { month: "2025-01", region: "North", sales: 230 },
+//   { month: "2025-01", region: "South", sales: 180 },
+//   { month: "2025-01", region: "East", sales: 210 },
+//   { month: "2025-02", region: "North", sales: 250 },
+//   { month: "2025-02", region: "South", sales: 190 },
+//   { month: "2025-02", region: "East", sales: 220 },
+//   { month: "2025-03", region: "North", sales: 270 },
+//   { month: "2025-03", region: "South", sales: 200 },
+//   { month: "2025-03", region: "East", sales: 230 },
+// ];
 
-const mockData3 = [
-  { date: "2024-01-01", temperature: 22.5, humidity: 65 },
-  { date: "2024-01-02", temperature: 23.1, humidity: 63 },
-  { date: "2024-01-03", temperature: 21.8, humidity: 67 },
-  { date: "2024-01-04", temperature: 20.3, humidity: 70 },
-  { date: "2024-01-05", temperature: 19.7, humidity: 72 },
-];
+// const mockData3 = [
+//   { date: "2024-01-01", temperature: 22.5, humidity: 65 },
+//   { date: "2024-01-02", temperature: 23.1, humidity: 63 },
+//   { date: "2024-01-03", temperature: 21.8, humidity: 67 },
+//   { date: "2024-01-04", temperature: 20.3, humidity: 70 },
+//   { date: "2024-01-05", temperature: 19.7, humidity: 72 },
+// ];
 
-const mockData4 = [
-  { Epoch: 1, Accuracy: 0.55 },
-  { Epoch: 2, Accuracy: 0.6 },
-  { Epoch: 3, Accuracy: 0.65 },
-  { Epoch: 4, Accuracy: 0.69 },
-  { Epoch: 5, Accuracy: 0.73 },
-  { Epoch: 6, Accuracy: 0.76 },
-  { Epoch: 7, Accuracy: 0.78 },
-  { Epoch: 8, Accuracy: 0.81 },
-  { Epoch: 9, Accuracy: 0.83 },
-  { Epoch: 10, Accuracy: 0.85 },
-];
+// const mockData4 = [
+//   { Epoch: 1, Accuracy: 0.55 },
+//   { Epoch: 2, Accuracy: 0.6 },
+//   { Epoch: 3, Accuracy: 0.65 },
+//   { Epoch: 4, Accuracy: 0.69 },
+//   { Epoch: 5, Accuracy: 0.73 },
+//   { Epoch: 6, Accuracy: 0.76 },
+//   { Epoch: 7, Accuracy: 0.78 },
+//   { Epoch: 8, Accuracy: 0.81 },
+//   { Epoch: 9, Accuracy: 0.83 },
+//   { Epoch: 10, Accuracy: 0.85 },
+// ];
 
-const mockData5 = [
-  { course: "Mathematics", averageScore: 78 },
-  { course: "Physics", averageScore: 72 },
-  { course: "Chemistry", averageScore: 75 },
-  { course: "Biology", averageScore: 80 },
-  { course: "Computer Science", averageScore: 88 },
-];
+// const mockData5 = [
+//   { course: "Mathematics", averageScore: 78 },
+//   { course: "Physics", averageScore: 72 },
+//   { course: "Chemistry", averageScore: 75 },
+//   { course: "Biology", averageScore: 80 },
+//   { course: "Computer Science", averageScore: 88 },
+// ];
 
-const mockData6 = [
-  { step: 1, load: 100 },
-  { step: 2, load: 210 },
-  { step: 3, load: 320 },
-  { step: 4, load: 430 },
-  { step: 5, load: 550 },
-  { step: 6, load: 670 },
-  { step: 7, load: 800 },
-  { step: 8, load: 930 },
-  { step: 9, load: 1060 },
-  { step: 10, load: 1200 },
-];
+// const mockData6 = [
+//   { step: 1, load: 100 },
+//   { step: 2, load: 210 },
+//   { step: 3, load: 320 },
+//   { step: 4, load: 430 },
+//   { step: 5, load: 550 },
+//   { step: 6, load: 670 },
+//   { step: 7, load: 800 },
+//   { step: 8, load: 930 },
+//   { step: 9, load: 1060 },
+//   { step: 10, load: 1200 },
+// ];
 
-const mockData7 = [
-  {
-    year: 2019,
-    region: "North America",
-    avgRevenue: 120000,
-    customerCount: 4000,
-  },
-  { year: 2019, region: "Europe", avgRevenue: 95000, customerCount: 3500 },
-  { year: 2019, region: "Asia", avgRevenue: 80000, customerCount: 5000 },
+// const mockData7 = [
+//   {
+//     year: 2019,
+//     region: "North America",
+//     avgRevenue: 120000,
+//     customerCount: 4000,
+//   },
+//   { year: 2019, region: "Europe", avgRevenue: 95000, customerCount: 3500 },
+//   { year: 2019, region: "Asia", avgRevenue: 80000, customerCount: 5000 },
 
-  {
-    year: 2020,
-    region: "North America",
-    avgRevenue: 125000,
-    customerCount: 4200,
-  },
-  { year: 2020, region: "Europe", avgRevenue: 98000, customerCount: 3600 },
-  { year: 2020, region: "Asia", avgRevenue: 85000, customerCount: 5300 },
+//   {
+//     year: 2020,
+//     region: "North America",
+//     avgRevenue: 125000,
+//     customerCount: 4200,
+//   },
+//   { year: 2020, region: "Europe", avgRevenue: 98000, customerCount: 3600 },
+//   { year: 2020, region: "Asia", avgRevenue: 85000, customerCount: 5300 },
 
-  {
-    year: 2021,
-    region: "North America",
-    avgRevenue: 130000,
-    customerCount: 4400,
-  },
-  { year: 2021, region: "Europe", avgRevenue: 102000, customerCount: 3700 },
-  { year: 2021, region: "Asia", avgRevenue: 89000, customerCount: 5500 },
+//   {
+//     year: 2021,
+//     region: "North America",
+//     avgRevenue: 130000,
+//     customerCount: 4400,
+//   },
+//   { year: 2021, region: "Europe", avgRevenue: 102000, customerCount: 3700 },
+//   { year: 2021, region: "Asia", avgRevenue: 89000, customerCount: 5500 },
 
-  {
-    year: 2022,
-    region: "North America",
-    avgRevenue: 135000,
-    customerCount: 4600,
-  },
-  { year: 2022, region: "Europe", avgRevenue: 105000, customerCount: 3900 },
-  { year: 2022, region: "Asia", avgRevenue: 94000, customerCount: 5700 },
+//   {
+//     year: 2022,
+//     region: "North America",
+//     avgRevenue: 135000,
+//     customerCount: 4600,
+//   },
+//   { year: 2022, region: "Europe", avgRevenue: 105000, customerCount: 3900 },
+//   { year: 2022, region: "Asia", avgRevenue: 94000, customerCount: 5700 },
 
-  {
-    year: 2023,
-    region: "North America",
-    avgRevenue: 140000,
-    customerCount: 4800,
-  },
-  { year: 2023, region: "Europe", avgRevenue: 110000, customerCount: 4100 },
-  { year: 2023, region: "Asia", avgRevenue: 99000, customerCount: 5900 },
-];
+//   {
+//     year: 2023,
+//     region: "North America",
+//     avgRevenue: 140000,
+//     customerCount: 4800,
+//   },
+//   { year: 2023, region: "Europe", avgRevenue: 110000, customerCount: 4100 },
+//   { year: 2023, region: "Asia", avgRevenue: 99000, customerCount: 5900 },
+// ];
 
 // num_1_cat_0_temp_1 --  mockData1
 // num_1_cat_1_temp_1_type_1 --  mockData2

@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.api.database import router as database_router
+from app.api.interactions_router import interactions_router
 from app.api.users import router as user_router
 from app.api.passwd_reset import router as passwd_reset_router
 from app.api.sql_database import router as database_connection_router
@@ -33,12 +34,8 @@ app.include_router(user_router, prefix="/api", tags=["User Management"])
 app.include_router(passwd_reset_router, prefix="/api", tags=["Password Reset"])
 app.include_router(database_connection_router, prefix="/sql", tags=["Database Connector"])
 app.include_router(stream_ws_router, tags=["Stream Web Socket"])
-
+app.include_router(interactions_router, prefix="/api", tags=["Graph Interactions"])
 @app.get("/")
 async def root():
     return {"message": "Welcome to VizGen API"}
-
-
-
-
 

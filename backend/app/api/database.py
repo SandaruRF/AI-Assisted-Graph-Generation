@@ -7,10 +7,14 @@ from app.models.connection_form import ConnectionData, ConnectionStringData
 from app.config import settings
 from app.utils.logging import logger
 from app.utils.auth import get_current_user
+from app.models.interaction_models import InteractionData
+
 
 client = MongoClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
 connections_collection = db["DatabaseDetails"]
+interactions_collection = db["GraphInteractions"]
+
 
 router = APIRouter()
 
@@ -123,3 +127,4 @@ async def delete_connection(connection_id: str):
             raise HTTPException(status_code=404, detail="Connection not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
