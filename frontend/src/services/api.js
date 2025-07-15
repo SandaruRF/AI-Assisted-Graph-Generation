@@ -293,3 +293,6 @@ export const updateUserProfile = async (
     setError("Failed to update user profile: " + error.message);
   }
 };
+
+
+//password resetting api for frontend
