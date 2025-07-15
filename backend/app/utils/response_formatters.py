@@ -2,8 +2,8 @@ from app.state import State
 
 def generate_metadata_response(state: State):
     """Generate response for metadata requests."""
-    if hasattr(state, 'metadata_info') and state.metadata_info:
-        return f"Dataset Metadata:\n{state.metadata_info}"
+    if hasattr(state, 'metadata') and state.metadata:
+        return f"Dataset Metadata:\n{state.metadata}"
     else:
         return "Metadata information is not available."
 
