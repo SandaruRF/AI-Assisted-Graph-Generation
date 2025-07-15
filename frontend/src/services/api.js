@@ -248,3 +248,46 @@ export const handleGitHubAuthCallback = async (code, Navigate) => {
       });
   }
 };
+
+//interaction data
+
+export const sendInteractionData = async ({
+  graphName,
+  exactTimeSpentSec,
+  exportCount,
+  likeCount,
+  dislikeCount,
+  panCount,
+}) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No authentication token found.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/interaction`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        graph_name: graphName,
+        time_spent: exactTimeSpentSec,
+        export_count: exportCount,
+        like_count: likeCount,
+        dislike_count: dislikeCount,
+        pan_count: panCount,
+      }),
+      keepalive: true,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Interaction send failed:", errorText);
+    }
+  } catch (err) {
+    console.error("Failed to send interaction:", err);
+  }
+};

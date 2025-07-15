@@ -13,7 +13,7 @@ from app.models.interaction_models import InteractionData
 client = MongoClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
 connections_collection = db["DatabaseDetails"]
-interactions_collection = db["GraphInteractions"]
+
 
 
 router = APIRouter()

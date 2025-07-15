@@ -42,7 +42,7 @@ const GraphInteractionTracker = ({
     if (!container) return;
 
 
-    const onMouseEnter = () => {
+const onMouseEnter = () => {
       setIsActive(true);
       lastActiveTimeRef.current = Date.now();
     };
@@ -82,7 +82,7 @@ const GraphInteractionTracker = ({
   }, [isActive]);
 
 
-  // Track pan/zoom interactions
+// Track pan/zoom interactions
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -149,9 +149,11 @@ const GraphInteractionTracker = ({
       const exactTimeSpentSec = Math.floor(exactTimeSpentMs / 1000);
 
 
-      fetch("http://localhost:8000/interaction", {
+      fetch("http://localhost:8000/api/interaction", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+     "Authorization": `Bearer ${localStorage.getItem("token")}`
+ },
         body: JSON.stringify({
           graph_name: graphName,
           time_spent: exactTimeSpentSec,
@@ -165,7 +167,7 @@ const GraphInteractionTracker = ({
     };
 
 
-    const handleBeforeUnload = () => {
+ const handleBeforeUnload = () => {
       if (isActive && lastActiveTimeRef.current) {
         totalTimeRef.current += Date.now() - lastActiveTimeRef.current;
         lastActiveTimeRef.current = null;
@@ -174,8 +176,8 @@ const GraphInteractionTracker = ({
     };
 
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
+const handleVisibilityChange = () => {
+if (document.visibilityState === "hidden") {
         if (isActive && lastActiveTimeRef.current) {
           totalTimeRef.current += Date.now() - lastActiveTimeRef.current;
           lastActiveTimeRef.current = null;

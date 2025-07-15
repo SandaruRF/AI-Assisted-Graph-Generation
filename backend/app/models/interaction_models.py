@@ -5,8 +5,7 @@ from typing import Optional
 class InteractionData(BaseModel):
     graph_name: str
     time_spent: int
-    export_count: int = 0
-    like_count: int = 0
-    dislike_count: int = 0
-    pan_count: int = 0
-    timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    export_count: int
+    like_count: int
+    dislike_count: int
+    pan_count: int
