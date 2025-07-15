@@ -111,14 +111,25 @@ const VisualizationPage = () => {
           setResultHistory((prev) => [...prev, data.result]);
         } else if (data.type === "error") {
           console.error("Error from server:", data.message);
-          setTracesHistory((prev) => [...prev, `Error: ${data.message}`]);
+          const currentIndex = latestIndexRef.current;
+          setTracesHistory((prev) => ({
+            ...prev,
+            [currentIndex]: [
+              ...(prev[currentIndex] || []),
+              `Error: ${data.message}`,
+            ],
+          }));
         } else {
           // Handle legacy format (your original format)
           if (data.result) {
             setResultHistory((prev) => [...prev, data.result]);
           }
           if (data.message) {
-            setTracesHistory((prev) => [...prev, data.message]);
+            const currentIndex = latestIndexRef.current;
+            setTracesHistory((prev) => ({
+              ...prev,
+              [currentIndex]: [...(prev[currentIndex] || []), data.message],
+            }));
           }
         }
       } catch (error) {
