@@ -1,7 +1,7 @@
 import asyncio
 from typing import List, Optional, Dict, Any, Literal
 from langchain_core.tools import tool
-from .tavily_search_manager import TavilySearchManager
+from app.agents.explanation_agent.tavily_search.tavily_search_manager import TavilySearchManager 
 
 # Domain-specific configurations
 DOMAIN_CONFIGS = {

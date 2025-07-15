@@ -2,8 +2,8 @@ from langchain_core.tools import tool
 from typing import List
 import asyncio
 
-from app.agents.explanation_agent.tavily_search_manager import TavilySearchManager 
-from app.agents.explanation_agent.tavily_universal_search import configure_search_by_type
+from app.agents.explanation_agent.tavily_search.tavily_search_manager import TavilySearchManager 
+from app.agents.explanation_agent.tavily_search.tavily_universal_search import configure_search_by_type
 
 @tool
 async def tavily_multi_query_search(

@@ -2,7 +2,7 @@ from langchain_core.tools import tool
 from typing import List, Optional, Dict, Any, Literal
 import asyncio
 
-from app.agents.explanation_agent.tavily_search_manager import TavilySearchManager
+from app.agents.explanation_agent.tavily_search.tavily_search_manager import TavilySearchManager
 
 @tool
 async def tavily_universal_search(
