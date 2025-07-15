@@ -1,5 +1,5 @@
 from langchain_core.tools import tool
-from typing import List, Optional, Dict, Any, Literal
+from typing import List
 import asyncio
 
 from app.agents.explanation_agent.tavily_search_manager import TavilySearchManager 
@@ -105,3 +105,38 @@ async def tavily_multi_query_search(
     output.append(f"- Answers generated: {len(combined_results['all_answers'])}")
     
     return "\n".join(output)
+
+
+# Example 2: Multi-query search
+queries = [
+    "company ABC financial performance",
+    "company ABC recent news",
+    "company ABC market position",
+    "company ABC competitors"
+]
+
+
+async def test_multi_query_search():
+    """Test multi-query Tavily search with financial intent."""
+    
+    print("Testing Multi-Query Financial Search...\n")
+
+    queries = [
+        "company ABC financial performance",
+        "company ABC recent news",
+        "company ABC market position",
+        "company ABC competitors"
+    ]
+
+    result = await tavily_multi_query_search.ainvoke({
+        "queries": queries,
+        "search_type": "financial",
+        "max_results_per_query": 8
+    })
+
+    print("Multi-Query Search Results:")
+    print(result)
+    print("\n" + "=" * 50 + "\n")
+
+if __name__ == "__main__":
+    asyncio.run(test_multi_query_search())

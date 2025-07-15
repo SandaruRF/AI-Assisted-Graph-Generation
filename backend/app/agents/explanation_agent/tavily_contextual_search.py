@@ -1,5 +1,6 @@
 from langchain_core.tools import tool
 from typing import List, Optional, Dict, Any, Literal
+import asyncio
 
 from app.agents.explanation_agent.tavily_search_manager import TavilySearchManager 
 from app.agents.explanation_agent.tavily_universal_search import configure_search_by_type
@@ -106,3 +107,22 @@ def format_contextual_results(results: List[Dict], queries: List[str], context_t
         output.append("")
     
     return "\n".join(output)
+
+
+async def test_contextual_search():
+    """Test contextual Tavily search with a primary query and context type."""
+    
+    print("Testing Contextual Search...\n")
+
+    result = await tavily_contextual_search.ainvoke({
+        "primary_query": "blockchain technology",
+        "context_type": "recent_events",
+        "depth": "advanced"
+    })
+
+    print("Contextual Search Results:")
+    print(result)
+    print("\n" + "=" * 50 + "\n")
+
+if __name__ == "__main__":
+    asyncio.run(test_contextual_search())

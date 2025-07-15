@@ -1,5 +1,6 @@
 from langchain_core.tools import tool
 from typing import List, Optional, Dict, Any, Literal
+import asyncio
 
 from app.agents.explanation_agent.tavily_search_manager import TavilySearchManager
 
@@ -144,6 +145,8 @@ def format_search_results(results: Dict[str, Any], search_type: str) -> str:
     # Add images if available
     if results.get("images"):
         formatted_output.append(f"\n**Related Images:** {len(results['images'])} images found")
+        for i, image_url in enumerate(results["images"], 1):
+            formatted_output.append(f"   {i}. {image_url}")
     
     # Add metadata
     formatted_output.append(f"\n**Search Metadata:**")
@@ -153,7 +156,6 @@ def format_search_results(results: Dict[str, Any], search_type: str) -> str:
     
     return "\n".join(formatted_output)
 
-import asyncio
 
 async def test_searches():
     """Test the search tool with proper async invoke syntax."""

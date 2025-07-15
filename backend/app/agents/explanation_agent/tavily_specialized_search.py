@@ -1,5 +1,3 @@
-# app/agents/explanation_agent/tavily_specialized_search.py
-
 import asyncio
 from typing import List, Optional, Dict, Any, Literal
 from langchain_core.tools import tool
@@ -384,6 +382,8 @@ def format_news_results(results: Dict[str, Any], time_period: str, include_break
     # Add images info
     if results.get("images"):
         formatted_output.append(f"📸 **Related Images:** {len(results['images'])} images available")
+        for i, image_url in enumerate(results["images"], 1):
+            formatted_output.append(f"   {i}. {image_url}")
     
     return "\n".join(formatted_output)
 
@@ -499,3 +499,64 @@ def extract_domain(url: str) -> str:
         return domain.replace("www.", "") if domain else "Unknown"
     except:
         return "Unknown"
+
+
+async def test_searches():
+    print("📰 Testing News Search...\n")
+
+    result = await tavily_news_search.ainvoke({
+        "query": "AI regulation by governments",
+        "time_period": "week",
+        "max_results": 10,
+        "include_breaking": True,
+        "region": "us"
+    })
+
+    print("News Search Results:")
+    print(result)
+    print("\n" + "=" * 50 + "\n")
+
+    print("📖 Testing Academic Search...\n")
+
+    result = await tavily_academic_search.ainvoke({
+        "query": "transformer architectures in NLP",
+        "field": "computer_science",
+        "publication_period": "year",
+        "max_results": 5,
+        "include_preprints": True
+    })
+
+    print("Academic Search Results:")
+    print(result)
+    print("\n" + "=" * 50 + "\n")
+
+    print("💼 Testing Financial Search...\n")
+
+    result = await tavily_financial_search.ainvoke({
+        "query": "Tesla Q2 earnings report",
+        "data_type": "company_info",
+        "time_horizon": "month",
+        "max_results": 8,
+        "include_regulatory": True
+    })
+
+    print("Financial Search Results:")
+    print(result)
+    print("\n" + "=" * 50 + "\n")
+
+    print("🏭 Testing Industry Search...\n")
+
+    result = await tavily_industry_search.ainvoke({
+        "query": "AI in retail automation",
+        "industry_sector": "retail",
+        "analysis_type": "innovation",
+        "max_results": 6,
+        "include_consulting": True
+    })
+
+    print("Industry Search Results:")
+    print(result)
+    print("\n" + "=" * 50 + "\n")
+
+if __name__ == "__main__":
+    asyncio.run(test_searches())
