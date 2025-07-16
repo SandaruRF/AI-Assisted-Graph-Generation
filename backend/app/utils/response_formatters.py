@@ -45,6 +45,7 @@ def generate_analysis_response(state: State, intents: list):
     if "explanation" in intents:
         if hasattr(state, 'explanation') and state.explanation:
             response_parts.append(f"**Detailed Explanation:**\n{state.explanation}")
+            response_parts.append(f"**Data Insights:**\n{state.response}")
         else:
             response_parts.append("**Explanation:**\nDetailed analysis explanation is being processed.")
     

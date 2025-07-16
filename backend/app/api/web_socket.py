@@ -50,6 +50,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     insights=[],
                     tool_results={},
                     insights_response="",
+                    search_plan={},
+                    search_results={},
                     explanation=""
                 )
                 

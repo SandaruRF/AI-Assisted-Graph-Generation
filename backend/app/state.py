@@ -26,4 +26,6 @@ class State(BaseModel):
     insights: List[str]
     tool_results: Dict[str, Any]
     insights_response: str
+    search_plan: Dict[str, Any]
+    search_results: Dict[str, Any]
     explanation: str

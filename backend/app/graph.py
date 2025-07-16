@@ -17,7 +17,9 @@ from app.agents.sql_agent.query_executor import execute_query_with_session
 from app.agents.visualization_agent.feature_extractor import process_and_clean_dataset
 from app.agents.visualization_agent.graph_recommender import get_graph_types, GraphRecommender
 from app.agents.explanation_agent.insight_generator import generate_insights
-
+from app.agents.explanation_agent.query_generator import InsightExplanationQueryGenerator
+from app.agents.explanation_agent.search_execution_engine import SearchExecutor
+from app.agents.explanation_agent.explanation_generator import generate_insight_explanation
 
 # Nodes
 async def intent_classifier(state: State):
@@ -148,36 +150,53 @@ async def insight_generator(state: State):
 
 
 async def explanation_generator(state: State):
-    """Generate explanations for detected insights with external context."""
-    update_message = "Generating explanations for insights..."
+    """Generate explanations for discovered insights with external context."""
+    update_message = "Planning search strategy for insight explanations..."
     messages = state.messages.copy()
+    messages.append(update_message)
+    
+    if state.session_id in connected_clients:
+        await send_websocket_update(state.session_id, update_message)
+    
+    # Initialize insight-focused search generator
+    search_generator = InsightExplanationQueryGenerator()
+    
+    # Generate search plan based on insights and database context
+    search_plan = await search_generator.generate_explanation_search_plan(
+        user_query=state.user_prompt,
+        insights=state.insights,
+        metadata=state.metadata,
+        tool_results=state.tool_results
+    )
+    
+    # Execute searches
+    update_message = "Searching for explanatory context..."
     messages.append(update_message)
     if state.session_id in connected_clients:
         await send_websocket_update(state.session_id, update_message)
-
-    # Extract insights and analysis results
-    insights = state.insights
-    tool_results = state.tool_results
-    user_prompt = state.user_prompt
     
-    # Identify explanation needs
-    explanation_queries = await identify_explanation_needs(insights, tool_results)
+    search_executor = SearchExecutor()
+    search_results = await search_executor.execute_search_plan(search_plan)
     
-    # Search external sources for context
-    external_context = await search_external_context(explanation_queries)
+    # Generate final explanation
+    update_message = "Generating comprehensive explanations..."
+    messages.append(update_message)
+    if state.session_id in connected_clients:
+        await send_websocket_update(state.session_id, update_message)
     
-    # Generate comprehensive explanations
-    explanations = await generate_contextual_explanations(
-        insights, tool_results, external_context, user_prompt
+    explanation = await generate_insight_explanation(
+        user_query=state.user_prompt,
+        insights=state.insights,
+        search_results=search_results,
+        metadata=state.metadata,
+        tool_results=state.tool_results
     )
-    
-    # Format and structure response
-    formatted_explanation = await format_explanation_response(explanations)
     
     return state.copy(update={
         "messages": messages,
-        "explanation": formatted_explanation,
-        "external_context": external_context
+        "search_plan": search_plan,
+        "search_results": search_results,
+        "explanation": explanation
     })
 
 
