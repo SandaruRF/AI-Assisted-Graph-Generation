@@ -1,0 +1,1551 @@
+{
+  "session_id": "297db5d5-21c6-4c43-838d-3dc1cce264f9",
+  "user_prompt": "plot number of albums sold per month",
+  "intents": [
+    "visualization"
+  ],
+  "metadata": {
+    "database_name": "chinook",
+    "tables": {
+      "album": {
+        "columns": [
+          "AlbumId",
+          "Title",
+          "ArtistId"
+        ],
+        "column_details": [
+          {
+            "column_name": "AlbumId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "Title",
+            "data_type": "text",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "ArtistId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "AlbumId"
+        ],
+        "foreign_keys": [
+          {
+            "local_column": "ArtistId",
+            "referenced_table": "artist",
+            "referenced_column": "ArtistId"
+          }
+        ],
+        "numeric_columns": [
+          "AlbumId",
+          "ArtistId"
+        ],
+        "categorical_columns": [],
+        "temporal_columns": [],
+        "text_columns": [
+          "Title"
+        ],
+        "row_count": 347,
+        "sample_data": {
+          "AlbumId": 1,
+          "Title": "For Those About To Rock We Salute You",
+          "ArtistId": 1
+        },
+        "has_sample_data": true
+      },
+      "artist": {
+        "columns": [
+          "ArtistId",
+          "Name"
+        ],
+        "column_details": [
+          {
+            "column_name": "ArtistId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "Name",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "ArtistId"
+        ],
+        "foreign_keys": [],
+        "numeric_columns": [
+          "ArtistId"
+        ],
+        "categorical_columns": [],
+        "temporal_columns": [],
+        "text_columns": [
+          "Name"
+        ],
+        "row_count": 275,
+        "sample_data": {
+          "ArtistId": 1,
+          "Name": "AC/DC"
+        },
+        "has_sample_data": true
+      },
+      "customer": {
+        "columns": [
+          "CustomerId",
+          "FirstName",
+          "LastName",
+          "Company",
+          "Address",
+          "City",
+          "State",
+          "Country",
+          "PostalCode",
+          "Phone",
+          "Fax",
+          "Email",
+          "SupportRepId"
+        ],
+        "column_details": [
+          {
+            "column_name": "CustomerId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "FirstName",
+            "data_type": "text",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "LastName",
+            "data_type": "text",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "Company",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Address",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "City",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "State",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Country",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "PostalCode",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Phone",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Fax",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Email",
+            "data_type": "text",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "SupportRepId",
+            "data_type": "integer",
+            "nullable": true,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "CustomerId"
+        ],
+        "foreign_keys": [
+          {
+            "local_column": "SupportRepId",
+            "referenced_table": "employee",
+            "referenced_column": "EmployeeId"
+          }
+        ],
+        "numeric_columns": [
+          "CustomerId",
+          "SupportRepId"
+        ],
+        "categorical_columns": [
+          "PostalCode"
+        ],
+        "temporal_columns": [],
+        "text_columns": [
+          "FirstName",
+          "LastName",
+          "Company",
+          "Address",
+          "City",
+          "State",
+          "Country",
+          "Phone",
+          "Fax",
+          "Email"
+        ],
+        "row_count": 59,
+        "sample_data": {
+          "CustomerId": 1,
+          "FirstName": "Lu\u00eds",
+          "LastName": "Gon\u00e7alves",
+          "Company": "Embraer - Empresa Brasileira de Aeron\u00e1utica S.A.",
+          "Address": "Av. Brigadeiro Faria Lima, 2170",
+          "City": "S\u00e3o Jos\u00e9 dos Campos",
+          "State": "SP",
+          "Country": "Brazil",
+          "PostalCode": "12227-000",
+          "Phone": "+55 (12) 3923-5555",
+          "Fax": "+55 (12) 3923-5566",
+          "Email": "luisg@embraer.com.br",
+          "SupportRepId": 3
+        },
+        "has_sample_data": true
+      },
+      "employee": {
+        "columns": [
+          "EmployeeId",
+          "LastName",
+          "FirstName",
+          "Title",
+          "ReportsTo",
+          "BirthDate",
+          "HireDate",
+          "Address",
+          "City",
+          "State",
+          "Country",
+          "PostalCode",
+          "Phone",
+          "Fax",
+          "Email"
+        ],
+        "column_details": [
+          {
+            "column_name": "EmployeeId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "LastName",
+            "data_type": "text",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "FirstName",
+            "data_type": "text",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "Title",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "ReportsTo",
+            "data_type": "integer",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "BirthDate",
+            "data_type": "datetime",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "HireDate",
+            "data_type": "datetime",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Address",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "City",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "State",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Country",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "PostalCode",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Phone",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Fax",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Email",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "EmployeeId"
+        ],
+        "foreign_keys": [
+          {
+            "local_column": "ReportsTo",
+            "referenced_table": "employee",
+            "referenced_column": "EmployeeId"
+          }
+        ],
+        "numeric_columns": [
+          "EmployeeId",
+          "ReportsTo"
+        ],
+        "categorical_columns": [
+          "PostalCode"
+        ],
+        "temporal_columns": [
+          "BirthDate",
+          "HireDate"
+        ],
+        "text_columns": [
+          "LastName",
+          "FirstName",
+          "Title",
+          "Address",
+          "City",
+          "State",
+          "Country",
+          "Phone",
+          "Fax",
+          "Email"
+        ],
+        "row_count": 8,
+        "sample_data": {
+          "EmployeeId": 2,
+          "LastName": "Edwards",
+          "FirstName": "Nancy",
+          "Title": "Sales Manager",
+          "ReportsTo": 1,
+          "BirthDate": "1958-12-08 00:00:00",
+          "HireDate": "2002-05-01 00:00:00",
+          "Address": "825 8 Ave SW",
+          "City": "Calgary",
+          "State": "AB",
+          "Country": "Canada",
+          "PostalCode": "T2P 2T3",
+          "Phone": "+1 (403) 262-3443",
+          "Fax": "+1 (403) 262-3322",
+          "Email": "nancy@chinookcorp.com"
+        },
+        "has_sample_data": true
+      },
+      "genre": {
+        "columns": [
+          "GenreId",
+          "Name"
+        ],
+        "column_details": [
+          {
+            "column_name": "GenreId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "Name",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "GenreId"
+        ],
+        "foreign_keys": [],
+        "numeric_columns": [
+          "GenreId"
+        ],
+        "categorical_columns": [],
+        "temporal_columns": [],
+        "text_columns": [
+          "Name"
+        ],
+        "row_count": 25,
+        "sample_data": {
+          "GenreId": 1,
+          "Name": "Rock"
+        },
+        "has_sample_data": true
+      },
+      "invoice": {
+        "columns": [
+          "InvoiceId",
+          "CustomerId",
+          "InvoiceDate",
+          "BillingAddress",
+          "BillingCity",
+          "BillingState",
+          "BillingCountry",
+          "BillingPostalCode",
+          "Total"
+        ],
+        "column_details": [
+          {
+            "column_name": "InvoiceId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "CustomerId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "InvoiceDate",
+            "data_type": "datetime",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "BillingAddress",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "BillingCity",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "BillingState",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "BillingCountry",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "BillingPostalCode",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Total",
+            "data_type": "float",
+            "nullable": false,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "InvoiceId"
+        ],
+        "foreign_keys": [
+          {
+            "local_column": "CustomerId",
+            "referenced_table": "customer",
+            "referenced_column": "CustomerId"
+          }
+        ],
+        "numeric_columns": [
+          "InvoiceId",
+          "CustomerId",
+          "Total"
+        ],
+        "categorical_columns": [
+          "BillingPostalCode"
+        ],
+        "temporal_columns": [
+          "InvoiceDate"
+        ],
+        "text_columns": [
+          "BillingAddress",
+          "BillingCity",
+          "BillingState",
+          "BillingCountry"
+        ],
+        "row_count": 412,
+        "sample_data": {
+          "InvoiceId": 1,
+          "CustomerId": 2,
+          "InvoiceDate": "2021-01-01 00:00:00",
+          "BillingAddress": "Theodor-Heuss-Stra\u00dfe 34",
+          "BillingCity": "Stuttgart",
+          "BillingState": null,
+          "BillingCountry": "Germany",
+          "BillingPostalCode": "70174",
+          "Total": "1.98"
+        },
+        "has_sample_data": true
+      },
+      "invoiceline": {
+        "columns": [
+          "InvoiceLineId",
+          "InvoiceId",
+          "TrackId",
+          "UnitPrice",
+          "Quantity"
+        ],
+        "column_details": [
+          {
+            "column_name": "InvoiceLineId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "InvoiceId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "TrackId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "UnitPrice",
+            "data_type": "float",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "Quantity",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "InvoiceLineId"
+        ],
+        "foreign_keys": [
+          {
+            "local_column": "TrackId",
+            "referenced_table": "track",
+            "referenced_column": "TrackId"
+          },
+          {
+            "local_column": "InvoiceId",
+            "referenced_table": "invoice",
+            "referenced_column": "InvoiceId"
+          }
+        ],
+        "numeric_columns": [
+          "InvoiceLineId",
+          "InvoiceId",
+          "TrackId",
+          "UnitPrice",
+          "Quantity"
+        ],
+        "categorical_columns": [],
+        "temporal_columns": [],
+        "text_columns": [],
+        "row_count": 2240,
+        "sample_data": {
+          "InvoiceLineId": 1,
+          "InvoiceId": 1,
+          "TrackId": 2,
+          "UnitPrice": "0.99",
+          "Quantity": 1
+        },
+        "has_sample_data": true
+      },
+      "track": {
+        "columns": [
+          "TrackId",
+          "Name",
+          "AlbumId",
+          "MediaTypeId",
+          "GenreId",
+          "Composer",
+          "Milliseconds",
+          "Bytes",
+          "UnitPrice"
+        ],
+        "column_details": [
+          {
+            "column_name": "TrackId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "Name",
+            "data_type": "text",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "AlbumId",
+            "data_type": "integer",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "MediaTypeId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "GenreId",
+            "data_type": "integer",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Composer",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "Milliseconds",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": false
+          },
+          {
+            "column_name": "Bytes",
+            "data_type": "integer",
+            "nullable": true,
+            "primary_key": false
+          },
+          {
+            "column_name": "UnitPrice",
+            "data_type": "float",
+            "nullable": false,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "TrackId"
+        ],
+        "foreign_keys": [
+          {
+            "local_column": "GenreId",
+            "referenced_table": "genre",
+            "referenced_column": "GenreId"
+          },
+          {
+            "local_column": "MediaTypeId",
+            "referenced_table": "mediatype",
+            "referenced_column": "MediaTypeId"
+          },
+          {
+            "local_column": "AlbumId",
+            "referenced_table": "album",
+            "referenced_column": "AlbumId"
+          }
+        ],
+        "numeric_columns": [
+          "TrackId",
+          "AlbumId",
+          "MediaTypeId",
+          "GenreId",
+          "Milliseconds",
+          "Bytes",
+          "UnitPrice"
+        ],
+        "categorical_columns": [],
+        "temporal_columns": [],
+        "text_columns": [
+          "Name",
+          "Composer"
+        ],
+        "row_count": 3503,
+        "sample_data": {
+          "TrackId": 1,
+          "Name": "For Those About To Rock (We Salute You)",
+          "AlbumId": 1,
+          "MediaTypeId": 1,
+          "GenreId": 1,
+          "Composer": "Angus Young, Malcolm Young, Brian Johnson",
+          "Milliseconds": 343719,
+          "Bytes": 11170334,
+          "UnitPrice": "0.99"
+        },
+        "has_sample_data": true
+      },
+      "mediatype": {
+        "columns": [
+          "MediaTypeId",
+          "Name"
+        ],
+        "column_details": [
+          {
+            "column_name": "MediaTypeId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "Name",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "MediaTypeId"
+        ],
+        "foreign_keys": [],
+        "numeric_columns": [
+          "MediaTypeId"
+        ],
+        "categorical_columns": [],
+        "temporal_columns": [],
+        "text_columns": [
+          "Name"
+        ],
+        "row_count": 5,
+        "sample_data": {
+          "MediaTypeId": 1,
+          "Name": "MPEG audio file"
+        },
+        "has_sample_data": true
+      },
+      "playlist": {
+        "columns": [
+          "PlaylistId",
+          "Name"
+        ],
+        "column_details": [
+          {
+            "column_name": "PlaylistId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "Name",
+            "data_type": "text",
+            "nullable": true,
+            "primary_key": false
+          }
+        ],
+        "primary_keys": [
+          "PlaylistId"
+        ],
+        "foreign_keys": [],
+        "numeric_columns": [
+          "PlaylistId"
+        ],
+        "categorical_columns": [],
+        "temporal_columns": [],
+        "text_columns": [
+          "Name"
+        ],
+        "row_count": 18,
+        "sample_data": {
+          "PlaylistId": 1,
+          "Name": "Music"
+        },
+        "has_sample_data": true
+      },
+      "playlisttrack": {
+        "columns": [
+          "PlaylistId",
+          "TrackId"
+        ],
+        "column_details": [
+          {
+            "column_name": "PlaylistId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          },
+          {
+            "column_name": "TrackId",
+            "data_type": "integer",
+            "nullable": false,
+            "primary_key": true
+          }
+        ],
+        "primary_keys": [
+          "PlaylistId",
+          "TrackId"
+        ],
+        "foreign_keys": [
+          {
+            "local_column": "TrackId",
+            "referenced_table": "track",
+            "referenced_column": "TrackId"
+          },
+          {
+            "local_column": "PlaylistId",
+            "referenced_table": "playlist",
+            "referenced_column": "PlaylistId"
+          }
+        ],
+        "numeric_columns": [
+          "PlaylistId",
+          "TrackId"
+        ],
+        "categorical_columns": [],
+        "temporal_columns": [],
+        "text_columns": [],
+        "row_count": 8715,
+        "sample_data": {
+          "PlaylistId": 1,
+          "TrackId": 1
+        },
+        "has_sample_data": true
+      }
+    },
+    "relationships": [
+      {
+        "from_table": "album",
+        "from_column": "ArtistId",
+        "to_table": "artist",
+        "to_column": "ArtistId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "customer",
+        "from_column": "SupportRepId",
+        "to_table": "employee",
+        "to_column": "EmployeeId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "employee",
+        "from_column": "ReportsTo",
+        "to_table": "employee",
+        "to_column": "EmployeeId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "invoice",
+        "from_column": "CustomerId",
+        "to_table": "customer",
+        "to_column": "CustomerId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "invoiceline",
+        "from_column": "TrackId",
+        "to_table": "track",
+        "to_column": "TrackId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "invoiceline",
+        "from_column": "InvoiceId",
+        "to_table": "invoice",
+        "to_column": "InvoiceId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "track",
+        "from_column": "GenreId",
+        "to_table": "genre",
+        "to_column": "GenreId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "track",
+        "from_column": "MediaTypeId",
+        "to_table": "mediatype",
+        "to_column": "MediaTypeId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "track",
+        "from_column": "AlbumId",
+        "to_table": "album",
+        "to_column": "AlbumId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "playlisttrack",
+        "from_column": "TrackId",
+        "to_table": "track",
+        "to_column": "TrackId",
+        "relationship_type": "foreign_key"
+      },
+      {
+        "from_table": "playlisttrack",
+        "from_column": "PlaylistId",
+        "to_table": "playlist",
+        "to_column": "PlaylistId",
+        "relationship_type": "foreign_key"
+      }
+    ],
+    "total_tables": 11,
+    "sample_data_available": true,
+    "connection_info": {
+      "dialect": "mysql",
+      "database_type": "Mysql"
+    }
+  },
+  "sql_query": "SELECT\n    DATE_FORMAT(i.InvoiceDate, '%Y-%m') AS SaleMonth,\n    COUNT(DISTINCT il.InvoiceLineId) AS AlbumsSold\nFROM InvoiceLine il\nJOIN Track t ON il.TrackId = t.TrackId\nJOIN Album a ON t.AlbumId = a.AlbumId\nJOIN Invoice i ON il.InvoiceId = i.InvoiceId\nGROUP BY SaleMonth\nORDER BY SaleMonth;",
+  "sql_dialect": "MYSQL",
+  "original_data": [
+    {
+      "SaleMonth": "2021-01",
+      "AlbumsSold": 36
+    },
+    {
+      "SaleMonth": "2021-02",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-03",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-04",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-05",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-06",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-07",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-08",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-09",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-10",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-11",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2021-12",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-01",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-02",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-03",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-04",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-05",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-06",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-07",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-08",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-09",
+      "AlbumsSold": 37
+    },
+    {
+      "SaleMonth": "2022-10",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-11",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2022-12",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-01",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-02",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-03",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-04",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-05",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-06",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-07",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-08",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-09",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-10",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2023-11",
+      "AlbumsSold": 24
+    },
+    {
+      "SaleMonth": "2023-12",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-01",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-02",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-03",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-04",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-05",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-06",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-07",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-08",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-09",
+      "AlbumsSold": 29
+    },
+    {
+      "SaleMonth": "2024-10",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-11",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2024-12",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-01",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-02",
+      "AlbumsSold": 28
+    },
+    {
+      "SaleMonth": "2025-03",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-04",
+      "AlbumsSold": 34
+    },
+    {
+      "SaleMonth": "2025-05",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-06",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-07",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-08",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-09",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-10",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-11",
+      "AlbumsSold": 38
+    },
+    {
+      "SaleMonth": "2025-12",
+      "AlbumsSold": 38
+    }
+  ],
+  "rearranged_data": [
+    {
+      "AlbumsSold": 36,
+      "SaleMonth": "2021-01"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-02"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-03"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-04"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-05"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-06"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-07"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-08"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-09"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-10"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-11"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2021-12"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-01"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-02"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-03"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-04"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-05"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-06"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-07"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-08"
+    },
+    {
+      "AlbumsSold": 37,
+      "SaleMonth": "2022-09"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-10"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-11"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2022-12"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-01"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-02"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-03"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-04"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-05"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-06"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-07"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-08"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-09"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-10"
+    },
+    {
+      "AlbumsSold": 24,
+      "SaleMonth": "2023-11"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2023-12"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-01"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-02"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-03"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-04"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-05"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-06"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-07"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-08"
+    },
+    {
+      "AlbumsSold": 29,
+      "SaleMonth": "2024-09"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-10"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-11"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2024-12"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-01"
+    },
+    {
+      "AlbumsSold": 28,
+      "SaleMonth": "2025-02"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-03"
+    },
+    {
+      "AlbumsSold": 34,
+      "SaleMonth": "2025-04"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-05"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-06"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-07"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-08"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-09"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-10"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-11"
+    },
+    {
+      "AlbumsSold": 38,
+      "SaleMonth": "2025-12"
+    }
+  ],
+  "num_numeric": 1,
+  "num_cat": 0,
+  "num_temporal": 1,
+  "num_rows": 60,
+  "cardinalities": {
+    "AlbumsSold": {
+      "unique_values": [
+        34,
+        36,
+        37,
+        38,
+        24,
+        28,
+        29
+      ],
+      "count": 7
+    },
+    "SaleMonth": {
+      "unique_values": [
+        "2023-03",
+        "2023-06",
+        "2022-03",
+        "2025-06",
+        "2024-07",
+        "2025-09",
+        "2021-04",
+        "2022-06",
+        "2021-02",
+        "2024-11",
+        "2024-02",
+        "2022-02",
+        "2024-08",
+        "2021-11",
+        "2025-10",
+        "2023-04",
+        "2025-01",
+        "2022-10",
+        "2022-12",
+        "2021-12",
+        "2024-03",
+        "2022-04",
+        "2021-05",
+        "2024-12",
+        "2022-09",
+        "2025-04",
+        "2023-08",
+        "2023-12",
+        "2025-03",
+        "2021-03",
+        "2025-02",
+        "2021-07",
+        "2021-09",
+        "2021-06",
+        "2024-04",
+        "2022-01",
+        "2023-02",
+        "2025-07",
+        "2025-08",
+        "2024-06",
+        "2023-01",
+        "2022-05",
+        "2023-10",
+        "2023-11",
+        "2022-08",
+        "2024-09",
+        "2022-07",
+        "2023-05",
+        "2025-12",
+        "2021-01",
+        "2021-10",
+        "2024-10",
+        "2024-05",
+        "2024-01",
+        "2022-11",
+        "2025-05",
+        "2025-11",
+        "2021-08",
+        "2023-07",
+        "2023-09"
+      ],
+      "count": 60
+    }
+  },
+  "suitable_graphs": [
+    "Area Chart",
+    "Box Plot",
+    "Bar Chart",
+    "Histogram",
+    "Line Chart",
+    "Scatter Plot"
+  ],
+  "ranked_graphs": "{\n  \"recommended_graphs\": [\"Line Chart\", \"Bar Chart\", \"Area Chart\"],\n  \"reason\": \"Line chart is best to show trends over time. Bar and Area charts can also represent the data, but might be less effective for showing the trend.\"\n}",
+  "response": "**Recommended Visualizations:**\n\u2022 Area Chart\n\u2022 Box Plot\n\u2022 Bar Chart\n\u2022 Histogram\n\u2022 Line Chart\n\u2022 Scatter Plot\n\n**Top Graph Recommendations:**\n{\n  \"recommended_graphs\": [\"Line Chart\", \"Bar Chart\", \"Area Chart\"],\n  \"reason\": \"Line chart is best to show trends over time. Bar and Area charts can also represent the data, but might be less effective for showing the trend.\"\n}",
+  "messages": [
+    "Generating SQL query...",
+    "Executing SQL query...",
+    "Preprocessing data...",
+    "Ranking suitable graphs...",
+    "Generating final response..."
+  ],
+  "insights": [],
+  "tool_results": {},
+  "insights_response": "",
+  "search_plan": {},
+  "search_results": {},
+  "explanation": ""
+}

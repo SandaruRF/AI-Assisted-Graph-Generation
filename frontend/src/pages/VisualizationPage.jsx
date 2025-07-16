@@ -192,6 +192,10 @@ const VisualizationPage = () => {
     }
   }, [promptHistory]);
 
+  useEffect(() => {
+    console.log("📊 Result History Updated:", resultHistory);
+  }, [resultHistory]);
+
   return (
     <>
       {isFirstSend && (

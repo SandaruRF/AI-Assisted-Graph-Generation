@@ -1,20 +1,68 @@
 import React from "react";
 import Plot from "react-plotly.js";
 
-// const mockData1 = [
-//   { Month: "2025-01-01", Temperature: 4.2 },
-//   { Month: "2025-02-01", Temperature: 5.0 },
-//   { Month: "2025-03-01", Temperature: 9.3 },
-//   { Month: "2025-04-01", Temperature: 14.8 },
-//   { Month: "2025-05-01", Temperature: 19.6 },
-//   { Month: "2025-06-01", Temperature: 24.1 },
-//   { Month: "2025-07-01", Temperature: 27.3 },
-//   { Month: "2025-08-01", Temperature: 26.8 },
-//   { Month: "2025-09-01", Temperature: 22.5 },
-//   { Month: "2025-10-01", Temperature: 16.0 },
-//   { Month: "2025-11-01", Temperature: 9.4 },
-//   { Month: "2025-12-01", Temperature: 5.1 },
-// ];
+const mockData1 = [
+  { NumberOfAlbumsSold: 22, SaleMonth: "2021-01" },
+  { NumberOfAlbumsSold: 16, SaleMonth: "2021-02" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2021-03" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2021-04" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2021-05" },
+  { NumberOfAlbumsSold: 21, SaleMonth: "2021-06" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2021-07" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2021-08" },
+  { NumberOfAlbumsSold: 18, SaleMonth: "2021-09" },
+  { NumberOfAlbumsSold: 21, SaleMonth: "2021-10" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2021-11" },
+  { NumberOfAlbumsSold: 19, SaleMonth: "2021-12" },
+  { NumberOfAlbumsSold: 14, SaleMonth: "2022-01" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2022-02" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2022-03" },
+  { NumberOfAlbumsSold: 27, SaleMonth: "2022-04" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2022-05" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2022-06" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2022-07" },
+  { NumberOfAlbumsSold: 18, SaleMonth: "2022-08" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2022-09" },
+  { NumberOfAlbumsSold: 19, SaleMonth: "2022-10" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2022-11" },
+  { NumberOfAlbumsSold: 18, SaleMonth: "2022-12" },
+  { NumberOfAlbumsSold: 19, SaleMonth: "2023-01" },
+  { NumberOfAlbumsSold: 18, SaleMonth: "2023-02" },
+  { NumberOfAlbumsSold: 18, SaleMonth: "2023-03" },
+  { NumberOfAlbumsSold: 13, SaleMonth: "2023-04" },
+  { NumberOfAlbumsSold: 16, SaleMonth: "2023-05" },
+  { NumberOfAlbumsSold: 19, SaleMonth: "2023-06" },
+  { NumberOfAlbumsSold: 23, SaleMonth: "2023-07" },
+  { NumberOfAlbumsSold: 15, SaleMonth: "2023-08" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2023-09" },
+  { NumberOfAlbumsSold: 19, SaleMonth: "2023-10" },
+  { NumberOfAlbumsSold: 7, SaleMonth: "2023-11" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2023-12" },
+  { NumberOfAlbumsSold: 21, SaleMonth: "2024-01" },
+  { NumberOfAlbumsSold: 22, SaleMonth: "2024-02" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2024-03" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2024-04" },
+  { NumberOfAlbumsSold: 18, SaleMonth: "2024-05" },
+  { NumberOfAlbumsSold: 19, SaleMonth: "2024-06" },
+  { NumberOfAlbumsSold: 16, SaleMonth: "2024-07" },
+  { NumberOfAlbumsSold: 16, SaleMonth: "2024-08" },
+  { NumberOfAlbumsSold: 12, SaleMonth: "2024-09" },
+  { NumberOfAlbumsSold: 27, SaleMonth: "2024-10" },
+  { NumberOfAlbumsSold: 23, SaleMonth: "2024-11" },
+  { NumberOfAlbumsSold: 16, SaleMonth: "2024-12" },
+  { NumberOfAlbumsSold: 16, SaleMonth: "2025-01" },
+  { NumberOfAlbumsSold: 16, SaleMonth: "2025-02" },
+  { NumberOfAlbumsSold: 17, SaleMonth: "2025-03" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2025-04" },
+  { NumberOfAlbumsSold: 22, SaleMonth: "2025-05" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2025-06" },
+  { NumberOfAlbumsSold: 20, SaleMonth: "2025-07" },
+  { NumberOfAlbumsSold: 18, SaleMonth: "2025-08" },
+  { NumberOfAlbumsSold: 19, SaleMonth: "2025-09" },
+  { NumberOfAlbumsSold: 19, SaleMonth: "2025-10" },
+  { NumberOfAlbumsSold: 14, SaleMonth: "2025-11" },
+  { NumberOfAlbumsSold: 18, SaleMonth: "2025-12" },
+];
 
 // const mockData2 = [
 //   { month: "2025-01", region: "North", sales: 230 },
@@ -149,10 +197,11 @@ import Plot from "react-plotly.js";
 const LineChart = ({ typeString, dataset }) => {
   const type = typeString;
   const mockData = dataset;
+  console.log("mockData", mockData);
   let chart = null;
 
   if (type === "num_1_cat_0_temp_1") {
-    const [xKey, yKey] = Object.keys(mockData[0]);
+    const [yKey, xKey] = Object.keys(mockData[0]);
     const x = mockData.map((item) => item[xKey]);
     const y = mockData.map((item) => item[yKey]);
 

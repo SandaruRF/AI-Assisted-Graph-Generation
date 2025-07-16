@@ -260,6 +260,10 @@ async def response_generator(state: State):
         # Handle visualization, insight, and explanation intents
         response = generate_analysis_response(state, intents)
 
+    print("=" * 50)
+    print(f"Original Data: {state.original_data}")
+    print("=" * 50)
+    
     return state.copy(update={
         "messages": messages,
         "response": response

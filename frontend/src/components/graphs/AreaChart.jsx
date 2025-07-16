@@ -151,7 +151,7 @@ const AreaChart = ({ typeString, dataset }) => {
       ],
     });
   } else if (type === "num_1_cat_0_temp_1") {
-    const [xKey, yKey] = Object.keys(mockData[0]);
+    const [yKey, xKey] = Object.keys(mockData[0]);
     charts.push({
       title: "Basic Area Simple Univariate Area Series (Cumulative Trend)",
       xAxisTitle: xKey,

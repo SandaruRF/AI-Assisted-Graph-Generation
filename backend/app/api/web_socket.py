@@ -56,6 +56,22 @@ async def websocket_endpoint(websocket: WebSocket):
                 )
                 
                 result = await workflow.ainvoke(state)  # Get final state
+
+                print("="*50)
+                print("📤 Final results sent to frontend:")
+                print(json.dumps(result, indent=2, cls=DecimalEncoder))
+                print("="*50)
+
+                print("📌 SQL Query:", result.get("sql_query"))
+                print("📌 Intents:", result.get("intents"))
+                print("📌 Response:", result.get("response"))
+                print("📌 Ranked Graphs:", result.get("ranked_graphs"))
+                print("="*50)
+
+                with open("final_result_output.json", "w", encoding="utf-8") as f:
+                    json.dump(result, f, indent=2, cls=DecimalEncoder)
+
+                print("✅ Final result saved to final_result_output.json")
                 
                 # Send final result
                 await websocket.send_text(json.dumps({
