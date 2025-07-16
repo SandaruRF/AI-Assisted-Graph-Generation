@@ -82,7 +82,7 @@ class SQLQueryGenerator:
         ### Output Format
 
         RESPONSE FORMAT:
-        1. SQL QUERY: The complete, executable query
+        Return ONLY the raw SQL query without any explanation, label, or formatting. Do NOT prefix it with "SQL QUERY:" or wrap it in markdown code blocks. Return just the plain SQL statement, ready for direct execution.
 
         ### Example 1 Inputs and Outputs
 
