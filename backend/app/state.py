@@ -9,7 +9,7 @@ class State(BaseModel):
     session_id: str
     user_prompt: str
     intents: List[str]
-    metadata: List[dict]
+    metadata: Dict[str, Any]
     sql_query: str
     sql_dialect: str
     original_data: List[dict]

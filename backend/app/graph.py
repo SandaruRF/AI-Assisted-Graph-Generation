@@ -11,6 +11,7 @@ from app.utils.response_formatters import (
 )
 from app.agents.intent_agent.intent_classifier import IntentClassifier
 from app.agents.system_agent.other_response import System
+from app.agents.system_agent.metadata_response import MetadataExpert
 from app.agents.sql_agent.metadata_retriever import get_cached_metadata
 from app.agents.sql_agent.sql_query_generator import SQLQueryGenerator
 from app.agents.sql_agent.query_executor import execute_query_with_session
@@ -42,7 +43,7 @@ async def metadata_retriever(state: State):
 
     return state.copy(update={
         "messages": messages,
-        "metadata": metadata
+        "metadata": metadata.get("metadata", {}),
     })
 
 
@@ -244,10 +245,14 @@ async def response_generator(state: State):
         system = System()
         response = system.other_response(state)
         
-    elif "metadata" in intents:
+    elif "schema" in intents:
         # Handle metadata requests
-        response = generate_metadata_response(state)
-        
+        metadata = MetadataExpert()
+        response = metadata.answer_schema_question(state)
+    elif "exploratory" in intents:
+        # Handle exploratory requests (data retrieval questions)
+        metadata = MetadataExpert()
+        response = metadata.answer_exploratory_question(state)
     elif "system" in intents:
         # Handle system requests
         response = generate_system_response(state)
@@ -259,10 +264,6 @@ async def response_generator(state: State):
     else:
         # Handle visualization, insight, and explanation intents
         response = generate_analysis_response(state, intents)
-
-    print("=" * 50)
-    print(f"Original Data: {state.original_data}")
-    print("=" * 50)
     
     return state.copy(update={
         "messages": messages,
@@ -275,8 +276,10 @@ async def route_intent(state: State):
     
     # Handle single intents first
     if len(intents) == 1:
-        if "metadata" in intents:
-            return "metadata"
+        if "schema" in intents:
+            return "schema"
+        elif "exploratory" in intents:
+            return "exploratory"
         elif "visualization" in intents:
             return "visualization"
         elif "insight" in intents:
@@ -300,6 +303,12 @@ async def route_intent(state: State):
             return "visualization_explanation"
         elif "insight" in intents and "explanation" in intents:
             return "insight_explanation"
+        elif "schema" in intents and "insight" in intents:
+            return "schema_insight"
+        elif "exploratory" in intents and "insight" in intents:
+            return "exploratory_insight"
+        elif "exploratory" in intents and "visualization" in intents:
+            return "exploratory_visualization"
         else:
             # Default fallback for other combinations
             return "other"
@@ -323,6 +332,8 @@ async def route_after_preprocessor(state: State):
         return "insight_generator"
     elif "explanation" in intents:
         return "insight_generator"
+    elif "exploratory" in intents:
+        return "response_generator"
     else:
         return "response_generator"
 
@@ -339,6 +350,15 @@ async def route_after_insight_generator(state: State):
     
     if "explanation" in intents:
         return "explanation_generator"
+    else:
+        return "response_generator"
+    
+async def route_after_metadata_retriever(state: State):
+    """Route after metadata retrieval based on remaining intents."""
+    intents = state.intents
+
+    if "insight" in intents or "explanation" in intents or "visualization" in intents:
+        return "sql_generator"
     else:
         return "response_generator"
 
@@ -364,7 +384,11 @@ builder.add_conditional_edges(
     "intent_classifier",
     route_intent, 
     {
-        "metadata": "metadata_retriever",
+        "schema": "metadata_retriever",            
+        "exploratory": "sql_generator",              
+        "schema_insight": "metadata_retriever",         
+        "exploratory_insight": "sql_generator",         
+        "exploratory_visualization": "sql_generator",    
         "visualization": "sql_generator",
         "insight": "sql_generator", 
         "explanation": "sql_generator",
@@ -378,9 +402,27 @@ builder.add_conditional_edges(
     },
 )
 
-# Linear path for SQL operations
+builder.add_conditional_edges(
+    "metadata_retriever",
+    route_after_metadata_retriever,
+    {
+        "sql_generator": "sql_generator",      # ← Continue with insight workflow
+        "response_generator": "response_generator",  # ← Just metadata query
+    }
+)
+
+# Exploratory queries: sql_generator -> sql_executor -> response_generator
 builder.add_edge("sql_generator", "sql_executor")
-builder.add_edge("sql_executor", "data_preprocessor")
+
+# Add conditional routing after sql_executor
+builder.add_conditional_edges(
+    "sql_executor",
+    lambda state: "response_generator" if "exploratory" in state.intents and len(state.intents) == 1 else "data_preprocessor",
+    {
+        "response_generator": "response_generator",  # Pure exploratory query
+        "data_preprocessor": "data_preprocessor",    # Need further processing
+    }
+)
 
 # Conditional routing after data preprocessing
 builder.add_conditional_edges(
@@ -414,7 +456,6 @@ builder.add_conditional_edges(
 )
 
 # Terminal edges
-builder.add_edge("metadata_retriever", "response_generator")
 builder.add_edge("explanation_generator", "response_generator")
 builder.add_edge("customizer", END)
 builder.add_edge("system", END)

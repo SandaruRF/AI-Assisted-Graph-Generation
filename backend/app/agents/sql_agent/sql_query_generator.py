@@ -44,7 +44,39 @@ class SQLQueryGenerator:
         - NEVER hallucinate schema elements or assumptions about data structure
         - If any required table or column is NOT in the provided schema, respond with: **SCHEMA_INSUFFICIENT**
 
+        ### STRING MATCHING & CASE SENSITIVITY
+
+        **CRITICAL: Always use case-insensitive matching for text searches unless explicitly requested otherwise.**
+
+        - **For MySQL**: Use `LOWER()` or `UPPER()` functions on both sides of comparison
+        - **For PostgreSQL**: Use `ILIKE` operator or `LOWER()`/`UPPER()` functions  
+        - **For SQLite**: Use `COLLATE NOCASE` or `LOWER()`/`UPPER()` functions
+
+        **Pattern Matching Guidelines:**
+        - `starts with 'x'` → `WHERE LOWER(column) LIKE LOWER('x%')`
+        - `ends with 'x'` → `WHERE LOWER(column) LIKE LOWER('%x')`
+        - `contains 'x'` → `WHERE LOWER(column) LIKE LOWER('%x%')`
+        - `equals 'x'` → `WHERE LOWER(column) = LOWER('x')`
+
+        **Dialect-Specific Case-Insensitive Implementations:**
+        - **MySQL**: `WHERE LOWER(column) LIKE LOWER('pattern%')`
+        - **PostgreSQL**: `WHERE column ILIKE 'pattern%'` or `WHERE LOWER(column) LIKE LOWER('pattern%')`
+        - **SQLite**: `WHERE column LIKE 'pattern%' COLLATE NOCASE`
+
         ### Query Construction Guidelines
+
+        FOR TEXT FILTERING & SEARCHING:
+        - **Default Behavior**: Apply case-insensitive matching unless user explicitly requests exact case matching
+        - **Partial Matches**: Use `LIKE` with `%` wildcards and case-insensitive functions
+        - **Exact Matches**: Still use case-insensitive comparison for better user experience
+        - **Multiple Criteria**: Maintain consistency in case handling across all WHERE conditions
+
+        FOR PATTERN RECOGNITION:
+        - Recognize natural language patterns:
+        - "names starting with..." → Case-insensitive LIKE with trailing %
+        - "contains..." → Case-insensitive LIKE with surrounding %
+        - "ends with..." → Case-insensitive LIKE with leading %
+        - "equals..." → Case-insensitive equality comparison
 
         FOR TEMPORAL ANALYSIS:
         - Use appropriate time grouping (day, week, month, quarter, year)
@@ -71,6 +103,54 @@ class SQLQueryGenerator:
             Eg: SELECT CONCAT(first_name, ' ', last_name) AS UserName FROM Users
         - When generating queries related to users/customers, if user/customer has more addresses (street, city, state, country), combine them into one column (Address).
             Eg: SELECT CONCAT(street, ', ', city, ', ', state, ', ', country) AS Address FROM Users
+
+        ### Query Robustness Enhancements
+
+        WHITESPACE HANDLING:
+        - Trim whitespace: `WHERE TRIM(LOWER(column)) = TRIM(LOWER('value'))`
+        - Handle multiple spaces in pattern matching
+
+        RESULT ORDERING:
+        - For text results, use case-insensitive sorting: `ORDER BY LOWER(column)`
+        - Maintain original case in SELECT but sort case-insensitively
+
+        NULL HANDLING:
+        - Add explicit NULL checks: `WHERE column IS NOT NULL AND LOWER(column) LIKE 'pattern%'`
+        - Prevent NULL-related errors in string operations
+
+        ### Common Query Patterns - Corrected Examples
+
+        **Scenario 1: Names starting with a letter**
+        - User Query: "list all artist names start with 'b'"
+        - Correct SQL: `SELECT Name FROM artist WHERE LOWER(Name) LIKE 'b%' ORDER BY LOWER(Name)`
+
+        **Scenario 2: Checking if name exists**
+        - User Query: "are there any artist whose name is billy?"
+        - Correct SQL: `SELECT Name FROM artist WHERE LOWER(Name) = 'billy'`
+
+        **Scenario 3: Names containing text**
+        - User Query: "artists whose name has 'harper'"
+        - Correct SQL: `SELECT Name FROM artist WHERE LOWER(Name) LIKE '%harper%'`
+
+        **Scenario 4: Exact matches**
+        - User Query: "find artists with name exactly 'AC/DC'"
+        - Correct SQL: `SELECT Name FROM artist WHERE LOWER(Name) = LOWER('AC/DC')`
+
+        **Scenario 5: When case sensitivity IS required**
+        - User Query: "find artists with name exactly 'ACDC' in capital letters"
+        - Correct SQL: `SELECT Name FROM artist WHERE Name = 'ACDC'`
+
+        ### Enhanced Error Handling
+
+        CONSISTENCY CHECKS:
+        - Verify that all text comparisons in the same query use consistent case handling
+        - If mixing case-sensitive and case-insensitive operations, add explanatory comments
+        - Test query logic against obvious expected results
+
+        RESULT VALIDATION:
+        - If a query pattern typically returns results but doesn't, consider case sensitivity issues
+        - For empty results on text searches, suggest case-insensitive alternatives
+        - Flag potential case-sensitivity problems in query generation
 
         ERROR HANDLING:
         - If query would produce empty results based on impossible constraints, add warning

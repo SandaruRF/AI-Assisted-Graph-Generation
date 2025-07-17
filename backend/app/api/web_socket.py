@@ -1,5 +1,6 @@
 from fastapi import WebSocket, WebSocketDisconnect, APIRouter, HTTPException
 import json
+import traceback
 
 from app.graph import State, workflow
 from app.utils.logging import logger
@@ -33,7 +34,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     session_id=session_id,
                     user_prompt=user_prompt,
                     intents=[],
-                    metadata=[],
+                    metadata={},
                     sql_query="",
                     sql_dialect="",
                     original_data=[],
@@ -87,6 +88,8 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 with open("frontend_payload.json", "w", encoding="utf-8") as f:
                     json.dump(frontend_payload, f, indent=2, cls=DecimalEncoder)
+                with open("backend_results.json", "w", encoding="utf-8") as f:
+                    json.dump(result, f, indent=2, cls=DecimalEncoder)
                 # Send final result
                 await websocket.send_text(json.dumps(frontend_payload, cls=DecimalEncoder))
                 
@@ -96,7 +99,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     "type": "error",
                     "message": error_message
                 }, cls=DecimalEncoder))
-                logger.error(f"Error processing request: {error_message}")
+                # logger.error(f"Error processing request: {error_message}")
+                logger.error("Error processing request: %s\n%s", str(e), traceback.format_exc())
                 
     except WebSocketDisconnect:
         if session_id and session_id in connected_clients:
