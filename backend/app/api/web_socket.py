@@ -85,6 +85,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     }
                 }
 
+                with open("frontend_payload.json", "w", encoding="utf-8") as f:
+                    json.dump(frontend_payload, f, indent=2, cls=DecimalEncoder)
                 # Send final result
                 await websocket.send_text(json.dumps(frontend_payload, cls=DecimalEncoder))
                 
