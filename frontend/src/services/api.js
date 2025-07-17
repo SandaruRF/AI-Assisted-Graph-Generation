@@ -249,7 +249,7 @@ export const handleGitHubAuthCallback = async (code, Navigate) => {
   }
 };
 
-//interaction data
+//interaction data post endpoint
 
 export const sendInteractionData = async ({
   graphName,
@@ -289,5 +289,35 @@ export const sendInteractionData = async ({
     }
   } catch (err) {
     console.error("Failed to send interaction:", err);
+  }
+};
+
+// Fetch interaction data 
+export const fetchUserInteractionData = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No authentication token found.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/user-interactions`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Fetching user interactions failed:", errorText);
+      return null;
+    }
+
+    const result = await response.json();
+    return result.user_interactions || [];
+  } catch (err) {
+    console.error("Failed to fetch user interaction data:", err);
+    return null;
   }
 };
