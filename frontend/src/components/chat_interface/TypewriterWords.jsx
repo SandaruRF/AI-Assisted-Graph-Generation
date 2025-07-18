@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-const TypewriterWords = ({ text, speed = 15 }) => {
+const TypewriterWords = ({ text, speed = 10 }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
 
