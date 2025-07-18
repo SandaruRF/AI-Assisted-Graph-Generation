@@ -55,6 +55,7 @@ class SearchExecutor:
                         "result": result
                     })
                 else:
+                    print("Error executing parallel search:", result)
                     results["search_results"].append({
                         "tool": search_calls[i]["tool"],
                         "query": search_calls[i]["query"],
@@ -73,6 +74,7 @@ class SearchExecutor:
                         "result": result
                     })
                 except Exception as e:
+                    print("Error executing sequential search:", result)
                     results["search_results"].append({
                         "tool": search_call["tool"],
                         "query": search_call["query"],

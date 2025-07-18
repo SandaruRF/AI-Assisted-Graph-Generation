@@ -52,51 +52,143 @@ class InsightExplanationQueryGenerator:
         Available Search Tools:
         {tools_info}
 
+        SYSTEM PARAMETER CONSTRAINTS (EXACT VALUES ONLY):
+        
+        tavily_industry_search:
+        - industry_sector: "technology" | "healthcare" | "finance" | "energy" | "retail" | "manufacturing"
+        - analysis_type: "trends" | "competitive" | "market_size" | "innovation"
+        - max_results: 1-10 | include_consulting: true/false
+        
+        tavily_contextual_search:
+        - context_type: "background" | "recent_events" | "expert_opinion" | "data_statistics" | "related_topics"
+        - depth: "basic" | "advanced"
+        - primary_query: string
+        
+        tavily_news_search:
+        - time_period: "day" | "week" | "month"
+        - max_results: 1-15 | include_breaking: true/false | region: string
+        
+        tavily_academic_search:
+        - field: "general" | "computer_science" | "medicine" | "business" | "engineering"
+        - publication_period: "year" | "month" | null
+        - max_results: 1-10 | include_preprints: true/false
+        
+        tavily_financial_search:
+        - data_type: "market_data" | "company_info" | "economic_indicators" | "analysis"
+        - time_horizon: "day" | "week" | "month" | "year" | null
+        - max_results: 1-12 | include_regulatory: true/false
+        
+        tavily_universal_search:
+        - search_type: "general" | "news" | "academic"
+        - depth: "basic" | "advanced"
+        - max_results: 1-10 | time_filter: "day" | "week" | "month" | "year"
+
+        INTELLIGENT DOMAIN MAPPING RULES:
+
+        For industry_sector parameter, map ANY domain to these 6 categories:
+        - Arts, Entertainment, Music, Media, Publishing, Gaming → "retail"
+        - Software, AI, Computing, Electronics, Telecommunications → "technology"  
+        - Pharmaceuticals, Biotechnology, Medical Devices, Life Sciences → "healthcare"
+        - Banking, Insurance, Investment, Cryptocurrency, Fintech → "finance"
+        - Oil, Gas, Solar, Wind, Nuclear, Utilities, Mining → "energy"
+        - Automotive, Aerospace, Construction, Chemicals, Food Production → "manufacturing"
+
+        For academic field parameter, map ANY domain to these 5 categories:
+        - Programming, AI, Data Science, Cybersecurity, Electronics → "computer_science"
+        - Biology, Chemistry, Physics, Environmental Science, Psychology → "medicine"
+        - Marketing, Management, Economics, Finance, Strategy → "business"
+        - Civil, Mechanical, Electrical, Chemical, Aerospace → "engineering"
+        - ALL OTHER DOMAINS → "general"
+
+        For analysis_type parameter, map ANY request to these 4 types:
+        - Market trends, seasonal patterns, growth patterns → "trends"
+        - Competitor analysis, market share, benchmarking → "competitive"
+        - Market size, revenue, industry value → "market_size"
+        - New technologies, disruption, R&D → "innovation"
+
+        For context_type parameter, map ANY request to these 5 types:
+        - Historical context, industry overview, fundamentals → "background"
+        - Current events, breaking news, recent developments → "recent_events"
+        - Analyst opinions, expert commentary, predictions → "expert_opinion"
+        - Statistics, data, metrics, research findings → "data_statistics"
+        - Adjacent topics, related industries, broader context → "related_topics"
+
+        UNIVERSAL QUERY CONSTRUCTION STRATEGY:
+
+        1. ALWAYS put specific domain terms in the query text, NEVER in parameters
+        2. For ANY domain not explicitly listed, find the closest category match
+        3. Use multiple search tools with different parameter combinations
+        4. Include domain-specific keywords in queries for better results
+        5. Default to "general" or "basic" values when uncertain
+
+        EXAMPLE MAPPINGS FOR COMMON DOMAINS:
+
+        Music Industry:
+        - industry_sector: "retail" (entertainment is retail)
+        - field: "business" (music business research)
+        - query: "music industry trends streaming revenue"
+
+        Biotechnology:
+        - industry_sector: "healthcare" (biotech is healthcare)
+        - field: "medicine" (biotech research)
+        - query: "biotechnology market trends drug development"
+
+        Nuclear Energy:
+        - industry_sector: "energy" (nuclear is energy)
+        - field: "engineering" (nuclear engineering)
+        - query: "nuclear energy industry trends reactor technology"
+
+        Artificial Intelligence:
+        - industry_sector: "technology" (AI is technology)
+        - field: "computer_science" (AI research)
+        - query: "artificial intelligence market trends machine learning"
+
+        Space Technology:
+        - industry_sector: "manufacturing" (aerospace manufacturing)
+        - field: "engineering" (aerospace engineering)
+        - query: "space technology industry trends satellite launch"
+
+        PARAMETER SELECTION ALGORITHM:
+
+        1. Identify the main domain from user query/insights
+        2. Map domain to closest available parameter using rules above
+        3. Select appropriate analysis focus based on insight type
+        4. Choose context type based on what explanation is needed
+        5. Construct query with domain-specific terms + analysis focus
+        6. Use fallback values: "retail"/"general"/"trends"/"background"/"basic"
+
         Original User Query: {user_query}
+        Database Context: {database_context}
+        Discovered Insights: {insights_summary}
+        Analysis Results: {analysis_results}
 
-        Database Context:
-        {database_context}
+        IMPORTANT: Return ONLY the JSON object. No markdown, no explanations.
 
-        Discovered Insights:
-        {insights_summary}
-
-        Analysis Results:
-        {analysis_results}
-
-        Your task:
-        1. Analyze the insights to identify what external context would help explain them
-        2. Consider the database domain to select appropriate search tools
-        3. Generate search queries that provide explanations for the discovered patterns/trends/anomalies
-        4. Focus on "why" these insights might be occurring and what they mean
-        5. Plan searches that complement the data findings with external knowledge
-
-        Output your response as a JSON object with this structure:
         {{
-            "analysis": "Brief analysis of what external context is needed to explain these insights",
+            "analysis": "Brief analysis of what external context is needed",
             "search_calls": [
                 {{
                     "tool": "tool_name",
-                    "query": "search query focused on explaining the insight",
+                    "query": "domain-specific search query with exact terms",
                     "parameters": {{
-                        "param1": "value1",
-                        "param2": "value2"
+                        "param1": "mapped_value_from_constraints",
+                        "param2": "mapped_value_from_constraints"
                     }},
-                    "reasoning": "Why this search will help explain the insight",
-                    "insight_connection": "Which specific insight this search addresses"
+                    "reasoning": "Why this search helps explain the insight",
+                    "insight_connection": "Which insight this addresses"
                 }}
             ],
-            "execution_strategy": "parallel" or "sequential",
+            "execution_strategy": "parallel",
             "expected_coverage": "What explanatory context will be provided"
         }}
 
-        Guidelines for insight explanations:
-        - Focus searches on explaining WHY patterns exist, not just describing them
-        - Consider industry trends, market conditions, or domain-specific factors
-        - Look for external validation of discovered patterns
-        - Search for expert opinions on similar findings
-        - Include recent developments that might explain temporal patterns
-        - Use domain-appropriate search tools (financial for finance data, academic for research, etc.)
-        - Limit to 3 search calls maximum for efficiency
+        Guidelines:
+        - Map ANY domain to available parameter values using rules above
+        - Put domain-specific terms in query text, not parameters
+        - Use multiple tools with different parameter combinations
+        - Default to safe fallback values when uncertain
+        - Limit to 3 search calls maximum
+        - Focus on explaining WHY patterns exist
         """)
         
         tools_info = self._format_tools_info()
@@ -114,8 +206,11 @@ class InsightExplanationQueryGenerator:
             )
         )
         
+        response = response.content.strip()
+        response = response.replace("```json", "").replace("```", "").strip()
         try:
-            search_plan = json.loads(response.content)
+            print("Generated search plan:", response)
+            search_plan = json.loads(response)
             return search_plan
         except json.JSONDecodeError:
             # Fallback to contextual search for insights
