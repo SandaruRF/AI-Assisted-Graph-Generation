@@ -1,33 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
-
-// A simple CSS-in-JS for the blinking cursor
-const cursorStyle = {
-  display: "inline-block",
-  width: "10px",
-  height: "1.2rem", // Match line height
-  backgroundColor: "currentColor",
-  animation: "blink 1s step-end infinite",
-  "@keyframes blink": {
-    "from, to": { opacity: 1 },
-    "50%": { opacity: 0 },
-  },
-  verticalAlign: "bottom", // Align with text
-};
+import remarkGfm from "remark-gfm";
 
 const TypewriterWords = ({ text, speed = 15 }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Use a more robust split to handle newlines and multiple spaces
+  // Better token splitting that preserves table structure
   const tokens = React.useMemo(() => {
     if (typeof text !== "string") {
       return JSON.stringify(text, null, 2).split(/(\s+)/);
     }
-    // This regex splits by spaces and newlines, keeping them in the array
-    // which is crucial for preserving Markdown structure.
-    return text.split(/(\s+)/);
+
+    // Split by lines first to preserve table structure
+    const lines = text.split("\n");
+    const result = [];
+
+    lines.forEach((line, index) => {
+      if (line.includes("|")) {
+        // Add entire table row at once
+        result.push(line);
+        if (index < lines.length - 1) result.push("\n");
+      } else {
+        // Split non-table lines normally
+        const lineTokens = line.split(/(\s+)/);
+        result.push(...lineTokens);
+        if (index < lines.length - 1) result.push("\n");
+      }
+    });
+
+    return result;
   }, [text]);
 
   const isTyping = currentIndex < tokens.length;
@@ -48,15 +51,30 @@ const TypewriterWords = ({ text, speed = 15 }) => {
       sx={{
         wordBreak: "break-word",
         lineHeight: 1.6,
+        "& table": {
+          borderCollapse: "collapse",
+          width: "100%",
+          margin: "20px 0",
+        },
+        "& th, & td": {
+          border: "1px solid #ddd",
+          padding: "12px",
+          textAlign: "left",
+        },
+        "& th": {
+          backgroundColor: "#f2f2f2",
+          fontWeight: "bold",
+        },
+        "& tr:nth-of-type(even)": {
+          backgroundColor: "#f9f9f9",
+        },
+        "& td:last-child": {
+          textAlign: "right",
+        },
       }}
     >
-      {/* This part remains the same and works correctly */}
-      <ReactMarkdown>{displayedText}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayedText}</ReactMarkdown>
 
-      {/* 
-        Render the video directly as a JSX element.
-        It's now a sibling to the ReactMarkdown component.
-      */}
       {isTyping && (
         <video
           ref={(el) => {

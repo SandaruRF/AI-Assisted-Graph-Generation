@@ -187,6 +187,7 @@ async def explanation_generator(state: State):
     
     explanation = await generate_insight_explanation(
         user_query=state.user_prompt,
+        data=state.original_data,
         insights=state.insights,
         search_results=search_results,
         metadata=state.metadata,
@@ -307,6 +308,8 @@ async def route_intent(state: State):
             return "schema_insight"
         elif "exploratory" in intents and "insight" in intents:
             return "exploratory_insight"
+        elif "exploratory" in intents and "explanation" in intents: 
+            return "exploratory_explanation"
         elif "exploratory" in intents and "visualization" in intents:
             return "exploratory_visualization"
         else:
@@ -361,6 +364,17 @@ async def route_after_metadata_retriever(state: State):
         return "sql_generator"
     else:
         return "response_generator"
+    
+def route_after_sql_executor(state: State):
+    """Route after SQL execution based on intent combination."""
+    intents = state.intents
+    
+    # Pure exploratory query (no other intents)
+    if "exploratory" in intents and len(intents) == 1:
+        return "response_generator"
+    
+    # All other combinations need data preprocessing
+    return "data_preprocessor"
 
 
 
@@ -388,7 +402,8 @@ builder.add_conditional_edges(
         "exploratory": "sql_generator",              
         "schema_insight": "metadata_retriever",         
         "exploratory_insight": "sql_generator",         
-        "exploratory_visualization": "sql_generator",    
+        "exploratory_visualization": "sql_generator",  
+        "exploratory_explanation": "sql_generator",  
         "visualization": "sql_generator",
         "insight": "sql_generator", 
         "explanation": "sql_generator",
@@ -417,7 +432,7 @@ builder.add_edge("sql_generator", "sql_executor")
 # Add conditional routing after sql_executor
 builder.add_conditional_edges(
     "sql_executor",
-    lambda state: "response_generator" if "exploratory" in state.intents and len(state.intents) == 1 else "data_preprocessor",
+    route_after_sql_executor,
     {
         "response_generator": "response_generator",  # Pure exploratory query
         "data_preprocessor": "data_preprocessor",    # Need further processing

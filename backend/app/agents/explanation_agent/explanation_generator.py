@@ -4,6 +4,7 @@ from typing import List, Dict, Any
 
 async def generate_insight_explanation(
     user_query: str,
+    data: List[Dict[str, Any]],
     insights: List[str],
     search_results: Dict[str, Any],
     metadata: Dict[str, Any],
@@ -19,6 +20,8 @@ async def generate_insight_explanation(
     Original Query: {user_query}
 
     Database Context: {database_context}
+                                              
+    Retrieved Data: {data}
 
     Discovered Insights:
     {insights}
@@ -55,6 +58,7 @@ async def generate_insight_explanation(
         prompt.format(
             user_query=user_query,
             database_context=database_context,
+            data=data,
             insights=insights_text,
             analysis_results=analysis_results,
             search_context=search_context
