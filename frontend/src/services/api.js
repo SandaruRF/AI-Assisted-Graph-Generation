@@ -295,4 +295,22 @@ export const updateUserProfile = async (
 };
 
 
-//password resetting api for frontend
+//graph exporter 
+export const handleExportClick = async (sessionId) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/export-db`, {
+      session_id: sessionId,
+    }, {
+      responseType: 'blob', // for binary file (zip)
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'external_db_export.zip';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Export failed:", error);
+  }
+};
