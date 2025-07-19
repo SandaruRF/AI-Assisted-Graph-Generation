@@ -1,6 +1,5 @@
 import axios from "axios";
 
-const API_BASE = "http://localhost:8000/api/graph";
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 const GITHUB_CLIENT_ID = process.env.REACT_APP_GITHUB_CLIENT_ID;
 //const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -250,14 +249,13 @@ export const handleGitHubAuthCallback = async (code, Navigate) => {
   }
 };
 
-
 export async function getGraphState() {
-  const res = await fetch(`${API_BASE}/state`);
+  const res = await fetch(`${API_BASE_URL}/api/graph/state`);
   return res.json();
 }
 
 export async function customizeGraph(prompt) {
-  const res = await fetch(`${API_BASE}/customize`, {
+  const res = await fetch(`${API_BASE_URL}/api/graph/customize`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt }),
