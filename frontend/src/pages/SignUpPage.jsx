@@ -104,8 +104,7 @@ const SignUpPage = () => {
           {/* Left side with background image */}
           <Grid
             item
-            xs={12}
-            md={6}
+            size={{ xs: 12, md: 6 }}
             sx={{
               position: "relative",
               backgroundImage:
@@ -198,8 +197,7 @@ const SignUpPage = () => {
           {/* Right side with login form */}
           <Grid
             item
-            xs={12}
-            md={6}
+            size={{ xs: 12, md: 6 }}
             sx={{
               display: "flex",
               overflow: "auto",
@@ -495,7 +493,7 @@ const SignUpPage = () => {
               >
                 Already have an account?
               </Typography>
-              <Link href="/signup" variant="body2" sx={{ color: "#0069FF" }}>
+              <Link href="/sign-up" variant="body2" sx={{ color: "#0069FF" }}>
                 Create one here
               </Link>
             </Box>
