@@ -18,6 +18,9 @@ import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
+
+
+
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -77,6 +80,7 @@ function App() {
               />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/github-callback" element={<GithubCallback />} />
+              
             </Routes>
           </Router>
         </div>
@@ -84,5 +88,7 @@ function App() {
     </div>
   );
 }
+
+
 
 export default App;

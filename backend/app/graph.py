@@ -28,7 +28,13 @@ async def intent_classifier(state: State):
     classifier = IntentClassifier()
     intents = classifier.classify_intent(state.user_prompt)
     print("Intent identification successfull.")
-    return state.copy(update={"intents": intents["intent"]})
+    
+    # Handle the case where intent might be a string instead of a list
+    intent_list = intents.get("intent", [])
+    if isinstance(intent_list, str):
+        intent_list = [intent_list]
+    
+    return state.copy(update={"intents": intent_list})
 
 
 async def metadata_retriever(state: State):
@@ -376,8 +382,7 @@ def route_after_sql_executor(state: State):
     # All other combinations need data preprocessing
     return "data_preprocessor"
 
-
-
+#Build workflow
 builder = StateGraph(State)
 builder.add_node("intent_classifier", intent_classifier)
 builder.add_node("metadata_retriever", metadata_retriever)

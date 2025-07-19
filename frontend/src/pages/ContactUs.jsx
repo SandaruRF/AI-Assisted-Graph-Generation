@@ -229,10 +229,7 @@ const ContactUs = () => {
     />
   </Grid>
 </Grid>
-
-
-
-    {/* Subject Field */}
+{/* Subject Field */}
     <Grid item xs={12} sx={{
       width: '100%',         // make the Grid cell itself full-width
       mt: 0.6               // space above the button
@@ -281,23 +278,11 @@ const ContactUs = () => {
       SUBMIT
     </Button>
   </Grid>
-
-
-
-
-  </Grid>
+ </Grid>
 </Box>
-
 </Box>
-
-
-
-
-
-
-      <Footer />
+<Footer />
     </Box>
   );
 };
-
 export default ContactUs;
