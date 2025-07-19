@@ -19,7 +19,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     FRONTEND_URL: str = os.getenv("FRONTEND_URL")
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY")
+    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY")
     MONGO_URI: str = os.getenv("MONGO_URI")
     DATABASE_NAME: str = os.getenv("DATABASE_NAME")
     SECRET_KEY: str = os.getenv("SECRET_KEY")

@@ -5,7 +5,7 @@ from app.utils.logging import logger
 
 class SQLQueryGenerator:
     def __init__(self):
-        genai.configure(api_key=settings.GEMINI_API_KEY)
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
     def generate_sql_query(self, nl_query: str, metadata: str, sql_dialect: str) -> str:

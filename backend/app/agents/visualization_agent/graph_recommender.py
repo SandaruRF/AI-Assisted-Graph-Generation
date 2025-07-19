@@ -40,7 +40,7 @@ def get_graph_types(num_numeric, num_cat, num_temporal):
 
 class GraphRecommender:
     def __init__(self):
-        genai.configure(api_key=settings.GEMINI_API_KEY)
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
     def recommend_graphs(self, state: State) -> Dict[str, Any]:
