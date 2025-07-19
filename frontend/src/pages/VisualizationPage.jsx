@@ -270,6 +270,11 @@ const VisualizationPage = () => {
     return graphHistory[promptIndex] || null;
   };
 
+  // Debug logging for result history (from dev branch)
+  useEffect(() => {
+    console.log("📊 Result History Updated:", resultHistory);
+  }, [resultHistory]);
+
   return (
     <>
       {isFirstSend && (

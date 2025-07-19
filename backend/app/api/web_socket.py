@@ -1,6 +1,7 @@
 from fastapi import WebSocket, WebSocketDisconnect, APIRouter, HTTPException
 import json
 import uuid
+import traceback
 
 from app.graph import State, workflow
 from app.utils.logging import logger
@@ -34,7 +35,9 @@ async def websocket_endpoint(websocket: WebSocket):
             # Check if this is a customization prompt
             is_custom = is_customization_prompt(user_prompt)
             print(f"Is customization prompt: {is_custom}")
+            
             if is_custom:
+                # Handle customization
                 await websocket.send_text(json.dumps({
                     "type": "update",
                     "message": "Processing customization request..."
@@ -121,7 +124,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         "type": "error",
                         "message": f"Customization error: {error_message}"
                     }, cls=DecimalEncoder))
-                    logger.error(f"Error processing customization: {error_message}")
+                    logger.error("Error processing customization: %s\n%s", error_message, traceback.format_exc())
                     
             else:
                 # Original graph generation workflow
@@ -139,7 +142,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         session_id=session_id,
                         user_prompt=user_prompt,
                         intents=[],
-                        metadata=[],
+                        metadata={},
                         sql_query="",
                         sql_dialect="",
                         original_data=[],
@@ -152,7 +155,13 @@ async def websocket_endpoint(websocket: WebSocket):
                         suitable_graphs=[],
                         ranked_graphs=[],
                         response="",
-                        messages=[]
+                        messages=[],
+                        insights=[],
+                        tool_results={},
+                        insights_response="",
+                        search_plan={},
+                        search_results={},
+                        explanation=""
                     )
                     
                     result = await workflow.ainvoke(state)  # Get final state
@@ -178,7 +187,9 @@ async def websocket_endpoint(websocket: WebSocket):
                         for key in ['session_id', 'user_prompt', 'intents', 'metadata', 'sql_query', 
                                    'sql_dialect', 'original_data', 'rearranged_data', 'num_numeric', 
                                    'num_cat', 'num_temporal', 'num_rows', 'cardinalities', 
-                                   'suitable_graphs', 'ranked_graphs', 'response', 'messages']:
+                                   'suitable_graphs', 'ranked_graphs', 'response', 'messages',
+                                   'insights', 'tool_results', 'insights_response', 'search_plan',
+                                   'search_results', 'explanation']:
                             try:
                                 if hasattr(result, key):
                                     result_dict[key] = getattr(result, key)
@@ -210,15 +221,24 @@ async def websocket_endpoint(websocket: WebSocket):
                         # Add the new graph state to history
                         graph_state_manager.add_new_graph(new_graph_state, session_id, current_prompt_index)
                     
-                    # Send final result
-                    await websocket.send_text(json.dumps({
+                    # Create frontend payload (from dev branch)
+                    frontend_payload = {
                         "type": "final",
                         "message": "Prompt processed successfully!",
                         "result": {
                             **result_dict,
                             "prompt_index": current_prompt_index
-                        },
-                    }, cls=DecimalEncoder))
+                        }
+                    }
+
+                    # Save debug files (from dev branch)
+                    with open("frontend_payload.json", "w", encoding="utf-8") as f:
+                        json.dump(frontend_payload, f, indent=2, cls=DecimalEncoder)
+                    with open("backend_results.json", "w", encoding="utf-8") as f:
+                        json.dump(result_dict, f, indent=2, cls=DecimalEncoder)
+                    
+                    # Send final result
+                    await websocket.send_text(json.dumps(frontend_payload, cls=DecimalEncoder))
                     
                 except Exception as e:
                     error_message = str(e)
@@ -226,7 +246,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         "type": "error",
                         "message": error_message
                     }, cls=DecimalEncoder))
-                    logger.error(f"Error processing request: {error_message}")
+                    logger.error("Error processing request: %s\n%s", error_message, traceback.format_exc())
                 
     except WebSocketDisconnect:
         if session_id and session_id in connected_clients:
