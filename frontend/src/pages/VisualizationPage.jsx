@@ -14,12 +14,15 @@ import TraceTimeline from "../components/chat_interface/TraceTimeline";
 import Graph from "../components/chat_interface/Graph";
 import VoiceSection from "../components/voice_input";
 import ChartRenderer from "../components/graphs/ChartRenderer";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+
 import IconButton from "@mui/material/IconButton";
 import { speakText } from "../components/TextSpeaker";
+import { motion } from "framer-motion";
 
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
-import GraphicEqIcon from "@mui/icons-material/GraphicEq"; // like a playing indicator
+import GraphicEqIcon from "@mui/icons-material/GraphicEq";
+
 
 
 
@@ -108,6 +111,8 @@ const VisualizationPage = () => {
   const socketRef = useRef(null);
   const latestIndexRef = useRef(0);
   const [speakingIndex, setSpeakingIndex] = useState(null);
+  const [pausedIndex, setPausedIndex] = useState(null);
+
 
 
   // Replace single graph state with graph history array
@@ -368,17 +373,37 @@ const VisualizationPage = () => {
                   {/* Speaker Button */}
                   <IconButton
                     onClick={() =>
-                      speakText(resultHistory[index].response,
-                        () => setSpeakingIndex(index),    // onStart
-                        () => setSpeakingIndex(null)      // onEnd
+                      speakText(
+                        resultHistory[index].response,
+                        () => {
+                          setSpeakingIndex(index);
+                          setPausedIndex(null);
+                        },
+                        () => {
+                          setSpeakingIndex(null);
+                          setPausedIndex(null);
+                        },
+                        () => {
+                          setPausedIndex(index);
+                        },
+                        () => {
+                          setPausedIndex(null);
+                        }
                       )
                     }
                     sx={{ ml: 1, mt: 1 }}
                     size="small"
                     aria-label="Read aloud"
                   >
-                    {speakingIndex === index ? (
-                      <GraphicEqIcon fontSize="small" />
+                    {speakingIndex === index && pausedIndex !== index ? (
+                      <motion.div
+                        animate={{ scale: [1, 1.3, 1] }}
+                        transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <GraphicEqIcon fontSize="small" />
+                      </motion.div>
+                    ) : pausedIndex === index ? (
+                      <VolumeOffIcon fontSize="small" />
                     ) : (
                       <VolumeUpIcon fontSize="small" />
                     )}

@@ -1,9 +1,8 @@
 {
   "session_id": "f6cb8b95-0302-4142-92af-894a9de742f5",
-  "user_prompt": "top 5 artists in bar graph",
+  "user_prompt": "top 5 artists names",
   "intents": [
-    "exploratory",
-    "visualization"
+    "exploratory"
   ],
   "metadata": {
     "database_name": "sakila",
@@ -1436,96 +1435,43 @@
       "database_type": "Mysql"
     }
   },
-  "sql_query": "SELECT \n    CONCAT(a.first_name, ' ', a.last_name) AS artist_name,\n    COUNT(fa.film_id) AS film_count\nFROM actor a\nJOIN film_actor fa ON a.actor_id = fa.actor_id\nGROUP BY artist_name\nORDER BY film_count DESC\nLIMIT 5;",
+  "sql_query": "SELECT\n  A.first_name,\n  A.last_name\nFROM actor AS A\nORDER BY\n  A.last_name\nLIMIT 5;",
   "sql_dialect": "MYSQL",
   "original_data": [
     {
-      "artist_name": "SUSAN DAVIS",
-      "film_count": 54
+      "first_name": "DEBBIE",
+      "last_name": "AKROYD"
     },
     {
-      "artist_name": "GINA DEGENERES",
-      "film_count": 42
+      "first_name": "CHRISTIAN",
+      "last_name": "AKROYD"
     },
     {
-      "artist_name": "WALTER TORN",
-      "film_count": 41
+      "first_name": "KIRSTEN",
+      "last_name": "AKROYD"
     },
     {
-      "artist_name": "MARY KEITEL",
-      "film_count": 40
+      "first_name": "KIM",
+      "last_name": "ALLEN"
     },
     {
-      "artist_name": "MATTHEW CARREY",
-      "film_count": 39
+      "first_name": "CUBA",
+      "last_name": "ALLEN"
     }
   ],
-  "rearranged_data": [
-    {
-      "film_count": 54,
-      "artist_name": "SUSAN DAVIS"
-    },
-    {
-      "film_count": 42,
-      "artist_name": "GINA DEGENERES"
-    },
-    {
-      "film_count": 41,
-      "artist_name": "WALTER TORN"
-    },
-    {
-      "film_count": 40,
-      "artist_name": "MARY KEITEL"
-    },
-    {
-      "film_count": 39,
-      "artist_name": "MATTHEW CARREY"
-    }
-  ],
-  "num_numeric": 1,
-  "num_cat": 1,
+  "rearranged_data": [],
+  "num_numeric": 0,
+  "num_cat": 0,
   "num_temporal": 0,
-  "num_rows": 5,
-  "cardinalities": {
-    "film_count": {
-      "unique_values": [
-        39,
-        40,
-        41,
-        42,
-        54
-      ],
-      "count": 5
-    },
-    "artist_name": {
-      "unique_values": [
-        "SUSAN DAVIS",
-        "MATTHEW CARREY",
-        "MARY KEITEL",
-        "WALTER TORN",
-        "GINA DEGENERES"
-      ],
-      "count": 5
-    }
-  },
-  "suitable_graphs": [
-    "Area Chart",
-    "Box Plot",
-    "Bar Chart",
-    "Grouped Histogram",
-    "Stacked Histogram",
-    "Line Chart",
-    "Pie Chart",
-    "Donut Chart"
-  ],
-  "ranked_graphs": "{\n  \"recommended_graphs\": [\"Bar Chart\", \"Pie Chart\", \"Donut Chart\"],\n  \"reason\": \"Bar Chart is suitable for comparing the values of 'film_count' across different 'artist_name' categories. Pie and Donut charts are also appropriate for showing the proportion of each artist's film count relative to the total.\"\n}",
-  "response": "The top 5 artists, based on the number of films they've acted in, are:\n\n| Artist Name      | Film Count |\n|-------------------|------------|\n| SUSAN DAVIS       | 54         |\n| GINA DEGENERES    | 42         |\n| WALTER TORN       | 41         |\n| MARY KEITEL       | 40         |\n| MATTHEW CARREY    | 39         |",
+  "num_rows": 0,
+  "cardinalities": {},
+  "suitable_graphs": [],
+  "ranked_graphs": [],
+  "response": "The top 5 artists' names, ordered alphabetically by last name, are:\n\n*   **DEBBIE AKROYD**\n*   **CHRISTIAN AKROYD**\n*   **KIRSTEN AKROYD**\n*   **KIM ALLEN**\n*   **CUBA ALLEN**",
   "messages": [
     "Generating SQL query...",
     "Validating SQL query...",
     "Executing SQL query...",
-    "Preprocessing data...",
-    "Ranking suitable graphs...",
     "Generating final response..."
   ],
   "insights": [],

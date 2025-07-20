@@ -1,6 +1,6 @@
 let currentUtterance = null;
 
-export const speakText = (text, onStart = () => {}, onEnd = () => {}) => {
+export const speakText = (text, onStart = () => {}, onEnd = () => {}, onPause = () => {}, onResume = () => {}) => {
   if (!("speechSynthesis" in window)) {
     alert("Sorry, your browser does not support text-to-speech.");
     return;
@@ -8,11 +8,14 @@ export const speakText = (text, onStart = () => {}, onEnd = () => {}) => {
 
   const synth = window.speechSynthesis;
 
+  // Toggle pause/resume if same text is already speaking
   if (synth.speaking && currentUtterance?.text === text) {
     if (synth.paused) {
       synth.resume();
+      onResume();
     } else {
       synth.pause();
+      onPause();
     }
     return;
   }
@@ -24,6 +27,8 @@ export const speakText = (text, onStart = () => {}, onEnd = () => {}) => {
 
   utterance.onstart = () => onStart();
   utterance.onend = () => onEnd();
+  utterance.onpause = () => onPause();
+  utterance.onresume = () => onResume();
   utterance.onerror = () => onEnd();
 
   utterance.rate = 1;
