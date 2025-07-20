@@ -1,5 +1,5 @@
 {
-  "session_id": "f6cb8b95-0302-4142-92af-894a9de742f5",
+  "session_id": "bf994901-77dc-4f99-9802-a67420346a73",
   "user_prompt": "top 5 artists names",
   "intents": [
     "exploratory"
@@ -483,14 +483,14 @@
         ],
         "foreign_keys": [
           {
-            "local_column": "address_id",
-            "referenced_table": "address",
-            "referenced_column": "address_id"
-          },
-          {
             "local_column": "manager_staff_id",
             "referenced_table": "staff",
             "referenced_column": "staff_id"
+          },
+          {
+            "local_column": "address_id",
+            "referenced_table": "address",
+            "referenced_column": "address_id"
           }
         ],
         "numeric_columns": [
@@ -1044,14 +1044,14 @@
         ],
         "foreign_keys": [
           {
-            "local_column": "store_id",
-            "referenced_table": "store",
-            "referenced_column": "store_id"
-          },
-          {
             "local_column": "film_id",
             "referenced_table": "film",
             "referenced_column": "film_id"
+          },
+          {
+            "local_column": "store_id",
+            "referenced_table": "store",
+            "referenced_column": "store_id"
           }
         ],
         "numeric_columns": [
@@ -1236,14 +1236,14 @@
             "referenced_column": "inventory_id"
           },
           {
-            "local_column": "staff_id",
-            "referenced_table": "staff",
-            "referenced_column": "staff_id"
-          },
-          {
             "local_column": "customer_id",
             "referenced_table": "customer",
             "referenced_column": "customer_id"
+          },
+          {
+            "local_column": "staff_id",
+            "referenced_table": "staff",
+            "referenced_column": "staff_id"
           }
         ],
         "numeric_columns": [
@@ -1303,16 +1303,16 @@
       },
       {
         "from_table": "store",
-        "from_column": "address_id",
-        "to_table": "address",
-        "to_column": "address_id",
+        "from_column": "manager_staff_id",
+        "to_table": "staff",
+        "to_column": "staff_id",
         "relationship_type": "foreign_key"
       },
       {
         "from_table": "store",
-        "from_column": "manager_staff_id",
-        "to_table": "staff",
-        "to_column": "staff_id",
+        "from_column": "address_id",
+        "to_table": "address",
+        "to_column": "address_id",
         "relationship_type": "foreign_key"
       },
       {
@@ -1373,16 +1373,16 @@
       },
       {
         "from_table": "inventory",
-        "from_column": "store_id",
-        "to_table": "store",
-        "to_column": "store_id",
+        "from_column": "film_id",
+        "to_table": "film",
+        "to_column": "film_id",
         "relationship_type": "foreign_key"
       },
       {
         "from_table": "inventory",
-        "from_column": "film_id",
-        "to_table": "film",
-        "to_column": "film_id",
+        "from_column": "store_id",
+        "to_table": "store",
+        "to_column": "store_id",
         "relationship_type": "foreign_key"
       },
       {
@@ -1415,16 +1415,16 @@
       },
       {
         "from_table": "rental",
-        "from_column": "staff_id",
-        "to_table": "staff",
-        "to_column": "staff_id",
+        "from_column": "customer_id",
+        "to_table": "customer",
+        "to_column": "customer_id",
         "relationship_type": "foreign_key"
       },
       {
         "from_table": "rental",
-        "from_column": "customer_id",
-        "to_table": "customer",
-        "to_column": "customer_id",
+        "from_column": "staff_id",
+        "to_table": "staff",
+        "to_column": "staff_id",
         "relationship_type": "foreign_key"
       }
     ],
@@ -1435,28 +1435,23 @@
       "database_type": "Mysql"
     }
   },
-  "sql_query": "SELECT\n  A.first_name,\n  A.last_name\nFROM actor AS A\nORDER BY\n  A.last_name\nLIMIT 5;",
+  "sql_query": "SELECT\n  CONCAT(A.first_name, ' ', A.last_name) AS artist_name\nFROM actor AS A\nORDER BY\n  artist_name\nLIMIT 5;",
   "sql_dialect": "MYSQL",
   "original_data": [
     {
-      "first_name": "DEBBIE",
-      "last_name": "AKROYD"
+      "artist_name": "ADAM GRANT"
     },
     {
-      "first_name": "CHRISTIAN",
-      "last_name": "AKROYD"
+      "artist_name": "ADAM HOPPER"
     },
     {
-      "first_name": "KIRSTEN",
-      "last_name": "AKROYD"
+      "artist_name": "AL GARLAND"
     },
     {
-      "first_name": "KIM",
-      "last_name": "ALLEN"
+      "artist_name": "ALAN DREYFUSS"
     },
     {
-      "first_name": "CUBA",
-      "last_name": "ALLEN"
+      "artist_name": "ALBERT JOHANSSON"
     }
   ],
   "rearranged_data": [],
@@ -1467,7 +1462,7 @@
   "cardinalities": {},
   "suitable_graphs": [],
   "ranked_graphs": [],
-  "response": "The top 5 artists' names, ordered alphabetically by last name, are:\n\n*   **DEBBIE AKROYD**\n*   **CHRISTIAN AKROYD**\n*   **KIRSTEN AKROYD**\n*   **KIM ALLEN**\n*   **CUBA ALLEN**",
+  "response": "Here are the top 5 artists' names, alphabetically ordered:\n\n*   ADAM GRANT\n*   ADAM HOPPER\n*   AL GARLAND\n*   ALAN DREYFUSS\n*   ALBERT JOHANSSON",
   "messages": [
     "Generating SQL query...",
     "Validating SQL query...",

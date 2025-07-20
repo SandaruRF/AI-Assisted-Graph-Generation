@@ -22,6 +22,7 @@ import { motion } from "framer-motion";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
+import CopyButton from "../components/CopyClipboard"; 
 
 
 
@@ -369,6 +370,9 @@ const VisualizationPage = () => {
                   }}
                 >
                   <TypewriterWords text={resultHistory[index].response} />
+                  <Stack direction="row" spacing={1} sx={{ mt: 1, alignItems: "center" }}>
+                  <CopyButton text={resultHistory[index].response} />
+
 
                   {/* Speaker Button */}
                   <IconButton
@@ -408,6 +412,7 @@ const VisualizationPage = () => {
                       <VolumeUpIcon fontSize="small" />
                     )}
                   </IconButton>
+                  </Stack>
 
 
                   {/* Get the graph state for this specific index */}
