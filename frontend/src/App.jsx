@@ -8,7 +8,7 @@ import EditDatabaseConnection from "./pages/EditDatabaseConnection";
 import VisualizationPage from "./pages/VisualizationPage";
 import SignUpPage from "./pages/SignUpPage";
 import NameEnterPage from "./pages/NameEnterPage";
-import  GithubCallback  from "./pages/GithubSignupHandling";
+import GithubCallback from "./pages/GithubSignupHandling";
 import Loading from "./components/Loading";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import LoginPage from "./pages/LoginPage";
@@ -17,6 +17,9 @@ import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+
+
+
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -38,7 +41,7 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignUpPage />} />
-              <Route path ="/sign-up-p2" element={<NameEnterPage />} />
+              <Route path="/sign-up-p2" element={<NameEnterPage />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -77,6 +80,7 @@ function App() {
               />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/github-callback" element={<GithubCallback />} />
+              
             </Routes>
           </Router>
         </div>
@@ -84,5 +88,7 @@ function App() {
     </div>
   );
 }
+
+
 
 export default App;

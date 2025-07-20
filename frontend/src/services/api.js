@@ -248,3 +248,17 @@ export const handleGitHubAuthCallback = async (code, Navigate) => {
       });
   }
 };
+
+export async function getGraphState() {
+  const res = await fetch(`${API_BASE_URL}/api/graph/state`);
+  return res.json();
+}
+
+export async function customizeGraph(prompt) {
+  const res = await fetch(`${API_BASE_URL}/api/graph/customize`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt }),
+  });
+  return res.json();
+}
