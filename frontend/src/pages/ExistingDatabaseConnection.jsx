@@ -18,10 +18,9 @@ import {
   fetchConnections,
   connectToDatabase,
   deleteConnection,
-  handleExportClick
+  handleExportClick,
 } from "../services/api";
 import NavigationBar from "../components/NavigationBar";
-import { connection } from "mongoose";
 
 const ExistingDatabaseConnection = () => {
   const navigate = useNavigate();
@@ -75,8 +74,6 @@ const ExistingDatabaseConnection = () => {
     );
     handleExportClick(data.sess);
   };
-  
-  
 
   return (
     <Box
@@ -248,7 +245,7 @@ const ExistingDatabaseConnection = () => {
                     }}
                     onClick={() => {
                       const sessionId = connectedSessions[connection._id];
-                      if(!sessionId){
+                      if (!sessionId) {
                         setError("Please connect to the database first.");
                         return;
                       }
