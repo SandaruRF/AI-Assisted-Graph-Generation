@@ -12,10 +12,6 @@ import {
   Grid,
   Divider,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   InputAdornment,
   CircularProgress,
   Card,
@@ -27,22 +23,17 @@ import {
   PhotoCamera,
   Edit,
   Cancel,
-  Visibility,
-  VisibilityOff,
   Person,
   Email,
   Phone,
   Lock,
   Update,
-  CheckCircle,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 import { fetchUserProfile, updateUserProfile } from "../services/api";
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+
 
 const UserProfile = () => {
   const [profileData, setProfileData] = useState({

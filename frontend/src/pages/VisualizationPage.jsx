@@ -12,6 +12,7 @@ import {
 import TypewriterWords from "../components/chat_interface/TypewriterWords";
 import TraceTimeline from "../components/chat_interface/TraceTimeline";
 import Graph from "../components/chat_interface/Graph";
+import VoiceSection from "../components/voice_input";
 import ChartRenderer from "../components/graphs/ChartRenderer"; // Add this import
 
 const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
@@ -102,7 +103,7 @@ const VisualizationPage = () => {
   const [graphHistory, setGraphHistory] = useState([]);
 
   useEffect(() => {
-    socketRef.current = new WebSocket("ws://localhost:8000/ws");
+    socketRef.current = new WebSocket("http://localhost:8000/ws");
 
     socketRef.current.onopen = () => {
       console.log("WebSocket connected successfully");
@@ -423,7 +424,7 @@ const VisualizationPage = () => {
           }}
         >
           <Box sx={{ width: "100%", maxWidth: "700px" }}>
-            <InputSection
+            <VoiceSection
               userPrompt={userPrompt}
               setUserPrompt={setUserPrompt}
               handleSend={handleSend}
