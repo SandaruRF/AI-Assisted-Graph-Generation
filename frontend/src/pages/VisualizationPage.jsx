@@ -1,87 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import {
-  Box,
-  Paper,
-  TextField,
-  Chip,
-  Stack,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Box, Paper, Stack, Typography, IconButton } from "@mui/material";
+import { FiEdit, FiCopy } from "react-icons/fi";
 import TypewriterWords from "../components/chat_interface/TypewriterWords";
 import TraceTimeline from "../components/chat_interface/TraceTimeline";
 import Graph from "../components/chat_interface/Graph";
-import ChartRenderer from "../components/graphs/ChartRenderer"; // Add this import
-
-const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
-  <Stack spacing={2}>
-    {/* Prompt Suggestions */}
-    <Stack direction="row" spacing={1} flexWrap="wrap">
-      {[
-        "Show sales trends for Q1",
-        "Find anomalies in customer behavior",
-        "Change title to 'Sales Analysis'", // Add customization examples
-        "Make it red",
-        "Switch to bar chart",
-      ].map((prompt, index) => (
-        <Chip
-          key={index}
-          label={prompt}
-          onClick={() => setUserPrompt(prompt)}
-          sx={{ borderRadius: "8px", mb: 1 }}
-        />
-      ))}
-    </Stack>
-
-    {/* Input & Send */}
-    <Paper
-      sx={{
-        p: 2,
-        borderRadius: "16px",
-        boxShadow: 3,
-      }}
-    >
-      <TextField
-        fullWidth
-        placeholder="What would you like to explore today?"
-        value={userPrompt}
-        onChange={(e) => setUserPrompt(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && userPrompt.trim() !== "") {
-            handleSend();
-          }
-        }}
-        variant="outlined"
-        InputProps={{
-          sx: {
-            borderRadius: "8px",
-            "& fieldset": { borderColor: "divider" },
-          },
-        }}
-      />
-
-      {/* Send Button */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button
-          onClick={handleSend}
-          variant="contained"
-          disabled={userPrompt.trim() === ""}
-          sx={{
-            mt: 2,
-            borderRadius: "8px",
-            textTransform: "none",
-            transition: "all 0.3s ease-in-out",
-            opacity: userPrompt.trim() === "" ? 0.7 : 1,
-            transform: userPrompt.trim() === "" ? "scale(0.98)" : "scale(1)",
-          }}
-        >
-          Send
-        </Button>
-      </Box>
-    </Paper>
-  </Stack>
-);
+import ChartRenderer from "../components/graphs/ChartRenderer";
+import InputSection from "../components/chat_interface/InputSection";
 
 const VisualizationPage = () => {
   const location = useLocation();
@@ -90,6 +15,7 @@ const VisualizationPage = () => {
     `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; // Add fallback
   const [userPrompt, setUserPrompt] = useState("");
   const [promptHistory, setPromptHistory] = useState([]);
+  const [hoveredPromptIndex, setHoveredPromptIndex] = useState(null);
   const [resultHistory, setResultHistory] = useState([]);
   const [tracesHistory, setTracesHistory] = useState({}); // Keep as object
   const [isFirstSend, setIsFirstSend] = useState(true);
@@ -244,6 +170,37 @@ const VisualizationPage = () => {
     }
   };
 
+  // Add these handler functions in your VisualizationPage component
+  const handleEditPrompt = (index, prompt) => {
+    console.log(`Edit prompt at index ${index}:`, prompt);
+    // Set the prompt in the input field for editing
+    setUserPrompt(prompt);
+    // Optional: Scroll to input section
+    const inputSection = document.querySelector("[data-input-section]");
+    if (inputSection) {
+      inputSection.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  const handleCopyPrompt = async (prompt) => {
+    try {
+      await navigator.clipboard.writeText(prompt);
+      console.log("Prompt copied to clipboard:", prompt);
+
+      // Optional: Show success feedback
+      // You can add a snackbar or tooltip here
+    } catch (error) {
+      console.error("Failed to copy prompt:", error);
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = prompt;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+    }
+  };
+
   useEffect(() => {
     if (lastPromptRef.current && scrollContainerRef.current) {
       const container = scrollContainerRef.current;
@@ -315,18 +272,103 @@ const VisualizationPage = () => {
           {promptHistory.map((prompt, index) => (
             <React.Fragment key={index}>
               {/* Prompt */}
-              <Paper
-                ref={index === promptHistory.length - 1 ? lastPromptRef : null}
+              <Box
+                onMouseEnter={() => setHoveredPromptIndex(index)}
+                onMouseLeave={() => setHoveredPromptIndex(null)}
                 sx={{
-                  p: 2,
-                  borderRadius: "12px",
-                  backgroundColor: "#f5f5f5",
-                  maxWidth: "100%",
-                  alignSelf: "flex-start",
+                  position: "relative",
+                  width: "fit-content",
+                  maxWidth: "66%",
+                  // Invisible padding extends hover area
+                  p: 4, // Adjust this value to control hover area size
+                  m: -2, // Negative margin prevents layout shift
+                  borderRadius: "16px", // Slightly larger than Paper's borderRadius
+                  transition: "all 0.2s ease-in-out",
+                  "&:hover": {
+                    "& > .paper-component": {
+                      backgroundColor: "#eeeeee",
+                      transform: "translateY(-1px)",
+                      boxShadow: 1,
+                    },
+                  },
                 }}
               >
-                <Typography>{prompt}</Typography>
-              </Paper>
+                <Paper
+                  ref={
+                    index === promptHistory.length - 1 ? lastPromptRef : null
+                  }
+                  className="paper-component" // Add class for targeting
+                  sx={{
+                    p: 2,
+                    borderRadius: "12px",
+                    ml: -4,
+                    backgroundColor: "#f5f5f5",
+                    maxWidth: "100%",
+                    alignSelf: "flex-start",
+                    transition: "all 0.2s ease-in-out",
+                    // Remove hover styles from Paper - now handled by wrapper
+                  }}
+                >
+                  <Typography>{prompt}</Typography>
+                </Paper>
+
+                {/* Hover Icons */}
+                {hoveredPromptIndex === index && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 16,
+                      display: "flex",
+                      gap: 0.5,
+                      mt: -3.5,
+                      ml: -2,
+                      animation: "fadeIn 0.2s ease-in-out",
+                      "@keyframes fadeIn": {
+                        from: { opacity: 0, transform: "translateY(-4px)" },
+                        to: { opacity: 1, transform: "translateY(0)" },
+                      },
+                    }}
+                  >
+                    <IconButton
+                      size="small"
+                      onClick={() => handleEditPrompt(index, prompt)}
+                      sx={{
+                        color: "grey.600",
+                        backgroundColor: "transparent",
+                        borderRadius: "4px",
+                        boxShadow: "none",
+                        "&:hover": {
+                          backgroundColor: "primary.50",
+                        },
+                        width: 28,
+                        height: 28,
+                        mr: -0.5,
+                      }}
+                    >
+                      <FiEdit size={14} /> {/* Clean, no built-in styling */}
+                    </IconButton>
+
+                    <IconButton
+                      size="small"
+                      onClick={() => handleCopyPrompt(prompt)}
+                      sx={{
+                        color: "grey.600",
+                        backgroundColor: "transparent",
+                        borderRadius: "4px",
+                        boxShadow: "none",
+                        "&:hover": {
+                          backgroundColor: "success.50",
+                        },
+                        width: 28,
+                        height: 28,
+                      }}
+                    >
+                      <FiCopy size={14} /> {/* Clean, no built-in styling */}
+                    </IconButton>
+                  </Box>
+                )}
+              </Box>
 
               {/* Traces */}
               <TraceTimeline messages={tracesHistory[index] || []} />
