@@ -2,10 +2,11 @@
   "type": "final",
   "message": "Prompt processed successfully!",
   "result": {
-    "session_id": "579c3268-7696-490e-b027-7ca7cb5c7e47",
-    "user_prompt": "show me top 5 albems",
+    "session_id": "f6cb8b95-0302-4142-92af-894a9de742f5",
+    "user_prompt": "top 5 artists in bar graph",
     "intents": [
-      "exploratory"
+      "exploratory",
+      "visualization"
     ],
     "metadata": {
       "database_name": "sakila",
@@ -486,14 +487,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "manager_staff_id",
-              "referenced_table": "staff",
-              "referenced_column": "staff_id"
-            },
-            {
               "local_column": "address_id",
               "referenced_table": "address",
               "referenced_column": "address_id"
+            },
+            {
+              "local_column": "manager_staff_id",
+              "referenced_table": "staff",
+              "referenced_column": "staff_id"
             }
           ],
           "numeric_columns": [
@@ -602,14 +603,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "store_id",
-              "referenced_table": "store",
-              "referenced_column": "store_id"
-            },
-            {
               "local_column": "address_id",
               "referenced_table": "address",
               "referenced_column": "address_id"
+            },
+            {
+              "local_column": "store_id",
+              "referenced_table": "store",
+              "referenced_column": "store_id"
             }
           ],
           "numeric_columns": [
@@ -876,14 +877,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "actor_id",
-              "referenced_table": "actor",
-              "referenced_column": "actor_id"
-            },
-            {
               "local_column": "film_id",
               "referenced_table": "film",
               "referenced_column": "film_id"
+            },
+            {
+              "local_column": "actor_id",
+              "referenced_table": "actor",
+              "referenced_column": "actor_id"
             }
           ],
           "numeric_columns": [
@@ -1135,6 +1136,11 @@
           ],
           "foreign_keys": [
             {
+              "local_column": "staff_id",
+              "referenced_table": "staff",
+              "referenced_column": "staff_id"
+            },
+            {
               "local_column": "rental_id",
               "referenced_table": "rental",
               "referenced_column": "rental_id"
@@ -1143,11 +1149,6 @@
               "local_column": "customer_id",
               "referenced_table": "customer",
               "referenced_column": "customer_id"
-            },
-            {
-              "local_column": "staff_id",
-              "referenced_table": "staff",
-              "referenced_column": "staff_id"
             }
           ],
           "numeric_columns": [
@@ -1234,9 +1235,9 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "customer_id",
-              "referenced_table": "customer",
-              "referenced_column": "customer_id"
+              "local_column": "inventory_id",
+              "referenced_table": "inventory",
+              "referenced_column": "inventory_id"
             },
             {
               "local_column": "staff_id",
@@ -1244,9 +1245,9 @@
               "referenced_column": "staff_id"
             },
             {
-              "local_column": "inventory_id",
-              "referenced_table": "inventory",
-              "referenced_column": "inventory_id"
+              "local_column": "customer_id",
+              "referenced_table": "customer",
+              "referenced_column": "customer_id"
             }
           ],
           "numeric_columns": [
@@ -1306,13 +1307,20 @@
         },
         {
           "from_table": "store",
+          "from_column": "address_id",
+          "to_table": "address",
+          "to_column": "address_id",
+          "relationship_type": "foreign_key"
+        },
+        {
+          "from_table": "store",
           "from_column": "manager_staff_id",
           "to_table": "staff",
           "to_column": "staff_id",
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "store",
+          "from_table": "staff",
           "from_column": "address_id",
           "to_table": "address",
           "to_column": "address_id",
@@ -1323,13 +1331,6 @@
           "from_column": "store_id",
           "to_table": "store",
           "to_column": "store_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "staff",
-          "from_column": "address_id",
-          "to_table": "address",
-          "to_column": "address_id",
           "relationship_type": "foreign_key"
         },
         {
@@ -1348,16 +1349,16 @@
         },
         {
           "from_table": "film_actor",
-          "from_column": "actor_id",
-          "to_table": "actor",
-          "to_column": "actor_id",
+          "from_column": "film_id",
+          "to_table": "film",
+          "to_column": "film_id",
           "relationship_type": "foreign_key"
         },
         {
           "from_table": "film_actor",
-          "from_column": "film_id",
-          "to_table": "film",
-          "to_column": "film_id",
+          "from_column": "actor_id",
+          "to_table": "actor",
+          "to_column": "actor_id",
           "relationship_type": "foreign_key"
         },
         {
@@ -1390,6 +1391,13 @@
         },
         {
           "from_table": "payment",
+          "from_column": "staff_id",
+          "to_table": "staff",
+          "to_column": "staff_id",
+          "relationship_type": "foreign_key"
+        },
+        {
+          "from_table": "payment",
           "from_column": "rental_id",
           "to_table": "rental",
           "to_column": "rental_id",
@@ -1403,7 +1411,14 @@
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "payment",
+          "from_table": "rental",
+          "from_column": "inventory_id",
+          "to_table": "inventory",
+          "to_column": "inventory_id",
+          "relationship_type": "foreign_key"
+        },
+        {
+          "from_table": "rental",
           "from_column": "staff_id",
           "to_table": "staff",
           "to_column": "staff_id",
@@ -1415,20 +1430,6 @@
           "to_table": "customer",
           "to_column": "customer_id",
           "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "rental",
-          "from_column": "staff_id",
-          "to_table": "staff",
-          "to_column": "staff_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "rental",
-          "from_column": "inventory_id",
-          "to_table": "inventory",
-          "to_column": "inventory_id",
-          "relationship_type": "foreign_key"
         }
       ],
       "total_tables": 16,
@@ -1438,38 +1439,96 @@
         "database_type": "Mysql"
       }
     },
-    "sql_query": "SELECT title FROM film ORDER BY title LIMIT 5;",
+    "sql_query": "SELECT \n    CONCAT(a.first_name, ' ', a.last_name) AS artist_name,\n    COUNT(fa.film_id) AS film_count\nFROM actor a\nJOIN film_actor fa ON a.actor_id = fa.actor_id\nGROUP BY artist_name\nORDER BY film_count DESC\nLIMIT 5;",
     "sql_dialect": "MYSQL",
     "original_data": [
       {
-        "title": "ACADEMY DINOSAUR"
+        "artist_name": "SUSAN DAVIS",
+        "film_count": 54
       },
       {
-        "title": "ACE GOLDFINGER"
+        "artist_name": "GINA DEGENERES",
+        "film_count": 42
       },
       {
-        "title": "ADAPTATION HOLES"
+        "artist_name": "WALTER TORN",
+        "film_count": 41
       },
       {
-        "title": "AFFAIR PREJUDICE"
+        "artist_name": "MARY KEITEL",
+        "film_count": 40
       },
       {
-        "title": "AFRICAN EGG"
+        "artist_name": "MATTHEW CARREY",
+        "film_count": 39
       }
     ],
-    "rearranged_data": [],
-    "num_numeric": 0,
-    "num_cat": 0,
+    "rearranged_data": [
+      {
+        "film_count": 54,
+        "artist_name": "SUSAN DAVIS"
+      },
+      {
+        "film_count": 42,
+        "artist_name": "GINA DEGENERES"
+      },
+      {
+        "film_count": 41,
+        "artist_name": "WALTER TORN"
+      },
+      {
+        "film_count": 40,
+        "artist_name": "MARY KEITEL"
+      },
+      {
+        "film_count": 39,
+        "artist_name": "MATTHEW CARREY"
+      }
+    ],
+    "num_numeric": 1,
+    "num_cat": 1,
     "num_temporal": 0,
-    "num_rows": 0,
-    "cardinalities": {},
-    "suitable_graphs": [],
-    "ranked_graphs": [],
-    "response": "The top 5 albums based on the film titles are:\n\n*   ACADEMY DINOSAUR\n*   ACE GOLDFINGER\n*   ADAPTATION HOLES\n*   AFFAIR PREJUDICE\n*   AFRICAN EGG",
+    "num_rows": 5,
+    "cardinalities": {
+      "film_count": {
+        "unique_values": [
+          39,
+          40,
+          41,
+          42,
+          54
+        ],
+        "count": 5
+      },
+      "artist_name": {
+        "unique_values": [
+          "SUSAN DAVIS",
+          "MATTHEW CARREY",
+          "MARY KEITEL",
+          "WALTER TORN",
+          "GINA DEGENERES"
+        ],
+        "count": 5
+      }
+    },
+    "suitable_graphs": [
+      "Area Chart",
+      "Box Plot",
+      "Bar Chart",
+      "Grouped Histogram",
+      "Stacked Histogram",
+      "Line Chart",
+      "Pie Chart",
+      "Donut Chart"
+    ],
+    "ranked_graphs": "{\n  \"recommended_graphs\": [\"Bar Chart\", \"Pie Chart\", \"Donut Chart\"],\n  \"reason\": \"Bar Chart is suitable for comparing the values of 'film_count' across different 'artist_name' categories. Pie and Donut charts are also appropriate for showing the proportion of each artist's film count relative to the total.\"\n}",
+    "response": "The top 5 artists, based on the number of films they've acted in, are:\n\n| Artist Name      | Film Count |\n|-------------------|------------|\n| SUSAN DAVIS       | 54         |\n| GINA DEGENERES    | 42         |\n| WALTER TORN       | 41         |\n| MARY KEITEL       | 40         |\n| MATTHEW CARREY    | 39         |",
     "messages": [
       "Generating SQL query...",
       "Validating SQL query...",
       "Executing SQL query...",
+      "Preprocessing data...",
+      "Ranking suitable graphs...",
       "Generating final response..."
     ],
     "insights": [],
@@ -1478,6 +1537,6 @@
     "search_plan": {},
     "search_results": {},
     "explanation": "",
-    "prompt_index": 6
+    "prompt_index": 0
   }
 }

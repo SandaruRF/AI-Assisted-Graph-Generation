@@ -13,14 +13,23 @@ import TypewriterWords from "../components/chat_interface/TypewriterWords";
 import TraceTimeline from "../components/chat_interface/TraceTimeline";
 import Graph from "../components/chat_interface/Graph";
 import VoiceSection from "../components/voice_input";
-import ChartRenderer from "../components/graphs/ChartRenderer"; // Add this import
+import ChartRenderer from "../components/graphs/ChartRenderer";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import IconButton from "@mui/material/IconButton";
+import { speakText } from "../components/TextSpeaker";
+
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import GraphicEqIcon from "@mui/icons-material/GraphicEq"; // like a playing indicator
+
+
+
 
 const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
   <Stack spacing={2}>
     {/* Prompt Suggestions */}
     <Stack direction="row" spacing={1} flexWrap="wrap">
       {[
-        "Show sales trends for Q1", 
+        "Show sales trends for Q1",
         "Find anomalies in customer behavior",
         "Change title to 'Sales Analysis'", // Add customization examples
         "Make it red",
@@ -98,6 +107,8 @@ const VisualizationPage = () => {
   const lastPromptRef = useRef(null);
   const socketRef = useRef(null);
   const latestIndexRef = useRef(0);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
+
 
   // Replace single graph state with graph history array
   const [graphHistory, setGraphHistory] = useState([]);
@@ -126,7 +137,7 @@ const VisualizationPage = () => {
         } else if (data.type === "final") {
           const result = data.result;
           console.log("Received final result:", result); // Debug log
-          
+
           // Check if this is a customization response
           if (result.is_customization) {
             console.log("Processing customization response:", result); // Debug log
@@ -159,7 +170,7 @@ const VisualizationPage = () => {
                 prompt_index: result.prompt_index, // Use prompt_index from backend
                 is_customization: false
               };
-              
+
               // Add the new graph state to history
               setGraphHistory((prev) => {
                 const newHistory = [...prev];
@@ -172,7 +183,7 @@ const VisualizationPage = () => {
               });
             }
           }
-          
+
           setResultHistory((prev) => [...prev, result]);
         } else if (data.type === "error") {
           console.error("Error from server:", data.message);
@@ -283,7 +294,7 @@ const VisualizationPage = () => {
           <Typography variant="h4" component="h1">
             Hi there! 👋 I'm your Data Assistant.
           </Typography>
-          
+
         </Box>
       )}
 
@@ -353,30 +364,50 @@ const VisualizationPage = () => {
                   }}
                 >
                   <TypewriterWords text={resultHistory[index].response} />
-                  
+
+                  {/* Speaker Button */}
+                  <IconButton
+                    onClick={() =>
+                      speakText(resultHistory[index].response,
+                        () => setSpeakingIndex(index),    // onStart
+                        () => setSpeakingIndex(null)      // onEnd
+                      )
+                    }
+                    sx={{ ml: 1, mt: 1 }}
+                    size="small"
+                    aria-label="Read aloud"
+                  >
+                    {speakingIndex === index ? (
+                      <GraphicEqIcon fontSize="small" />
+                    ) : (
+                      <VolumeUpIcon fontSize="small" />
+                    )}
+                  </IconButton>
+
+
                   {/* Get the graph state for this specific index */}
                   {(() => {
                     const result = resultHistory[index];
-                    
+
                     // Use prompt_index from result if available, otherwise fall back to array index
                     const graphStateIndex = result.prompt_index !== undefined ? result.prompt_index : index;
                     const graphState = getGraphStateByPromptIndex(graphStateIndex);
-                    
+
                     console.log(`Rendering for index ${index}:`, {
                       result,
                       graphStateIndex,
                       graphState,
                       isCustomization: result.is_customization
                     });
-                    
+
                     if (result.is_customization) {
                       // Customization response - show updated chart using ChartRenderer
                       console.log("Showing ChartRenderer for customization");
                       return graphState && graphState.data ? (
                         <Box sx={{ width: "100%", mt: 2 }}>
-                          <ChartRenderer 
-                            data={graphState.data} 
-                            state={graphState} 
+                          <ChartRenderer
+                            data={graphState.data}
+                            state={graphState}
                           />
                         </Box>
                       ) : (
