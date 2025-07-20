@@ -19,21 +19,19 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
     {/* Prompt Suggestions */}
     <Stack direction="row" spacing={1} flexWrap="wrap">
       {[
-        "Show sales trends for Q1", 
+        "Show sales trends for Q1",
         "Find anomalies in customer behavior",
         "Change title to 'Sales Analysis'", // Add customization examples
         "Make it red",
-        "Switch to bar chart"
-      ].map(
-        (prompt, index) => (
-          <Chip
-            key={index}
-            label={prompt}
-            onClick={() => setUserPrompt(prompt)}
-            sx={{ borderRadius: "8px", mb: 1 }}
-          />
-        )
-      )}
+        "Switch to bar chart",
+      ].map((prompt, index) => (
+        <Chip
+          key={index}
+          label={prompt}
+          onClick={() => setUserPrompt(prompt)}
+          sx={{ borderRadius: "8px", mb: 1 }}
+        />
+      ))}
     </Stack>
 
     {/* Input & Send */}
@@ -87,7 +85,9 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
 
 const VisualizationPage = () => {
   const location = useLocation();
-  const sessionId = location.state?.sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; // Add fallback
+  const sessionId =
+    location.state?.sessionId ||
+    `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; // Add fallback
   const [userPrompt, setUserPrompt] = useState("");
   const [promptHistory, setPromptHistory] = useState([]);
   const [resultHistory, setResultHistory] = useState([]);
@@ -125,7 +125,7 @@ const VisualizationPage = () => {
         } else if (data.type === "final") {
           const result = data.result;
           console.log("Received final result:", result); // Debug log
-          
+
           // Check if this is a customization response
           if (result.is_customization) {
             console.log("Processing customization response:", result); // Debug log
@@ -156,9 +156,9 @@ const VisualizationPage = () => {
                 num_temporal: result.num_temporal,
                 ranked_graphs: result.ranked_graphs,
                 prompt_index: result.prompt_index, // Use prompt_index from backend
-                is_customization: false
+                is_customization: false,
               };
-              
+
               // Add the new graph state to history
               setGraphHistory((prev) => {
                 const newHistory = [...prev];
@@ -171,14 +171,17 @@ const VisualizationPage = () => {
               });
             }
           }
-          
+
           setResultHistory((prev) => [...prev, result]);
         } else if (data.type === "error") {
           console.error("Error from server:", data.message);
           const currentIndex = latestIndexRef.current;
           setTracesHistory((prev) => ({
             ...prev,
-            [currentIndex]: [...(prev[currentIndex] || []), `Error: ${data.message}`],
+            [currentIndex]: [
+              ...(prev[currentIndex] || []),
+              `Error: ${data.message}`,
+            ],
           }));
         } else {
           // Handle legacy format
@@ -198,7 +201,10 @@ const VisualizationPage = () => {
         const currentIndex = latestIndexRef.current;
         setTracesHistory((prev) => ({
           ...prev,
-          [currentIndex]: [...(prev[currentIndex] || []), `Error: ${error.message}`],
+          [currentIndex]: [
+            ...(prev[currentIndex] || []),
+            `Error: ${error.message}`,
+          ],
         }));
       }
     };
@@ -264,7 +270,9 @@ const VisualizationPage = () => {
 
   // Helper function to get graph state by prompt index
   const getGraphStateByPromptIndex = (promptIndex) => {
-    console.log(`getGraphStateByPromptIndex called with promptIndex: ${promptIndex}`);
+    console.log(
+      `getGraphStateByPromptIndex called with promptIndex: ${promptIndex}`
+    );
     console.log(`graphHistory length: ${graphHistory.length}`);
     console.log(`graphHistory:`, graphHistory);
     return graphHistory[promptIndex] || null;
@@ -282,7 +290,6 @@ const VisualizationPage = () => {
           <Typography variant="h4" component="h1">
             Hi there! 👋 I'm your Data Assistant.
           </Typography>
-          
         </Box>
       )}
 
@@ -352,42 +359,61 @@ const VisualizationPage = () => {
                   }}
                 >
                   <TypewriterWords text={resultHistory[index].response} />
-                  
+
                   {/* Get the graph state for this specific index */}
                   {(() => {
                     const result = resultHistory[index];
-                    
+
                     // Use prompt_index from result if available, otherwise fall back to array index
-                    const graphStateIndex = result.prompt_index !== undefined ? result.prompt_index : index;
-                    const graphState = getGraphStateByPromptIndex(graphStateIndex);
-                    
+                    const graphStateIndex =
+                      result.prompt_index !== undefined
+                        ? result.prompt_index
+                        : index;
+                    const graphState =
+                      getGraphStateByPromptIndex(graphStateIndex);
+
                     console.log(`Rendering for index ${index}:`, {
                       result,
                       graphStateIndex,
                       graphState,
-                      isCustomization: result.is_customization
+                      isCustomization: result.is_customization,
                     });
-                    
+
                     if (result.is_customization) {
                       // Customization response - show updated chart using ChartRenderer
                       console.log("Showing ChartRenderer for customization");
                       return graphState && graphState.data ? (
                         <Box sx={{ width: "100%", mt: 2 }}>
-                          <ChartRenderer 
-                            data={graphState.data} 
-                            state={graphState} 
+                          <ChartRenderer
+                            data={graphState.data}
+                            state={graphState}
                           />
                         </Box>
                       ) : (
-                        <Box sx={{ width: "100%", mt: 2, p: 2, backgroundColor: "#f0f0f0" }}>
-                          <Typography>Graph state not available for customization</Typography>
-                          <Typography variant="body2">Graph state index: {graphStateIndex}</Typography>
-                          <Typography variant="body2">Graph state: {JSON.stringify(graphState)}</Typography>
+                        <Box
+                          sx={{
+                            width: "100%",
+                            mt: 2,
+                            p: 2,
+                            backgroundColor: "#f0f0f0",
+                          }}
+                        >
+                          <Typography>
+                            Graph state not available for customization
+                          </Typography>
+                          <Typography variant="body2">
+                            Graph state index: {graphStateIndex}
+                          </Typography>
+                          <Typography variant="body2">
+                            Graph state: {JSON.stringify(graphState)}
+                          </Typography>
                         </Box>
                       );
                     } else {
                       // Regular graph generation - show original Graph component
-                      console.log("Showing Graph component for regular generation");
+                      console.log(
+                        "Showing Graph component for regular generation"
+                      );
                       return (
                         <Graph
                           num_numeric={result.num_numeric}
