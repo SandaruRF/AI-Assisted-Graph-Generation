@@ -18,6 +18,7 @@ import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import UserProfile from "./pages/UserProfile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import DocumentationPage from "./pages/docs";
 
 
 
@@ -88,6 +89,7 @@ function App() {
               />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/github-callback" element={<GithubCallback />} />
+              <Route path="/docs" element={<DocumentationPage />} />
               
             </Routes>
           </Router>

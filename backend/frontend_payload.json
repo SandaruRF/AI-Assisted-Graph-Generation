@@ -3,9 +3,9 @@
   "message": "Prompt processed successfully!",
   "result": {
     "session_id": "579c3268-7696-490e-b027-7ca7cb5c7e47",
-    "user_prompt": "Show me all table links.",
+    "user_prompt": "show me top 5 albems",
     "intents": [
-      "schema"
+      "exploratory"
     ],
     "metadata": {
       "database_name": "sakila",
@@ -1438,9 +1438,25 @@
         "database_type": "Mysql"
       }
     },
-    "sql_query": "",
-    "sql_dialect": "",
-    "original_data": [],
+    "sql_query": "SELECT title FROM film ORDER BY title LIMIT 5;",
+    "sql_dialect": "MYSQL",
+    "original_data": [
+      {
+        "title": "ACADEMY DINOSAUR"
+      },
+      {
+        "title": "ACE GOLDFINGER"
+      },
+      {
+        "title": "ADAPTATION HOLES"
+      },
+      {
+        "title": "AFFAIR PREJUDICE"
+      },
+      {
+        "title": "AFRICAN EGG"
+      }
+    ],
     "rearranged_data": [],
     "num_numeric": 0,
     "num_cat": 0,
@@ -1449,9 +1465,11 @@
     "cardinalities": {},
     "suitable_graphs": [],
     "ranked_graphs": [],
-    "response": "Here's a breakdown of the table relationships in the Sakila database, based on the foreign key constraints:\n\n*   **address**\n    *   Connects to `city` via `city_id`\n\n*   **city**\n    *   Connects to `country` via `country_id`\n\n*   **customer**\n    *   Connects to `address` via `address_id`\n    *   Connects to `store` via `store_id`\n\n*   **store**\n    *   Connects to `staff` via `manager_staff_id`\n    *   Connects to `address` via `address_id`\n\n*   **staff**\n    *   Connects to `store` via `store_id`\n    *   Connects to `address` via `address_id`\n\n*   **film**\n    *   Connects to `language` via `language_id`\n    *   Connects to `language` via `original_language_id`\n\n*   **film\\_actor**\n    *   Connects to `actor` via `actor_id`\n    *   Connects to `film` via `film_id`\n\n*   **film\\_category**\n    *   Connects to `film` via `film_id`\n    *   Connects to `category` via `category_id`\n\n*   **inventory**\n    *   Connects to `store` via `store_id`\n    *   Connects to `film` via `film_id`\n\n*   **payment**\n    *   Connects to `rental` via `rental_id`\n    *   Connects to `customer` via `customer_id`\n    *   Connects to `staff` via `staff_id`\n\n*   **rental**\n    *   Connects to `customer` via `customer_id`\n    *   Connects to `staff` via `staff_id`\n    *   Connects to `inventory` via `inventory_id`",
+    "response": "The top 5 albums based on the film titles are:\n\n*   ACADEMY DINOSAUR\n*   ACE GOLDFINGER\n*   ADAPTATION HOLES\n*   AFFAIR PREJUDICE\n*   AFRICAN EGG",
     "messages": [
-      "Retrieving metadata...",
+      "Generating SQL query...",
+      "Validating SQL query...",
+      "Executing SQL query...",
       "Generating final response..."
     ],
     "insights": [],
@@ -1460,6 +1478,6 @@
     "search_plan": {},
     "search_results": {},
     "explanation": "",
-    "prompt_index": 2
+    "prompt_index": 6
   }
 }
