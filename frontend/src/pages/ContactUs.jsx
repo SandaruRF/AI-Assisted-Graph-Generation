@@ -89,213 +89,200 @@ const ContactUs = () => {
   </Box>
 </Box>
 
-      {/* Content */}
-      <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 3, md: 6 }, mt: 8, mb: 12 }}>
-        <Grid container spacing={6}>
-          {/* Left Side */}
-          <Grid item xs={12} md={5}>
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Typography variant="h3" sx={{
-                mb: 3,
-                fontWeight: 800,
-                color: '#033E6B',
-                position: 'relative',
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: '-12px',
-                  left: 0,
-                  width: '80px',
-                  height: '4px',
-                  background: 'linear-gradient(90deg, #00B4DB, #045D9F)',
-                  borderRadius: 2
-                }
-              }}>
-                Get in Touch
-              </Typography>
-              <Typography variant="body1" sx={{
-                mb: 4,
-                color: '#4A4A4A',
-                fontSize: '1.1rem',
-                lineHeight: 1.8
-              }}>
-                Have a question, feedback, or collaboration idea? We'd love to hear from you.
-              </Typography>
-            </motion.div>
-          </Grid>
-
-          {/* Right Side - Form */}
-       {/* Right Section - Contact Form */}
-<Grid item xs={12} md={7} sx={{ 
-  order: { xs: 1, md: 2 },
-  pl: { md: 4 },
+     {/* Content Section */}
+<Box sx={{ 
+  maxWidth: 1200, 
+  mx: 'auto', 
+  px: { xs: 3, md: 6 }, 
+  mt: 8, 
+  mb: 12,
   display: 'flex',
-  flexDirection: 'column'
+  justifyContent: 'space-between',
+  flexDirection: { xs: 'column', md: 'row' },  // Stack on small screens and row on larger
+  gap: 6,  // Add space between left and right columns
 }}>
-  <motion.div
-    initial={{ opacity: 0, x: 20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.5, delay: 0.2 }}
-  >
-    {/* Outer Heading */}
-    
-
-    {/* Contact Form Box */}
-    <Box component="form" sx={{ 
-      background: 'linear-gradient(to right, #ffffff, #f0f4f8)',
-      p: { xs: 3, md: 4 },
-      borderRadius: 3,
-      boxShadow: '0 12px 32px rgba(4,93,159,0.1)',
-      border: '1px solid #e0e0e0',
-      backdropFilter: 'blur(4px)',
-      transition: 'all 0.3s ease-in-out'
+  {/* Left Column - Contact Info */}
+  <Box sx={{ 
+    flex: 1, 
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    pr: { md: 4 }
+  }}>
+    {/* "Get in Touch" Header */}
+    <Typography variant="h3" sx={{
+      mb: 3,
+      fontWeight: 800,
+      color: '#033E6B',
+      position: 'relative',
+      '&:after': {
+        content: '""',
+        position: 'absolute',
+        bottom: '-12px',
+        left: 0,
+        width: '80px',
+        height: '4px',
+        background: 'linear-gradient(90deg, #00B4DB, #045D9F)',
+        borderRadius: 2
+      }
     }}>
-      
-      {/* Heading inside the form box */}
-      <Typography 
-      variant="h5" 
-      sx={{ 
-        mb: 2,
-        fontWeight: 700,
-        color: '#045D9F',
-        alignSelf: 'flex-start',
-        pl: 1,
-        borderLeft: '4px solid #00B4DB',
-        paddingLeft: '12px',
-        fontSize: '1.8rem'
-      }}
-    >
-      Contact Form
+      Get in Touch
     </Typography>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="First Name"
-            variant="outlined"
-            sx={{ 
-              backgroundColor: '#fff',
-              '& .MuiOutlinedInput-root': {
-                '&:hover fieldset': {
-                  borderColor: '#00B4DB',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#045D9F',
-                }
+    {/* Description Text */}
+    <Typography variant="body1" sx={{
+      color: '#4A4A4A',
+      fontSize: '1.1rem',
+      lineHeight: 1.8
+    }}>
+      Have a question, feedback, or collaboration idea? We'd love to hear from you.
+    </Typography>
+  </Box>
+
+  {/* Right Column - Contact Form */}
+ <Box sx={{ 
+  flex: 1, 
+  background: '#ffffff', 
+  p: 4, 
+  borderRadius: 3, 
+  boxShadow: '0 8px 32px rgba(4,93,159,0.1)', 
+  border: '1px solid #e0e0e0' 
+}}>
+  {/* Form Title */}
+  <Typography variant="h5" sx={{ 
+    mb: 4,  // Increased margin bottom
+    fontWeight: 700, 
+    color: '#045D9F', 
+    borderLeft: '4px solid #00B4DB', 
+    pl: 2, 
+    fontSize: '1.8rem' 
+  }}>
+    Contact Form
+  </Typography>
+
+  {/* Form Fields */}
+  <Grid container spacing={3}>
+    {/* Name Row */}
+    <Grid container item spacing={3}>
+     <Grid item xs={12} md={6} sx={{ width: { xs: '100%', md: 250 } }}>
+        <TextField
+          fullWidth
+          label="First Name"
+          variant="outlined"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+              '&:hover fieldset': { borderColor: '#00B4DB' },
+              '&.Mui-focused fieldset': { 
+                borderColor: '#045D9F',
+                borderWidth: '2px'
               }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Last Name"
-            variant="outlined"
-            sx={{ 
-              backgroundColor: '#fff',
-              '& .MuiOutlinedInput-root': {
-                '&:hover fieldset': {
-                  borderColor: '#00B4DB',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#045D9F',
-                }
-              }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Email"
-            type="email"
-            variant="outlined"
-            sx={{ 
-              backgroundColor: '#fff',
-              '& .MuiOutlinedInput-root': {
-                '&:hover fieldset': {
-                  borderColor: '#00B4DB',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#045D9F',
-                }
-              }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Phone No"
-            type="tel"
-            variant="outlined"
-            sx={{ 
-              backgroundColor: '#fff',
-              '& .MuiOutlinedInput-root': {
-                '&:hover fieldset': {
-                  borderColor: '#00B4DB',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#045D9F',
-                }
-              }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="Subject"
-            variant="outlined"
-            sx={{ 
-              backgroundColor: '#fff',
-              '& .MuiOutlinedInput-root': {
-                '&:hover fieldset': {
-                  borderColor: '#00B4DB',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#045D9F',
-                }
-              }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Button
-            fullWidth
-            variant="contained"
-            size="large"
-            sx={{
-              py: 1.5,
-              background: 'linear-gradient(45deg, #045D9F 30%, #00B4DB 90%)',
-              fontWeight: 700,
-              fontSize: '1.1rem',
-              transition: '0.3s ease',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                boxShadow: '0 8px 16px rgba(4,93,159,0.3)'
-              }
-            }}
-          >
-            Submit
-          </Button>
-        </Grid>
+            }
+          }}
+        />
       </Grid>
-    </Box>
-  </motion.div>
+     <Grid item xs={12} md={6} sx={{ width: { xs: '100%', md: 250 } }}>
+        <TextField
+          fullWidth
+          label="Last Name"
+          variant="outlined"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+              '&:hover fieldset': { borderColor: '#00B4DB' },
+              '&.Mui-focused fieldset': { 
+                borderColor: '#045D9F',
+                borderWidth: '2px'
+              }
+            }
+          }}
+        />
+      </Grid>
+    </Grid>
+
+    {/* Contact Info Row */}
+<Grid container item spacing={3} justifyContent="space-between">
+  <Grid item xs={12} md={6} sx={{ width: { xs: '100%', md: 250 } }}>
+    <TextField
+      fullWidth
+      label="Email"
+      type="email"
+      variant="outlined"
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          borderRadius: '8px',
+        }
+      }}
+    />
+  </Grid>
+  <Grid item xs={12} md={6} sx={{ width: { xs: '100%', md: 250 } }}>
+    <TextField
+      fullWidth
+      label="Phone No"
+      type="tel"
+      variant="outlined"
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          borderRadius: '8px',
+        }
+      }}
+    />
+  </Grid>
 </Grid>
+{/* Subject Field */}
+    <Grid item xs={12} sx={{
+      width: '100%',         // make the Grid cell itself full-width
+      mt: 0.6               // space above the button
+    }}>
+      <TextField
+        fullWidth
+        label="Subject"
+        variant="outlined"
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '8px',
+          }
+        }}
+      />
+    </Grid>
 
-        </Grid>
-      </Box>
-
-      <Footer />
+  {/* Submit Button */}
+ 
+  <Grid
+    item
+    xs={12}
+    sx={{
+      width: '100%',         // make the Grid cell itself full-width
+      mt: 1                 // space above the button
+    }}
+  >
+    <Button
+      fullWidth              // makes the <Button> stretch to its parent width
+      variant="contained"
+      size="large"
+      sx={{
+        py: 2,
+        borderRadius: '8px',
+        background: 'linear-gradient(45deg, #045D9F 30%, #00B4DB 90%)',
+        fontWeight: 700,
+        fontSize: '1.1rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        transition: '0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 8px 16px rgba(4,93,159,0.3)'
+        }
+      }}
+    >
+      SUBMIT
+    </Button>
+  </Grid>
+ </Grid>
+</Box>
+</Box>
+<Footer />
     </Box>
   );
 };
-
 export default ContactUs;
