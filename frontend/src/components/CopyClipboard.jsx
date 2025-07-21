@@ -19,7 +19,11 @@ const CopyButton = ({ text }) => {
   return (
     <Tooltip title={copied ? "Copied!" : "Copy"}>
       <IconButton onClick={handleCopy} size="small">
-        {copied ? <CheckCircleIcon color="success" /> : <ContentCopyIcon />}
+        {copied ? (
+          <CheckCircleIcon sx={{ width: 20, height: 20 }} />
+        ) : (
+          <ContentCopyIcon sx={{ width: 20, height: 20 }} />
+        )}
       </IconButton>
     </Tooltip>
   );

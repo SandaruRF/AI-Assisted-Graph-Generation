@@ -1,9 +1,17 @@
 import React, { useState, useMemo, useRef } from "react";
-import { Box, Button, Menu, MenuItem, IconButton, Tooltip } from "@mui/material";
+import {
+  Box,
+  Button,
+  Menu,
+  MenuItem,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import GetAppIcon from "@mui/icons-material/GetApp";
+import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
+import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
 
 import CandlestickChart from "../../components/graphs/CandlestickChart";
 import AreaChart from "../../components/graphs/AreaChart";
@@ -177,38 +185,46 @@ const Graph = ({ num_numeric, num_cat, num_temporal, types, data }) => {
         {/* Buttons below the graph */}
         <Box
           sx={{
-            mt: 2,
             display: "flex",
-            justifyContent: "center",
-            gap: 3,
+            justifyContent: "flex-end",
+            gap: 1,
             alignItems: "center",
+            mr: 2,
           }}
         >
           <Tooltip title="Like">
             <IconButton
               aria-label="like"
-              color={likeCount > 0 ? "primary" : "default"}
+              color={likeCount > 0 ? "default" : "default"}
               onClick={handleLike}
             >
-              <ThumbUpIcon />
+              {likeCount > 0 ? (
+                <ThumbUpIcon sx={{ width: "20px", height: "20px" }} />
+              ) : (
+                <ThumbUpOutlinedIcon sx={{ width: "20px", height: "20px" }} />
+              )}
             </IconButton>
           </Tooltip>
 
           <Tooltip title="Dislike">
             <IconButton
               aria-label="dislike"
-              color={dislikeCount > 0 ? "error" : "default"}
+              color={dislikeCount > 0 ? "default" : "default"}
               onClick={handleDislike}
             >
-              <ThumbDownIcon />
+              {dislikeCount > 0 ? (
+                <ThumbDownIcon sx={{ width: "20px", height: "20px" }} />
+              ) : (
+                <ThumbDownOutlinedIcon sx={{ width: "20px", height: "20px" }} />
+              )}
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Export">
+          {/* <Tooltip title="Export">
             <IconButton aria-label="export" onClick={handleExport}>
               <GetAppIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
         </Box>
       </Box>
     </Box>
