@@ -227,7 +227,7 @@ const ExistingDatabaseConnection = () => {
                       });
                     }}
                   >
-                    View Graph
+                    Ask VizGen
                   </Button>
 
                   <Button
