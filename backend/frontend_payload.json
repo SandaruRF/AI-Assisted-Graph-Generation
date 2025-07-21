@@ -2,10 +2,11 @@
   "type": "final",
   "message": "Prompt processed successfully!",
   "result": {
-    "session_id": "8812f6fe-7cc6-4cd3-98c5-5da59fe2d86e",
-    "user_prompt": "Show me the web artist names.",
+    "session_id": "296389ab-f6d0-4bf0-b0ca-4f25ae248c97",
+    "user_prompt": "show me top 5 artists in bar chart",
     "intents": [
-      "exploratory"
+      "exploratory",
+      "visualization"
     ],
     "metadata": {
       "database_name": "sakila",
@@ -486,14 +487,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "address_id",
-              "referenced_table": "address",
-              "referenced_column": "address_id"
-            },
-            {
               "local_column": "manager_staff_id",
               "referenced_table": "staff",
               "referenced_column": "staff_id"
+            },
+            {
+              "local_column": "address_id",
+              "referenced_table": "address",
+              "referenced_column": "address_id"
             }
           ],
           "numeric_columns": [
@@ -1234,11 +1235,6 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "inventory_id",
-              "referenced_table": "inventory",
-              "referenced_column": "inventory_id"
-            },
-            {
               "local_column": "staff_id",
               "referenced_table": "staff",
               "referenced_column": "staff_id"
@@ -1247,6 +1243,11 @@
               "local_column": "customer_id",
               "referenced_table": "customer",
               "referenced_column": "customer_id"
+            },
+            {
+              "local_column": "inventory_id",
+              "referenced_table": "inventory",
+              "referenced_column": "inventory_id"
             }
           ],
           "numeric_columns": [
@@ -1306,16 +1307,16 @@
         },
         {
           "from_table": "store",
-          "from_column": "address_id",
-          "to_table": "address",
-          "to_column": "address_id",
+          "from_column": "manager_staff_id",
+          "to_table": "staff",
+          "to_column": "staff_id",
           "relationship_type": "foreign_key"
         },
         {
           "from_table": "store",
-          "from_column": "manager_staff_id",
-          "to_table": "staff",
-          "to_column": "staff_id",
+          "from_column": "address_id",
+          "to_table": "address",
+          "to_column": "address_id",
           "relationship_type": "foreign_key"
         },
         {
@@ -1411,13 +1412,6 @@
         },
         {
           "from_table": "rental",
-          "from_column": "inventory_id",
-          "to_table": "inventory",
-          "to_column": "inventory_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "rental",
           "from_column": "staff_id",
           "to_table": "staff",
           "to_column": "staff_id",
@@ -1429,6 +1423,13 @@
           "to_table": "customer",
           "to_column": "customer_id",
           "relationship_type": "foreign_key"
+        },
+        {
+          "from_table": "rental",
+          "from_column": "inventory_id",
+          "to_table": "inventory",
+          "to_column": "inventory_id",
+          "relationship_type": "foreign_key"
         }
       ],
       "total_tables": 16,
@@ -1438,31 +1439,113 @@
         "database_type": "Mysql"
       }
     },
-    "sql_query": "SELECT first_name, last_name\nFROM staff;",
+    "sql_query": "SELECT a.first_name, a.last_name, COUNT(fa.film_id) AS film_count\nFROM actor a\nJOIN film_actor fa ON a.actor_id = fa.actor_id\nGROUP BY a.actor_id, a.first_name, a.last_name\nORDER BY film_count DESC\nLIMIT 5;",
     "sql_dialect": "MYSQL",
     "original_data": [
       {
-        "first_name": "Mike",
-        "last_name": "Hillyer"
+        "first_name": "GINA",
+        "last_name": "DEGENERES",
+        "film_count": 42
       },
       {
-        "first_name": "Jon",
-        "last_name": "Stephens"
+        "first_name": "WALTER",
+        "last_name": "TORN",
+        "film_count": 41
+      },
+      {
+        "first_name": "MARY",
+        "last_name": "KEITEL",
+        "film_count": 40
+      },
+      {
+        "first_name": "MATTHEW",
+        "last_name": "CARREY",
+        "film_count": 39
+      },
+      {
+        "first_name": "SANDRA",
+        "last_name": "KILMER",
+        "film_count": 37
       }
     ],
-    "rearranged_data": [],
-    "num_numeric": 0,
-    "num_cat": 0,
+    "rearranged_data": [
+      {
+        "film_count": 42,
+        "first_name": "GINA",
+        "last_name": "DEGENERES"
+      },
+      {
+        "film_count": 41,
+        "first_name": "WALTER",
+        "last_name": "TORN"
+      },
+      {
+        "film_count": 40,
+        "first_name": "MARY",
+        "last_name": "KEITEL"
+      },
+      {
+        "film_count": 39,
+        "first_name": "MATTHEW",
+        "last_name": "CARREY"
+      },
+      {
+        "film_count": 37,
+        "first_name": "SANDRA",
+        "last_name": "KILMER"
+      }
+    ],
+    "num_numeric": 1,
+    "num_cat": 2,
     "num_temporal": 0,
-    "num_rows": 0,
-    "cardinalities": {},
-    "suitable_graphs": [],
-    "ranked_graphs": [],
-    "response": "The staff member names are:\n\n*   Mike Hillyer\n*   Jon Stephens",
+    "num_rows": 5,
+    "cardinalities": {
+      "film_count": {
+        "unique_values": [
+          37,
+          39,
+          40,
+          41,
+          42
+        ],
+        "count": 5
+      },
+      "first_name": {
+        "unique_values": [
+          "MATTHEW",
+          "GINA",
+          "SANDRA",
+          "WALTER",
+          "MARY"
+        ],
+        "count": 5
+      },
+      "last_name": {
+        "unique_values": [
+          "CARREY",
+          "DEGENERES",
+          "TORN",
+          "KILMER",
+          "KEITEL"
+        ],
+        "count": 5
+      }
+    },
+    "suitable_graphs": [
+      "Stacked Bar Chart",
+      "Grouped Bar Chart",
+      "Box Plot",
+      "Pie Chart",
+      "Donut Chart"
+    ],
+    "ranked_graphs": "{\n  \"recommended_graphs\": [\"Grouped Bar Chart\", \"Stacked Bar Chart\"],\n  \"reason\": \"Grouped and Stacked Bar Charts are good for comparing different categories ('first_name', 'last_name') using a numeric value ('film_count'). Grouped Bar Chart is especially helpful for comparing film_count across artists.\"\n}",
+    "response": "Here's a bar chart representation of the top 5 artists based on the number of films they've appeared in:\n\n| Artist First Name | Artist Last Name | Film Count |\n|---|---|---|\n| GINA | DEGENERES | 42 |\n| WALTER | TORN | 41 |\n| MARY | KEITEL | 40 |\n| MATTHEW | CARREY | 39 |\n| SANDRA | KILMER | 37 |",
     "messages": [
       "Generating SQL query...",
       "Validating SQL query...",
       "Executing SQL query...",
+      "Preprocessing data...",
+      "Ranking suitable graphs...",
       "Generating final response..."
     ],
     "insights": [],

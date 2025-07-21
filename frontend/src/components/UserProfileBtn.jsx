@@ -48,7 +48,7 @@ const UserProfileBtn = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={() => navigate("/user-profile")}>Profile</MenuItem>
-        <MenuItem onClick={() => alert("Settings Clicked")}>Settings</MenuItem>
+        <MenuItem onClick={() => navigate("/settings")}>Settings</MenuItem>
         <MenuItem onClick={() => {
           localStorage.removeItem("token");
           navigate("/login");
