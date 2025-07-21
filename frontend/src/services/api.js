@@ -249,6 +249,79 @@ export const handleGitHubAuthCallback = async (code, Navigate) => {
   }
 };
 
+//interaction data post endpoint
+
+export const sendInteractionData = async ({
+  graphName,
+  exactTimeSpentSec,
+  exportCount,
+  likeCount,
+  dislikeCount,
+  panCount,
+}) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No authentication token found.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/interaction`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        graph_name: graphName,
+        time_spent: exactTimeSpentSec,
+        export_count: exportCount,
+        like_count: likeCount,
+        dislike_count: dislikeCount,
+        pan_count: panCount,
+      }),
+      keepalive: true,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Interaction send failed:", errorText);
+    }
+  } catch (err) {
+    console.error("Failed to send interaction:", err);
+  }
+};
+
+// Fetch interaction data 
+export const fetchUserInteractionData = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No authentication token found.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/user-interactions`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Fetching user interactions failed:", errorText);
+      return null;
+    }
+
+    const result = await response.json();
+    return result.user_interactions || [];
+  } catch (err) {
+    console.error("Failed to fetch user interaction data:", err);
+    return null;
+  }
+};
+
 // Function to fetch user profile data for profile page
 export const fetchUserProfile = async (setProfileData, setError) => {
   const token = localStorage.getItem("token");

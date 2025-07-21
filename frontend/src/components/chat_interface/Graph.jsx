@@ -1,6 +1,9 @@
-import React, { useState, useMemo } from "react";
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import React, { useState, useMemo, useRef } from "react";
+import { Box, Button, Menu, MenuItem, IconButton, Tooltip } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import GetAppIcon from "@mui/icons-material/GetApp";
 
 import CandlestickChart from "../../components/graphs/CandlestickChart";
 import AreaChart from "../../components/graphs/AreaChart";
@@ -10,13 +13,22 @@ import BoxPlot from "../../components/graphs/BoxPlot";
 import Histogram from "../../components/graphs/Histogram";
 import PieChart from "../../components/graphs/PieChart";
 import ScatterPlot from "../../components/graphs/ScatterPlot";
+import GraphInteractionTracker from "../../components/GraphInteractionTracker";
 
 const Graph = ({ num_numeric, num_cat, num_temporal, types, data }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  // Interaction counts lifted here to sync with tracker
+  const [exportCount, setExportCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(0);
+  const [dislikeCount, setDislikeCount] = useState(0);
+
+  // Construct a string for type info (optional, used in charts)
   const typeString =
     "num_" + num_numeric + "_cat_" + num_cat + "_temp_" + num_temporal;
 
+  // Parse graph types from the `types` string prop
   const graphTypes = useMemo(() => {
     try {
       if (types && typeof types === "string") {
@@ -31,15 +43,17 @@ const Graph = ({ num_numeric, num_cat, num_temporal, types, data }) => {
     } catch (error) {
       console.error("Failed to parse recommended_graphs:", error);
     }
-    return []; // fallback
+    return []; // fallback empty array
   }, [types]);
 
-  // safe hook usage
+  // Selected graph state
   const [selectedGraph, setSelectedGraph] = useState(
     graphTypes.length ? graphTypes[0] : null
   );
 
-  // skip rendering
+  // Ref for graph container to track interactions
+  const graphContainerRef = useRef(null);
+
   if (!graphTypes.length || !selectedGraph) {
     return null;
   }
@@ -52,14 +66,48 @@ const Graph = ({ num_numeric, num_cat, num_temporal, types, data }) => {
     setAnchorEl(null);
     if (graphType) {
       setSelectedGraph(graphType);
+      // Reset counts on graph change if desired
+      // setExportCount(0);
+      // setLikeCount(0);
+      // setDislikeCount(0);
     }
   };
 
+  // Render selected chart component
+  const renderChart = () => {
+    switch (selectedGraph) {
+      case "Candlestick Chart":
+        return <CandlestickChart typeString={typeString} dataset={data} />;
+      case "Area Chart":
+        return <AreaChart typeString={typeString} dataset={data} />;
+      case "Line Chart":
+        return <LineChart typeString={typeString} dataset={data} />;
+      case "Bar Chart":
+        return <BarChart typeString={typeString} dataset={data} />;
+      case "Box Plot":
+        return <BoxPlot typeString={typeString} dataset={data} />;
+      case "Histogram":
+        return <Histogram typeString={typeString} dataset={data} />;
+      case "Pie Chart":
+        return <PieChart typeString={typeString} dataset={data} />;
+      case "Scatter Plot":
+        return <ScatterPlot typeString={typeString} dataset={data} />;
+      default:
+        return null;
+    }
+  };
+
+  // Handlers for Like, Dislike, Export buttons
+  const handleLike = () => setLikeCount((c) => c + 1);
+  const handleDislike = () => setDislikeCount((c) => c + 1);
+  const handleExport = () => setExportCount((c) => c + 1);
+
   return (
     <Box sx={{ p: 2 }}>
+      {/* Dropdown to select graph type */}
       <Button
-        id="demo-customized-button"
-        aria-controls={open ? "demo-customized-menu" : undefined}
+        id="graph-select-button"
+        aria-controls={open ? "graph-select-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         variant="contained"
@@ -67,13 +115,13 @@ const Graph = ({ num_numeric, num_cat, num_temporal, types, data }) => {
         onClick={handleClick}
         size="small"
         sx={{
-          fontSize: "12px", // Change text size
+          fontSize: "12px",
           width: "180px",
           height: "30px",
-          backgroundColor: "#1976d2", // Custom background (overrides color prop)
-          color: "#fff", // Custom text color
+          backgroundColor: "#1976d2",
+          color: "#fff",
           "&:hover": {
-            backgroundColor: "#1565c0", // Hover color
+            backgroundColor: "#1565c0",
           },
         }}
       >
@@ -99,10 +147,13 @@ const Graph = ({ num_numeric, num_cat, num_temporal, types, data }) => {
           <KeyboardArrowDownIcon />
         </Box>
       </Button>
+
+      {/* Menu */}
       <Menu
         anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
+        open={open}
         onClose={() => handleClose()}
+        id="graph-select-menu"
       >
         {graphTypes.map((type, index) => (
           <MenuItem key={index} onClick={() => handleClose(type)}>
@@ -111,31 +162,54 @@ const Graph = ({ num_numeric, num_cat, num_temporal, types, data }) => {
         ))}
       </Menu>
 
-      <Box sx={{ mt: 3 }}>
-        {selectedGraph === "Candlestick Chart" && (
-          <CandlestickChart typeString={typeString} dataset={data} />
-        )}
-        {selectedGraph === "Area Chart" && (
-          <AreaChart typeString={typeString} dataset={data} />
-        )}
-        {selectedGraph === "Line Chart" && (
-          <LineChart typeString={typeString} dataset={data} />
-        )}
-        {selectedGraph === "Bar Chart" && (
-          <BarChart typeString={typeString} dataset={data} />
-        )}
-        {selectedGraph === "Box Plot" && (
-          <BoxPlot typeString={typeString} dataset={data} />
-        )}
-        {selectedGraph === "Histogram" && (
-          <Histogram typeString={typeString} dataset={data} />
-        )}
-        {selectedGraph === "Pie Chart" && (
-          <PieChart typeString={typeString} dataset={data} />
-        )}
-        {selectedGraph === "Scatter Plot" && (
-          <ScatterPlot typeString={typeString} dataset={data} />
-        )}
+      {/* Graph container */}
+      <Box sx={{ mt: 3 }} ref={graphContainerRef}>
+        <GraphInteractionTracker
+          graphName={selectedGraph}
+          containerRef={graphContainerRef}
+          externalExportCount={exportCount}
+          externalLikeCount={likeCount}
+          externalDislikeCount={dislikeCount}
+        />
+
+        {renderChart()}
+
+        {/* Buttons below the graph */}
+        <Box
+          sx={{
+            mt: 2,
+            display: "flex",
+            justifyContent: "center",
+            gap: 3,
+            alignItems: "center",
+          }}
+        >
+          <Tooltip title="Like">
+            <IconButton
+              aria-label="like"
+              color={likeCount > 0 ? "primary" : "default"}
+              onClick={handleLike}
+            >
+              <ThumbUpIcon />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Dislike">
+            <IconButton
+              aria-label="dislike"
+              color={dislikeCount > 0 ? "error" : "default"}
+              onClick={handleDislike}
+            >
+              <ThumbDownIcon />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Export">
+            <IconButton aria-label="export" onClick={handleExport}>
+              <GetAppIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
     </Box>
   );
