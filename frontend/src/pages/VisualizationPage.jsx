@@ -1,6 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Paper, Stack, Typography, IconButton } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Stack,
+  Typography,
+  Chip,
+  TextField,
+  Button,
+} from "@mui/material";
 import { FiEdit, FiCopy } from "react-icons/fi";
 import TypewriterWords from "../components/chat_interface/TypewriterWords";
 import TraceTimeline from "../components/chat_interface/TraceTimeline";
@@ -8,7 +16,6 @@ import Graph from "../components/chat_interface/Graph";
 import ChartRenderer from "../components/graphs/ChartRenderer";
 import InputSection from "../components/chat_interface/InputSection";
 import VoiceSection from "../components/voice_input";
-import ChartRenderer from "../components/graphs/ChartRenderer";
 
 import IconButton from "@mui/material/IconButton";
 import { speakText } from "../components/TextSpeaker";
@@ -17,82 +24,7 @@ import { motion } from "framer-motion";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
-import CopyButton from "../components/CopyClipboard"; 
-
-
-
-
-
-const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => (
-  <Stack spacing={2}>
-    {/* Prompt Suggestions */}
-    <Stack direction="row" spacing={1} flexWrap="wrap">
-      {[
-        "Show sales trends for Q1",
-        "Find anomalies in customer behavior",
-        "Change title to 'Sales Analysis'", // Add customization examples
-        "Make it red",
-        "Switch to bar chart"
-      ].map(
-        (prompt, index) => (
-          <Chip
-            key={index}
-            label={prompt}
-            onClick={() => setUserPrompt(prompt)}
-            sx={{ borderRadius: "8px", mb: 1 }}
-          />
-        )
-      )}
-    </Stack>
-
-    {/* Input & Send */}
-    <Paper
-      sx={{
-        p: 2,
-        borderRadius: "16px",
-        boxShadow: 3,
-      }}
-    >
-      <TextField
-        fullWidth
-        placeholder="What would you like to explore today?"
-        value={userPrompt}
-        onChange={(e) => setUserPrompt(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && userPrompt.trim() !== "") {
-            handleSend();
-          }
-        }}
-        variant="outlined"
-        InputProps={{
-          sx: {
-            borderRadius: "8px",
-            "& fieldset": { borderColor: "divider" },
-          },
-        }}
-      />
-
-      {/* Send Button */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button
-          onClick={handleSend}
-          variant="contained"
-          disabled={userPrompt.trim() === ""}
-          sx={{
-            mt: 2,
-            borderRadius: "8px",
-            textTransform: "none",
-            transition: "all 0.3s ease-in-out",
-            opacity: userPrompt.trim() === "" ? 0.7 : 1,
-            transform: userPrompt.trim() === "" ? "scale(0.98)" : "scale(1)",
-          }}
-        >
-          Send
-        </Button>
-      </Box>
-    </Paper>
-  </Stack>
-);
+import CopyButton from "../components/CopyClipboard";
 
 const VisualizationPage = () => {
   const location = useLocation();
@@ -112,8 +44,6 @@ const VisualizationPage = () => {
   const latestIndexRef = useRef(0);
   const [speakingIndex, setSpeakingIndex] = useState(null);
   const [pausedIndex, setPausedIndex] = useState(null);
-
-
 
   // Replace single graph state with graph history array
   const [graphHistory, setGraphHistory] = useState([]);
@@ -517,50 +447,56 @@ const VisualizationPage = () => {
                 >
                   <TypewriterWords text={resultHistory[index].response} />
 
-                  <Stack direction="row" spacing={1} sx={{ mt: 1, alignItems: "center" }}>
-                  <CopyButton text={resultHistory[index].response} />
-
-
-                  {/* Speaker Button */}
-                  <IconButton
-                    onClick={() =>
-                      speakText(
-                        resultHistory[index].response,
-                        () => {
-                          setSpeakingIndex(index);
-                          setPausedIndex(null);
-                        },
-                        () => {
-                          setSpeakingIndex(null);
-                          setPausedIndex(null);
-                        },
-                        () => {
-                          setPausedIndex(index);
-                        },
-                        () => {
-                          setPausedIndex(null);
-                        }
-                      )
-                    }
-                    sx={{ ml: 1, mt: 1 }}
-                    size="small"
-                    aria-label="Read aloud"
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{ mt: 1, alignItems: "center" }}
                   >
-                    {speakingIndex === index && pausedIndex !== index ? (
-                      <motion.div
-                        animate={{ scale: [1, 1.3, 1] }}
-                        transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
-                      >
-                        <GraphicEqIcon fontSize="small" />
-                      </motion.div>
-                    ) : pausedIndex === index ? (
-                      <VolumeOffIcon fontSize="small" />
-                    ) : (
-                      <VolumeUpIcon fontSize="small" />
-                    )}
-                  </IconButton>
-                  </Stack>
+                    <CopyButton text={resultHistory[index].response} />
 
+                    {/* Speaker Button */}
+                    <IconButton
+                      onClick={() =>
+                        speakText(
+                          resultHistory[index].response,
+                          () => {
+                            setSpeakingIndex(index);
+                            setPausedIndex(null);
+                          },
+                          () => {
+                            setSpeakingIndex(null);
+                            setPausedIndex(null);
+                          },
+                          () => {
+                            setPausedIndex(index);
+                          },
+                          () => {
+                            setPausedIndex(null);
+                          }
+                        )
+                      }
+                      sx={{ ml: 1, mt: 1 }}
+                      size="small"
+                      aria-label="Read aloud"
+                    >
+                      {speakingIndex === index && pausedIndex !== index ? (
+                        <motion.div
+                          animate={{ scale: [1, 1.3, 1] }}
+                          transition={{
+                            duration: 0.8,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                        >
+                          <GraphicEqIcon fontSize="small" />
+                        </motion.div>
+                      ) : pausedIndex === index ? (
+                        <VolumeOffIcon fontSize="small" />
+                      ) : (
+                        <VolumeUpIcon fontSize="small" />
+                      )}
+                    </IconButton>
+                  </Stack>
 
                   {/* Get the graph state for this specific index */}
                   {(() => {
@@ -573,7 +509,6 @@ const VisualizationPage = () => {
                         : index;
                     const graphState =
                       getGraphStateByPromptIndex(graphStateIndex);
-
 
                     console.log(`Rendering for index ${index}:`, {
                       result,
@@ -652,7 +587,14 @@ const VisualizationPage = () => {
           }}
         >
           <Box sx={{ width: "100%", maxWidth: "700px" }}>
-            <VoiceSection
+            {/* <VoiceSection
+              userPrompt={userPrompt}
+              setUserPrompt={setUserPrompt}
+              handleSend={handleSend}
+              handleStop={handleStop}
+              isLoading={isLoading}
+            /> */}
+            <InputSection
               userPrompt={userPrompt}
               setUserPrompt={setUserPrompt}
               handleSend={handleSend}
