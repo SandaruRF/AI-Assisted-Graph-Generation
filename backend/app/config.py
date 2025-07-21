@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import ASCENDING
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,3 +48,16 @@ settings = Settings()
 
 client = AsyncIOMotorClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
+
+# Add conversation collection
+conversation_collection = db["conversations"]
+
+# Create indexes for better performance
+async def create_conversation_indexes():
+    await conversation_collection.create_index([
+        ("session_id", ASCENDING),
+        ("prompt_index", ASCENDING)
+    ], unique=True)
+    
+    await conversation_collection.create_index([("session_id", ASCENDING)])
+    await conversation_collection.create_index([("created_at", ASCENDING)])

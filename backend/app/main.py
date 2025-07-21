@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 
-from app.config import settings
+from app.config import create_conversation_indexes
 from app.api.database import router as database_router
 from app.api.interactions_router import router as interactions_router
 from app.api.users import router as user_router
@@ -13,6 +13,7 @@ from app.api.googleauth import router as google_auth_router
 from app.api.githubauth import router as github_auth_router
 from app.api.ranked_graphs_router import router as ranked_graphs_router
 from app.api.database_exporter import router as database_exporter
+from app.api.conversation import router as conversation_router
 from app.state import graph_state_manager
 from app.agents.visualization_agent.ui_customizer import parse_customization_prompt
 
@@ -42,7 +43,13 @@ app.include_router(stream_ws_router, tags=["Stream Web Socket"])
 app.include_router(interactions_router, prefix="/api", tags=["Graph Interactions"])
 app.include_router(ranked_graphs_router, prefix="/api")
 app.include_router(database_exporter, prefix="/api", tags=['Database Exporter'])
+app.include_router(conversation_router, prefix="/api/conversations", tags=["conversations"])
 
+@app.on_event("startup")
+async def startup_event():
+    # Create conversation indexes on startup
+    await create_conversation_indexes()
+    print("Conversation indexes created successfully")
 
 @app.get("/simple-test")
 async def simple_test():

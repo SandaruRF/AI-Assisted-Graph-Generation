@@ -270,7 +270,7 @@ export const sendInteractionData = async ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         graph_name: graphName,
@@ -292,7 +292,7 @@ export const sendInteractionData = async ({
   }
 };
 
-// Fetch interaction data 
+// Fetch interaction data
 export const fetchUserInteractionData = async () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -304,7 +304,7 @@ export const fetchUserInteractionData = async () => {
     const response = await fetch(`${API_BASE_URL}/user-interactions`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -338,8 +338,6 @@ export const fetchUserProfile = async (setProfileData, setError) => {
   }
 };
 
-
-
 //user detail update in user profile page
 export const updateUserProfile = async (
   updatedData,
@@ -356,31 +354,38 @@ export const updateUserProfile = async (
       phone_number: updatedData.mobile,
       user_profile_picture: updatedData.profilePhoto,
     };
-    const response = await axios.put(`${API_BASE_URL}/api/update/profile`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.put(
+      `${API_BASE_URL}/api/update/profile`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     setProfileData(response.data);
   } catch (error) {
     setError("Failed to update user profile: " + error.message);
   }
 };
 
-
-//graph exporter 
+//graph exporter
 export const handleExportClick = async (sessionId) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/api/export-db`, {
-      session_id: sessionId,
-    }, {
-      responseType: 'blob', // for binary file (zip)
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/api/export-db`,
+      {
+        session_id: sessionId,
+      },
+      {
+        responseType: "blob", // for binary file (zip)
+      }
+    );
 
     const url = window.URL.createObjectURL(new Blob([response.data]));
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'external_db_export.zip';
+    a.download = "external_db_export.zip";
     a.click();
     window.URL.revokeObjectURL(url);
   } catch (error) {
@@ -401,3 +406,125 @@ export async function customizeGraph(prompt) {
   });
   return res.json();
 }
+
+export const conversationApi = {
+  // Save user prompt to database
+  savePrompt: async (sessionId, promptIndex, userPrompt) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/conversations/save-prompt`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            session_id: sessionId,
+            prompt_index: promptIndex,
+            user_prompt: userPrompt,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Failed to save prompt:", error);
+      throw error;
+    }
+  },
+
+  // Update conversation entry with result
+  updateResult: async (sessionId, promptIndex, result, graphState = null) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/conversations/update-result`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            session_id: sessionId,
+            prompt_index: promptIndex,
+            result: result,
+            graph_state: graphState,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Failed to update result:", error);
+      throw error;
+    }
+  },
+
+  // Update traces for a conversation entry
+  updateTraces: async (sessionId, promptIndex, traces) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/conversations/update-traces`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            session_id: sessionId,
+            prompt_index: promptIndex,
+            traces: traces,
+          }),
+        }
+      );
+
+      return await response.json();
+    } catch (error) {
+      console.error("Failed to update traces:", error);
+      throw error;
+    }
+  },
+
+  // Get complete conversation history
+  getConversationHistory: async (sessionId) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/conversations/history/${sessionId}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.history || [];
+    } catch (error) {
+      console.error("Failed to get conversation history:", error);
+      return [];
+    }
+  },
+
+  // Delete session data
+  deleteSession: async (sessionId) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/conversations/session/${sessionId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      return await response.json();
+    } catch (error) {
+      console.error("Failed to delete session:", error);
+      throw error;
+    }
+  },
+};

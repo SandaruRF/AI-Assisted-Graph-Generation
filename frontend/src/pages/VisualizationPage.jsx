@@ -15,7 +15,6 @@ import TraceTimeline from "../components/chat_interface/TraceTimeline";
 import Graph from "../components/chat_interface/Graph";
 import ChartRenderer from "../components/graphs/ChartRenderer";
 import InputSection from "../components/chat_interface/InputSection";
-import VoiceSection from "../components/voice_input";
 
 import IconButton from "@mui/material/IconButton";
 import { speakText } from "../components/TextSpeaker";
@@ -25,6 +24,7 @@ import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import CopyButton from "../components/CopyClipboard";
+import { conversationApi } from "../services/api";
 
 const VisualizationPage = () => {
   const location = useLocation();
@@ -32,12 +32,14 @@ const VisualizationPage = () => {
     location.state?.sessionId ||
     `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; // Add fallback
   const [userPrompt, setUserPrompt] = useState("");
-  const [promptHistory, setPromptHistory] = useState([]);
+  // const [promptHistory, setPromptHistory] = useState([]);
   const [hoveredPromptIndex, setHoveredPromptIndex] = useState(null);
-  const [resultHistory, setResultHistory] = useState([]);
-  const [tracesHistory, setTracesHistory] = useState({}); // Keep as object
+  // const [resultHistory, setResultHistory] = useState([]);
+  // const [tracesHistory, setTracesHistory] = useState({}); // Keep as object
   const [isFirstSend, setIsFirstSend] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [conversationHistory, setConversationHistory] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(true);
   const scrollContainerRef = useRef(null);
   const lastPromptRef = useRef(null);
   const socketRef = useRef(null);
@@ -45,8 +47,26 @@ const VisualizationPage = () => {
   const [speakingIndex, setSpeakingIndex] = useState(null);
   const [pausedIndex, setPausedIndex] = useState(null);
 
-  // Replace single graph state with graph history array
-  const [graphHistory, setGraphHistory] = useState([]);
+  useEffect(() => {
+    const loadConversationHistory = async () => {
+      try {
+        setLoadingHistory(true);
+        const history = await conversationApi.getConversationHistory(sessionId);
+        setConversationHistory(history);
+
+        if (history.length > 0) {
+          setIsFirstSend(false);
+          latestIndexRef.current = history.length;
+        }
+      } catch (error) {
+        console.error("Failed to load conversation history:", error);
+      } finally {
+        setLoadingHistory(false);
+      }
+    };
+
+    loadConversationHistory();
+  }, [sessionId]);
 
   useEffect(() => {
     socketRef.current = new WebSocket("http://localhost:8000/ws");
@@ -59,103 +79,113 @@ const VisualizationPage = () => {
       console.error("WebSocket error:", error);
     };
 
-    socketRef.current.onmessage = (event) => {
+    socketRef.current.onmessage = async (event) => {
       try {
         const data = JSON.parse(event.data);
 
         if (data.type === "update") {
           const currentIndex = latestIndexRef.current;
-          setTracesHistory((prev) => ({
-            ...prev,
-            [currentIndex]: [...(prev[currentIndex] || []), data.message],
-          }));
+
+          // Update traces in database
+          const currentEntry = conversationHistory.find(
+            (entry) => entry.prompt_index === currentIndex
+          );
+
+          if (currentEntry) {
+            const updatedTraces = [
+              ...(currentEntry.traces || []),
+              data.message,
+            ];
+            await conversationApi.updateTraces(
+              sessionId,
+              currentIndex,
+              updatedTraces
+            );
+
+            // Update local state
+            setConversationHistory((prev) =>
+              prev.map((entry) =>
+                entry.prompt_index === currentIndex
+                  ? { ...entry, traces: updatedTraces }
+                  : entry
+              )
+            );
+          }
         } else if (data.type === "final") {
           setIsLoading(false);
           const result = data.result;
-          console.log("Received final result:", result); // Debug log
 
-          // Check if this is a customization response
+          // Create graph state if needed
+          let graphState = null;
           if (result.is_customization) {
-            console.log("Processing customization response:", result); // Debug log
-            // Add the customized graph state to history
-            setGraphHistory((prev) => {
-              const newHistory = [...prev];
-              // Ensure we have enough space in the array
-              while (newHistory.length <= result.prompt_index) {
-                newHistory.push(null);
-              }
-              newHistory[result.prompt_index] = result.graph_state;
-              console.log("Updated graph history:", newHistory); // Debug log
-              return newHistory;
-            });
-          } else {
-            // Regular graph generation - create new graph state
-            if (result.rearranged_data) {
-              const newGraphState = {
-                graph_type: result.ranked_graphs[0] || "line",
-                x_label: "X Axis",
-                y_label: "Y Axis",
-                legend_label: "Legend",
-                title: "Generated Graph",
-                color: "#3366cc",
-                data: result.rearranged_data,
-                num_numeric: result.num_numeric,
-                num_cat: result.num_cat,
-                num_temporal: result.num_temporal,
-                ranked_graphs: result.ranked_graphs,
-                prompt_index: result.prompt_index, // Use prompt_index from backend
-                is_customization: false,
-              };
-
-              // Add the new graph state to history
-              setGraphHistory((prev) => {
-                const newHistory = [...prev];
-                // Ensure we have enough space in the array
-                while (newHistory.length <= result.prompt_index) {
-                  newHistory.push(null);
-                }
-                newHistory[result.prompt_index] = newGraphState;
-                return newHistory;
-              });
-            }
+            graphState = result.graph_state;
+          } else if (result.rearranged_data) {
+            graphState = {
+              graph_type: result.ranked_graphs[0] || "line",
+              x_label: "X Axis",
+              y_label: "Y Axis",
+              legend_label: "Legend",
+              title: "Generated Graph",
+              color: "#3366cc",
+              data: result.rearranged_data,
+              num_numeric: result.num_numeric,
+              num_cat: result.num_cat,
+              num_temporal: result.num_temporal,
+              ranked_graphs: result.ranked_graphs,
+              prompt_index: result.prompt_index,
+              is_customization: false,
+            };
           }
 
-          setResultHistory((prev) => [...prev, result]);
+          // Update result in database
+          await conversationApi.updateResult(
+            sessionId,
+            latestIndexRef.current,
+            result,
+            graphState
+          );
+
+          // Update local state
+          setConversationHistory((prev) =>
+            prev.map((entry) =>
+              entry.prompt_index === latestIndexRef.current
+                ? { ...entry, result, graph_state: graphState }
+                : entry
+            )
+          );
         } else if (data.type === "error") {
           setIsLoading(false);
           console.error("Error from server:", data.message);
+
+          // Add error to traces
           const currentIndex = latestIndexRef.current;
-          setTracesHistory((prev) => ({
-            ...prev,
-            [currentIndex]: [
-              ...(prev[currentIndex] || []),
+          const currentEntry = conversationHistory.find(
+            (entry) => entry.prompt_index === currentIndex
+          );
+
+          if (currentEntry) {
+            const updatedTraces = [
+              ...(currentEntry.traces || []),
               `Error: ${data.message}`,
-            ],
-          }));
-        } else {
-          // Handle legacy format
-          if (data.result) {
-            setResultHistory((prev) => [...prev, data.result]);
-          }
-          if (data.message) {
-            const currentIndex = latestIndexRef.current;
-            setTracesHistory((prev) => ({
-              ...prev,
-              [currentIndex]: [...(prev[currentIndex] || []), data.message],
-            }));
+            ];
+            await conversationApi.updateTraces(
+              sessionId,
+              currentIndex,
+              updatedTraces
+            );
+
+            setConversationHistory((prev) =>
+              prev.map((entry) =>
+                entry.prompt_index === currentIndex
+                  ? { ...entry, traces: updatedTraces }
+                  : entry
+              )
+            );
           }
         }
       } catch (error) {
         setIsLoading(false);
         console.error("Error parsing WebSocket message:", error);
-        const currentIndex = latestIndexRef.current;
-        setTracesHistory((prev) => ({
-          ...prev,
-          [currentIndex]: [
-            ...(prev[currentIndex] || []),
-            `Error: ${error.message}`,
-          ],
-        }));
       }
     };
 
@@ -166,35 +196,55 @@ const VisualizationPage = () => {
     return () => {
       socketRef.current?.close();
     };
-  }, []); // Remove resultHistory.length dependency to prevent WebSocket recreation
+  }, [sessionId, conversationHistory]);
 
   const handleSend = async () => {
-    if (userPrompt.trim() === "") return;
-
-    if (isLoading) return;
+    if (userPrompt.trim() === "" || isLoading) return;
 
     if (isFirstSend) {
       setIsFirstSend(false);
     }
 
     setIsLoading(true);
+    const currentIndex = conversationHistory.length;
+    latestIndexRef.current = currentIndex;
 
-    const messageObject = {
-      user_prompt: userPrompt,
-      session_id: sessionId,
-    };
+    try {
+      // Save prompt to database first
+      await conversationApi.savePrompt(sessionId, currentIndex, userPrompt);
 
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify(messageObject));
+      // Add to local state immediately for UI responsiveness
+      const newEntry = {
+        id: `temp_${currentIndex}`,
+        session_id: sessionId,
+        prompt_index: currentIndex,
+        user_prompt: userPrompt,
+        result: null,
+        traces: [],
+        graph_state: null,
+        created_at: new Date().toISOString(),
+      };
 
-      setPromptHistory((prev) => {
-        const newLength = prev.length;
-        latestIndexRef.current = newLength;
-        return [...prev, userPrompt];
-      });
-      setUserPrompt("");
-    } else {
-      console.error("WebSocket is not open.");
+      setConversationHistory((prev) => [...prev, newEntry]);
+
+      // Send WebSocket message
+      const messageObject = {
+        user_prompt: userPrompt,
+        session_id: sessionId,
+      };
+
+      if (
+        socketRef.current &&
+        socketRef.current.readyState === WebSocket.OPEN
+      ) {
+        socketRef.current.send(JSON.stringify(messageObject));
+        setUserPrompt("");
+      } else {
+        console.error("WebSocket is not open.");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Failed to save prompt:", error);
       setIsLoading(false);
     }
   };
@@ -260,30 +310,28 @@ const VisualizationPage = () => {
         behavior: "smooth",
       });
     }
-  }, [promptHistory]);
-
-  // Helper function to get graph state for a specific index
-  const getGraphStateForIndex = (index) => {
-    console.log(`getGraphStateForIndex called with index: ${index}`);
-    console.log(`graphHistory length: ${graphHistory.length}`);
-    console.log(`graphHistory:`, graphHistory);
-    return graphHistory[index] || null;
-  };
-
-  // Helper function to get graph state by prompt index
-  const getGraphStateByPromptIndex = (promptIndex) => {
-    console.log(
-      `getGraphStateByPromptIndex called with promptIndex: ${promptIndex}`
-    );
-    console.log(`graphHistory length: ${graphHistory.length}`);
-    console.log(`graphHistory:`, graphHistory);
-    return graphHistory[promptIndex] || null;
-  };
+  }, [conversationHistory]);
 
   // Debug logging for result history (from dev branch)
   useEffect(() => {
-    console.log("📊 Result History Updated:", resultHistory);
-  }, [resultHistory]);
+    console.log("📊 Conversation History Updated:", conversationHistory);
+  }, [conversationHistory]);
+
+  // Show loading while fetching history
+  if (loadingHistory) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Typography>Loading conversation history...</Typography>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -314,8 +362,8 @@ const VisualizationPage = () => {
             mx: "auto",
           }}
         >
-          {promptHistory.map((prompt, index) => (
-            <React.Fragment key={index}>
+          {conversationHistory.map((entry, index) => (
+            <React.Fragment key={entry.id || index}>
               {/* Prompt */}
               <Box
                 onMouseEnter={() => setHoveredPromptIndex(index)}
@@ -340,7 +388,9 @@ const VisualizationPage = () => {
               >
                 <Paper
                   ref={
-                    index === promptHistory.length - 1 ? lastPromptRef : null
+                    index === conversationHistory.length - 1
+                      ? lastPromptRef
+                      : null
                   }
                   className="paper-component" // Add class for targeting
                   sx={{
@@ -354,7 +404,7 @@ const VisualizationPage = () => {
                     // Remove hover styles from Paper - now handled by wrapper
                   }}
                 >
-                  <Typography>{prompt}</Typography>
+                  <Typography>{entry.user_prompt}</Typography>
                 </Paper>
 
                 {/* Hover Icons */}
@@ -377,7 +427,7 @@ const VisualizationPage = () => {
                   >
                     <IconButton
                       size="small"
-                      onClick={() => handleEditPrompt(index, prompt)}
+                      onClick={() => handleEditPrompt(index, entry.user_prompt)}
                       sx={{
                         color: "grey.600",
                         backgroundColor: "transparent",
@@ -396,7 +446,7 @@ const VisualizationPage = () => {
 
                     <IconButton
                       size="small"
-                      onClick={() => handleCopyPrompt(prompt)}
+                      onClick={() => handleCopyPrompt(entry.user_prompt)}
                       sx={{
                         color: "grey.600",
                         backgroundColor: "transparent",
@@ -416,10 +466,10 @@ const VisualizationPage = () => {
               </Box>
 
               {/* Traces */}
-              <TraceTimeline messages={tracesHistory[index] || []} />
+              <TraceTimeline messages={entry.traces || []} />
 
               {/* Response */}
-              {promptHistory[index] && !resultHistory[index] && (
+              {entry.user_prompt && !entry.result && (
                 <Box sx={{ pl: 1 }}>
                   <video
                     ref={(el) => {
@@ -434,7 +484,7 @@ const VisualizationPage = () => {
                   />
                 </Box>
               )}
-              {resultHistory[index] && (
+              {entry.result && (
                 <Box
                   sx={{
                     display: "flex",
@@ -445,20 +495,20 @@ const VisualizationPage = () => {
                     pb: 4,
                   }}
                 >
-                  <TypewriterWords text={resultHistory[index].response} />
+                  <TypewriterWords text={entry.result.response} />
 
                   <Stack
                     direction="row"
                     spacing={1}
                     sx={{ mt: 1, alignItems: "center" }}
                   >
-                    <CopyButton text={resultHistory[index].response} />
+                    <CopyButton text={entry.result.response} />
 
                     {/* Speaker Button */}
                     <IconButton
                       onClick={() =>
                         speakText(
-                          resultHistory[index].response,
+                          entry.result.response,
                           () => {
                             setSpeakingIndex(index);
                             setPausedIndex(null);
@@ -498,71 +548,23 @@ const VisualizationPage = () => {
                     </IconButton>
                   </Stack>
 
-                  {/* Get the graph state for this specific index */}
-                  {(() => {
-                    const result = resultHistory[index];
-
-                    // Use prompt_index from result if available, otherwise fall back to array index
-                    const graphStateIndex =
-                      result.prompt_index !== undefined
-                        ? result.prompt_index
-                        : index;
-                    const graphState =
-                      getGraphStateByPromptIndex(graphStateIndex);
-
-                    console.log(`Rendering for index ${index}:`, {
-                      result,
-                      graphStateIndex,
-                      graphState,
-                      isCustomization: result.is_customization,
-                    });
-
-                    if (result.is_customization) {
-                      // Customization response - show updated chart using ChartRenderer
-                      console.log("Showing ChartRenderer for customization");
-                      return graphState && graphState.data ? (
-                        <Box sx={{ width: "100%", mt: 2 }}>
-                          <ChartRenderer
-                            data={graphState.data}
-                            state={graphState}
-                          />
-                        </Box>
-                      ) : (
-                        <Box
-                          sx={{
-                            width: "100%",
-                            mt: 2,
-                            p: 2,
-                            backgroundColor: "#f0f0f0",
-                          }}
-                        >
-                          <Typography>
-                            Graph state not available for customization
-                          </Typography>
-                          <Typography variant="body2">
-                            Graph state index: {graphStateIndex}
-                          </Typography>
-                          <Typography variant="body2">
-                            Graph state: {JSON.stringify(graphState)}
-                          </Typography>
-                        </Box>
-                      );
-                    } else {
-                      // Regular graph generation - show original Graph component
-                      console.log(
-                        "Showing Graph component for regular generation"
-                      );
-                      return (
-                        <Graph
-                          num_numeric={result.num_numeric}
-                          num_cat={result.num_cat}
-                          num_temporal={result.num_temporal}
-                          types={result.ranked_graphs}
-                          data={result.rearranged_data}
-                        />
-                      );
-                    }
-                  })()}
+                  {/* Graph rendering */}
+                  {entry.result.is_customization && entry.graph_state ? (
+                    <Box sx={{ width: "100%", mt: 2 }}>
+                      <ChartRenderer
+                        data={entry.graph_state.data}
+                        state={entry.graph_state}
+                      />
+                    </Box>
+                  ) : entry.result.rearranged_data ? (
+                    <Graph
+                      num_numeric={entry.result.num_numeric}
+                      num_cat={entry.result.num_cat}
+                      num_temporal={entry.result.num_temporal}
+                      types={entry.result.ranked_graphs}
+                      data={entry.result.rearranged_data}
+                    />
+                  ) : null}
                 </Box>
               )}
             </React.Fragment>

@@ -221,12 +221,16 @@ async def websocket_endpoint(websocket: WebSocket):
                         # Add the new graph state to history
                         graph_state_manager.add_new_graph(new_graph_state, session_id, current_prompt_index)
                     
-                    # Create frontend payload (from dev branch)
+                    filtered_result = {
+                        key: value for key, value in result_dict.items() 
+                        if key not in ['metadata', 'sql_query']
+                    }
+
                     frontend_payload = {
                         "type": "final",
                         "message": "Prompt processed successfully!",
                         "result": {
-                            **result_dict,
+                            **filtered_result,
                             "prompt_index": current_prompt_index
                         }
                     }
