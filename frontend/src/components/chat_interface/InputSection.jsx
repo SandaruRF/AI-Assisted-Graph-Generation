@@ -7,13 +7,17 @@ const InputSection = ({
   handleSend,
   handleStop,
   isLoading = false,
+  suggestions,
 }) => {
   const promptSuggestions = [
-    "Show sales trends for Q1",
-    "Find anomalies in customer behavior",
-    "Change title to 'Sales Analysis'",
-    "Make it red",
-    "Switch to bar chart",
+    // "Show sales trends for Q1",
+    // "Find anomalies in customer behavior",
+    // "Change title to 'Sales Analysis'",
+    // "Make it red",
+    // "Switch to bar chart",
+    suggestions[0] || "Explore data patterns",
+    suggestions[1] || "Create visualization",
+    suggestions[2] || "Analyze trends",
   ];
 
   const handleKeyDown = (e) => {
