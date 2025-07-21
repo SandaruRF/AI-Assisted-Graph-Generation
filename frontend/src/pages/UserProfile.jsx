@@ -12,10 +12,6 @@ import {
   Grid,
   Divider,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   InputAdornment,
   CircularProgress,
   Card,
@@ -27,21 +23,17 @@ import {
   PhotoCamera,
   Edit,
   Cancel,
-  Visibility,
-  VisibilityOff,
   Person,
   Email,
   Phone,
   Lock,
   Update,
-  CheckCircle,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 import { fetchUserProfile, updateUserProfile } from "../services/api";
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+
 
 const UserProfile = () => {
   const [profileData, setProfileData] = useState({
@@ -52,6 +44,7 @@ const UserProfile = () => {
     profilePhoto: null,
   });
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUserProfile((data) => {
@@ -68,17 +61,8 @@ const UserProfile = () => {
   const [originalData, setOriginalData] = useState({ ...profileData });
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({ ...profileData });
-  const [passwordDialog, setPasswordDialog] = useState(false);
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-  const [showPasswords, setShowPasswords] = useState({
-    current: false,
-    new: false,
-    confirm: false,
-  });
+
+ 
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -90,9 +74,7 @@ const UserProfile = () => {
     setEditData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handlePasswordChange = (field, value) => {
-    setPasswordData((prev) => ({ ...prev, [field]: value }));
-  };
+  
 
   const handlePhotoUpload = (event) => {
     const file = event.target.files[0];
@@ -122,19 +104,39 @@ const UserProfile = () => {
     setIsEditing(true);
   };
 
+  // Sync editData and originalData with profileData when it changes, but only if not editing
+  useEffect(() => {
+    if (!isEditing) {
+      setEditData({
+        firstName: profileData.firstName || "",
+        lastName: profileData.lastName || "",
+        email: profileData.email || "",
+        mobile: profileData.mobile || "",
+        profilePhoto: profileData.profilePhoto || null,
+      });
+      setOriginalData({
+        firstName: profileData.firstName || "",
+        lastName: profileData.lastName || "",
+        email: profileData.email || "",
+        mobile: profileData.mobile || "",
+        profilePhoto: profileData.profilePhoto || null,
+      });
+    }
+  }, [profileData, isEditing]);
+
   const handleUpdate = async () => {
     // Validation
     if (
-      !editData.firstName.trim() ||
-      !editData.lastName.trim() ||
-      !editData.email.trim() ||
-      !editData.mobile.trim()
+      !(editData.firstName || "").trim() ||
+      !(editData.lastName || "").trim() ||
+      !(editData.email || "").trim() ||
+      !(editData.mobile || "").trim()
     ) {
       showSnackbar("Please fill in all fields", "error");
       return;
     }
 
-    if (!isValidEmail(editData.email)) {
+    if (!isValidEmail(editData.email || "")) {
       showSnackbar("Please enter a valid email address", "error");
       return;
     }
@@ -144,6 +146,16 @@ const UserProfile = () => {
       // Pass form data to API for update
       await updateUserProfile(editData, setProfileData, setError);
       setIsEditing(false);
+      // Fetch latest profile data from backend after update
+      fetchUserProfile((data) => {
+        setProfileData({
+          firstName: data.first_name || "",
+          lastName: data.last_name || "",
+          email: data.email || "",
+          mobile: data.phone_number || "",
+          profilePhoto: data.user_profile_picture || null,
+        });
+      }, setError);
       showSnackbar("Profile updated successfully!", "success");
     } catch (error) {
       showSnackbar("Failed to update profile. Please try again.", "error");
@@ -157,52 +169,13 @@ const UserProfile = () => {
     setIsEditing(false);
   };
 
-  const handlePasswordSave = async () => {
-    if (
-      !passwordData.currentPassword ||
-      !passwordData.newPassword ||
-      !passwordData.confirmPassword
-    ) {
-      showSnackbar("Please fill in all password fields", "error");
-      return;
-    }
-
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      showSnackbar("New passwords do not match!", "error");
-      return;
-    }
-
-    if (passwordData.newPassword.length < 8) {
-      showSnackbar("Password must be at least 8 characters long!", "error");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      setPasswordDialog(false);
-      setPasswordData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-      showSnackbar("Password changed successfully!", "success");
-    } catch (error) {
-      showSnackbar("Failed to change password. Please try again.", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+ 
 
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
   };
 
-  const togglePasswordVisibility = (field) => {
-    setShowPasswords((prev) => ({ ...prev, [field]: !prev[field] }));
-  };
+  
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -443,7 +416,7 @@ const UserProfile = () => {
             <Button
               variant="outlined"
               startIcon={<Lock />}
-              onClick={() => setPasswordDialog(true)}
+              onClick={() => navigate("/forgot-password")}
               sx={{
                 borderRadius: 2,
                 color: "#1976d2",
@@ -461,129 +434,7 @@ const UserProfile = () => {
           </Box>
         </Paper>
 
-        {/* Password Change Dialog */}
-        <Dialog
-          open={passwordDialog}
-          onClose={() => setPasswordDialog(false)}
-          maxWidth="sm"
-          fullWidth
-          TransitionComponent={Transition}
-          PaperProps={{
-            sx: { borderRadius: 3 },
-          }}
-        >
-          <DialogTitle
-            sx={{
-              fontWeight: 600,
-              pb: 1,
-              borderBottom: "1px solid #e0e0e0",
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Lock color="primary" />
-              Change Password
-            </Box>
-          </DialogTitle>
-          <DialogContent sx={{ pt: 3 }}>
-            <TextField
-              fullWidth
-              label="Current Password"
-              type={showPasswords.current ? "text" : "password"}
-              value={passwordData.currentPassword}
-              onChange={(e) =>
-                handlePasswordChange("currentPassword", e.target.value)
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => togglePasswordVisibility("current")}
-                    >
-                      {showPasswords.current ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ mb: 3 }}
-              variant="outlined"
-            />
-
-            <TextField
-              fullWidth
-              label="New Password"
-              type={showPasswords.new ? "text" : "password"}
-              value={passwordData.newPassword}
-              onChange={(e) =>
-                handlePasswordChange("newPassword", e.target.value)
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => togglePasswordVisibility("new")}>
-                      {showPasswords.new ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ mb: 3 }}
-              variant="outlined"
-            />
-
-            <TextField
-              fullWidth
-              label="Confirm New Password"
-              type={showPasswords.confirm ? "text" : "password"}
-              value={passwordData.confirmPassword}
-              onChange={(e) =>
-                handlePasswordChange("confirmPassword", e.target.value)
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => togglePasswordVisibility("confirm")}
-                    >
-                      {showPasswords.confirm ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-            />
-          </DialogContent>
-          <DialogActions sx={{ p: 3, pt: 2 }}>
-            <Button
-              onClick={() => setPasswordDialog(false)}
-              disabled={loading}
-              sx={{ borderRadius: 2 }}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handlePasswordSave}
-              disabled={loading}
-              startIcon={
-                loading ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  <CheckCircle />
-                )
-              }
-              sx={{ borderRadius: 2, px: 3 }}
-            >
-              {loading ? "Changing..." : "Change Password"}
-            </Button>
-          </DialogActions>
-        </Dialog>
+        
 
         {/* Snackbar for notifications */}
         <Snackbar
