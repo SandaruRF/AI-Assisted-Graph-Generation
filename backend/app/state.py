@@ -106,6 +106,7 @@ graph_state_manager = GraphStateManager()
 class State(BaseModel):
     session_id: str
     user_prompt: str
+    suggestions: List[str]
     intents: List[str]
     metadata: Dict[str, Any]
     sql_query: str
