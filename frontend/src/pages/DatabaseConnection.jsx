@@ -23,8 +23,6 @@ const databaseTypes = [
   "SQL Server",
   "MariaDB",
   "Oracle DB",
-  "SQLite",
-  "Redshift",
 ];
 
 const NewConnection = () => {

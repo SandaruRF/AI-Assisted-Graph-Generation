@@ -9,8 +9,6 @@ import {
   Container,
   IconButton,
 } from "@mui/material";
-import ChevronLeft from "@mui/icons-material/ChevronLeft";
-import ChevronRight from "@mui/icons-material/ChevronRight";
 import NavigationBar from "../components/NavigationBar";
 import AnimationComponent from "../components/AnimationComponent";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
