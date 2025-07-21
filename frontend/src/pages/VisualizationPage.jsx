@@ -19,6 +19,7 @@ const VisualizationPage = () => {
   const [resultHistory, setResultHistory] = useState([]);
   const [tracesHistory, setTracesHistory] = useState({}); // Keep as object
   const [isFirstSend, setIsFirstSend] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const scrollContainerRef = useRef(null);
   const lastPromptRef = useRef(null);
   const socketRef = useRef(null);
@@ -49,6 +50,7 @@ const VisualizationPage = () => {
             [currentIndex]: [...(prev[currentIndex] || []), data.message],
           }));
         } else if (data.type === "final") {
+          setIsLoading(false);
           const result = data.result;
           console.log("Received final result:", result); // Debug log
 
@@ -100,6 +102,7 @@ const VisualizationPage = () => {
 
           setResultHistory((prev) => [...prev, result]);
         } else if (data.type === "error") {
+          setIsLoading(false);
           console.error("Error from server:", data.message);
           const currentIndex = latestIndexRef.current;
           setTracesHistory((prev) => ({
@@ -123,6 +126,7 @@ const VisualizationPage = () => {
           }
         }
       } catch (error) {
+        setIsLoading(false);
         console.error("Error parsing WebSocket message:", error);
         const currentIndex = latestIndexRef.current;
         setTracesHistory((prev) => ({
@@ -147,9 +151,13 @@ const VisualizationPage = () => {
   const handleSend = async () => {
     if (userPrompt.trim() === "") return;
 
+    if (isLoading) return;
+
     if (isFirstSend) {
       setIsFirstSend(false);
     }
+
+    setIsLoading(true);
 
     const messageObject = {
       user_prompt: userPrompt,
@@ -167,7 +175,24 @@ const VisualizationPage = () => {
       setUserPrompt("");
     } else {
       console.error("WebSocket is not open.");
+      setIsLoading(false);
     }
+  };
+
+  const handleStop = () => {
+    console.log("Stopping current request...");
+
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.close();
+    }
+
+    setIsLoading(false);
+
+    // Reconnect WebSocket
+    setTimeout(() => {
+      socketRef.current = new WebSocket("ws://localhost:8000/ws");
+      // Re-initialize WebSocket handlers here (copy the useEffect WebSocket setup)
+    }, 1000);
   };
 
   // Add these handler functions in your VisualizationPage component
@@ -495,6 +520,8 @@ const VisualizationPage = () => {
               userPrompt={userPrompt}
               setUserPrompt={setUserPrompt}
               handleSend={handleSend}
+              handleStop={handleStop}
+              isLoading={isLoading}
             />
           </Box>
         </Box>

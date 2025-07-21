@@ -1,7 +1,13 @@
 import React from "react";
 import { Box, Paper, TextField, Chip, Stack, Button } from "@mui/material";
 
-const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => {
+const InputSection = ({
+  userPrompt,
+  setUserPrompt,
+  handleSend,
+  handleStop,
+  isLoading = false,
+}) => {
   const promptSuggestions = [
     "Show sales trends for Q1",
     "Find anomalies in customer behavior",
@@ -56,9 +62,9 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => {
         {/* Send Button */}
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
-            onClick={handleSend}
+            onClick={isLoading ? handleStop : handleSend}
             variant="contained"
-            disabled={userPrompt.trim() === ""}
+            disabled={!isLoading && userPrompt.trim() === ""}
             sx={{
               mt: 2,
               borderRadius: "8px",
@@ -68,19 +74,25 @@ const InputSection = ({ userPrompt, setUserPrompt, handleSend }) => {
               transform: userPrompt.trim() === "" ? "scale(0.98)" : "scale(1)",
               minWidth: "auto", // Prevent button from being too wide
               px: 2, // Add some padding
-              backgroundColor: "#e9f0ffff", // Custom background color
-              "&:hover": {
-                backgroundColor: "#e9f0ffff", // Darker on hover
-              },
+              // backgroundColor: "#e9f0ffff", // Custom background color
+              // "&:hover": {
+              //   backgroundColor: "#e9f0ffff", // Darker on hover
+              // },
+              backgroundColor: isLoading ? "#ffe9e9ff" : "#e9f0ffff",
             }}
           >
             <img
-              src="/assets/paper-plane.png"
-              alt="Send"
+              src={
+                isLoading ? "/assets/stop-icon.png" : "/assets/paper-plane.png"
+              }
+              alt={isLoading ? "Stop" : "Send"}
               style={{
                 width: 18,
                 height: 18,
-                filter: userPrompt.trim() === "" ? "grayscale(100%)" : "none", // Grey out when disabled
+                filter:
+                  !isLoading && userPrompt.trim() === ""
+                    ? "grayscale(100%)"
+                    : "none", // Grey out when disabled
               }}
             />
           </Button>
