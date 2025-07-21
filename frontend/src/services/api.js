@@ -248,3 +248,156 @@ export const handleGitHubAuthCallback = async (code, Navigate) => {
       });
   }
 };
+
+//interaction data post endpoint
+
+export const sendInteractionData = async ({
+  graphName,
+  exactTimeSpentSec,
+  exportCount,
+  likeCount,
+  dislikeCount,
+  panCount,
+}) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No authentication token found.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/interaction`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        graph_name: graphName,
+        time_spent: exactTimeSpentSec,
+        export_count: exportCount,
+        like_count: likeCount,
+        dislike_count: dislikeCount,
+        pan_count: panCount,
+      }),
+      keepalive: true,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Interaction send failed:", errorText);
+    }
+  } catch (err) {
+    console.error("Failed to send interaction:", err);
+  }
+};
+
+// Fetch interaction data 
+export const fetchUserInteractionData = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No authentication token found.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/user-interactions`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Fetching user interactions failed:", errorText);
+      return null;
+    }
+
+    const result = await response.json();
+    return result.user_interactions || [];
+  } catch (err) {
+    console.error("Failed to fetch user interaction data:", err);
+    return null;
+  }
+};
+
+// Function to fetch user profile data for profile page
+export const fetchUserProfile = async (setProfileData, setError) => {
+  const token = localStorage.getItem("token");
+  try {
+    // Changed endpoint from /api/user/profile to /api/profile
+    const response = await axios.get(`${API_BASE_URL}/api/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setProfileData(response.data);
+  } catch (error) {
+    setError("Failed to fetch user profile data: " + error.message);
+  }
+};
+
+
+
+//user detail update in user profile page
+export const updateUserProfile = async (
+  updatedData,
+  setProfileData,
+  setError
+) => {
+  const token = localStorage.getItem("token");
+  try {
+    // Map frontend fields to backend fields
+    const payload = {
+      first_name: updatedData.firstName,
+      last_name: updatedData.lastName,
+      email: updatedData.email,
+      phone_number: updatedData.mobile,
+      user_profile_picture: updatedData.profilePhoto,
+    };
+    const response = await axios.put(`${API_BASE_URL}/api/update/profile`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setProfileData(response.data);
+  } catch (error) {
+    setError("Failed to update user profile: " + error.message);
+  }
+};
+
+
+//graph exporter 
+export const handleExportClick = async (sessionId) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/export-db`, {
+      session_id: sessionId,
+    }, {
+      responseType: 'blob', // for binary file (zip)
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'external_db_export.zip';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Export failed:", error);
+  }
+};
+
+export async function getGraphState() {
+  const res = await fetch(`${API_BASE_URL}/api/graph/state`);
+  return res.json();
+}
+
+export async function customizeGraph(prompt) {
+  const res = await fetch(`${API_BASE_URL}/api/graph/customize`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt }),
+  });
+  return res.json();
+}

@@ -7,10 +7,14 @@ from app.models.connection_form import ConnectionData, ConnectionStringData
 from app.config import settings
 from app.utils.logging import logger
 from app.utils.auth import get_current_user
+from app.models.interaction_models import InteractionData
+from urllib.parse import urlparse
 
 client = MongoClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
 connections_collection = db["DatabaseDetails"]
+
+
 
 router = APIRouter()
 
@@ -36,18 +40,36 @@ async def save_connection_string_form(data: ConnectionStringData, usr_email: str
     try:
         data_dict = data.dict()
         logger.info(f"Received connection string data: {data_dict}")
-        if not data_dict.get("ssl"):
-            data_dict["ssl"] = False
+
+        connection_string = data_dict.get("connection_string")
+        if not connection_string:
+            raise HTTPException(status_code=400, detail="Missing connection string")
+
+        # Parse connection string
+        parsed = urlparse(connection_string)
+
+        # Fill in the fields from the connection string
+        data_dict["db_type"] = parsed.scheme.capitalize()  # MySQL
+        data_dict["username"] = parsed.username
+        data_dict["password"] = parsed.password
+        data_dict["host"] = parsed.hostname
+        data_dict["port"] = parsed.port
+        data_dict["database"] = parsed.path.lstrip("/")
         data_dict["form_type"] = "connection_string_form"
         data_dict["email"] = usr_email
+        data_dict["ssl"] = data_dict.get("ssl", False)
+
         result = connections_collection.insert_one(data_dict)
+
         return {
             "status": "success",
-            "form": "connection_string_form",
+            "form": "detailed_form",
             "id": str(result.inserted_id),
             "connection_name": data.name
         }
+
     except Exception as e:
+        logger.exception("Error saving connection string")
         raise HTTPException(status_code=500, detail=str(e))
 
 #take current saved database details from the database
@@ -123,3 +145,4 @@ async def delete_connection(connection_id: str):
             raise HTTPException(status_code=404, detail="Connection not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    

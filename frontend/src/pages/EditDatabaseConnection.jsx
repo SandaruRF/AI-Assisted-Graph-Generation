@@ -15,6 +15,7 @@ import {
 import LockIcon from "@mui/icons-material/Lock";
 import MemoryIcon from "@mui/icons-material/Memory";
 import { getConnectionById, updateConnection } from "../services/api";
+import NavigationBar from "../components/NavigationBar";
 
 const databaseTypes = [
   "MySQL",
@@ -22,8 +23,7 @@ const databaseTypes = [
   "SQL Server",
   "MariaDB",
   "Oracle DB",
-  "SQLite",
-  "Redshift",
+
 ];
 
 const EditConnection = () => {
@@ -134,6 +134,12 @@ const EditConnection = () => {
   };
 
   return (
+    <Box sx={{ 
+          backgroundColor: "#F8F9FD",
+          minHeight: "100vh",
+          overflow: "hidden"
+        }}>
+          <NavigationBar />
     <Box sx={{ maxWidth: 850, margin: "auto", p: 3 }}>
       <Paper sx={{ p: 3, mb: 3 }}>
         <Box sx={{ mb: 3 }}>
@@ -366,6 +372,7 @@ const EditConnection = () => {
       >
         <Alert severity="error">{error}</Alert>
       </Snackbar>
+    </Box>
     </Box>
   );
 };
