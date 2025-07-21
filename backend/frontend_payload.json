@@ -2,8 +2,8 @@
   "type": "final",
   "message": "Prompt processed successfully!",
   "result": {
-    "session_id": "3dbd3703-4788-4d29-911b-fc3cc999bb06",
-    "user_prompt": "top 5 artists names",
+    "session_id": "8812f6fe-7cc6-4cd3-98c5-5da59fe2d86e",
+    "user_prompt": "Show me the web artist names.",
     "intents": [
       "exploratory"
     ],
@@ -486,14 +486,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "manager_staff_id",
-              "referenced_table": "staff",
-              "referenced_column": "staff_id"
-            },
-            {
               "local_column": "address_id",
               "referenced_table": "address",
               "referenced_column": "address_id"
+            },
+            {
+              "local_column": "manager_staff_id",
+              "referenced_table": "staff",
+              "referenced_column": "staff_id"
             }
           ],
           "numeric_columns": [
@@ -876,14 +876,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "film_id",
-              "referenced_table": "film",
-              "referenced_column": "film_id"
-            },
-            {
               "local_column": "actor_id",
               "referenced_table": "actor",
               "referenced_column": "actor_id"
+            },
+            {
+              "local_column": "film_id",
+              "referenced_table": "film",
+              "referenced_column": "film_id"
             }
           ],
           "numeric_columns": [
@@ -935,14 +935,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "category_id",
-              "referenced_table": "category",
-              "referenced_column": "category_id"
-            },
-            {
               "local_column": "film_id",
               "referenced_table": "film",
               "referenced_column": "film_id"
+            },
+            {
+              "local_column": "category_id",
+              "referenced_table": "category",
+              "referenced_column": "category_id"
             }
           ],
           "numeric_columns": [
@@ -1047,14 +1047,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "film_id",
-              "referenced_table": "film",
-              "referenced_column": "film_id"
-            },
-            {
               "local_column": "store_id",
               "referenced_table": "store",
               "referenced_column": "store_id"
+            },
+            {
+              "local_column": "film_id",
+              "referenced_table": "film",
+              "referenced_column": "film_id"
             }
           ],
           "numeric_columns": [
@@ -1135,9 +1135,9 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "staff_id",
-              "referenced_table": "staff",
-              "referenced_column": "staff_id"
+              "local_column": "rental_id",
+              "referenced_table": "rental",
+              "referenced_column": "rental_id"
             },
             {
               "local_column": "customer_id",
@@ -1145,9 +1145,9 @@
               "referenced_column": "customer_id"
             },
             {
-              "local_column": "rental_id",
-              "referenced_table": "rental",
-              "referenced_column": "rental_id"
+              "local_column": "staff_id",
+              "referenced_table": "staff",
+              "referenced_column": "staff_id"
             }
           ],
           "numeric_columns": [
@@ -1234,14 +1234,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "staff_id",
-              "referenced_table": "staff",
-              "referenced_column": "staff_id"
-            },
-            {
               "local_column": "inventory_id",
               "referenced_table": "inventory",
               "referenced_column": "inventory_id"
+            },
+            {
+              "local_column": "staff_id",
+              "referenced_table": "staff",
+              "referenced_column": "staff_id"
             },
             {
               "local_column": "customer_id",
@@ -1306,16 +1306,16 @@
         },
         {
           "from_table": "store",
-          "from_column": "manager_staff_id",
-          "to_table": "staff",
-          "to_column": "staff_id",
+          "from_column": "address_id",
+          "to_table": "address",
+          "to_column": "address_id",
           "relationship_type": "foreign_key"
         },
         {
           "from_table": "store",
-          "from_column": "address_id",
-          "to_table": "address",
-          "to_column": "address_id",
+          "from_column": "manager_staff_id",
+          "to_table": "staff",
+          "to_column": "staff_id",
           "relationship_type": "foreign_key"
         },
         {
@@ -1348,16 +1348,23 @@
         },
         {
           "from_table": "film_actor",
+          "from_column": "actor_id",
+          "to_table": "actor",
+          "to_column": "actor_id",
+          "relationship_type": "foreign_key"
+        },
+        {
+          "from_table": "film_actor",
           "from_column": "film_id",
           "to_table": "film",
           "to_column": "film_id",
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "film_actor",
-          "from_column": "actor_id",
-          "to_table": "actor",
-          "to_column": "actor_id",
+          "from_table": "film_category",
+          "from_column": "film_id",
+          "to_table": "film",
+          "to_column": "film_id",
           "relationship_type": "foreign_key"
         },
         {
@@ -1368,20 +1375,6 @@
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "film_category",
-          "from_column": "film_id",
-          "to_table": "film",
-          "to_column": "film_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "inventory",
-          "from_column": "film_id",
-          "to_table": "film",
-          "to_column": "film_id",
-          "relationship_type": "foreign_key"
-        },
-        {
           "from_table": "inventory",
           "from_column": "store_id",
           "to_table": "store",
@@ -1389,10 +1382,17 @@
           "relationship_type": "foreign_key"
         },
         {
+          "from_table": "inventory",
+          "from_column": "film_id",
+          "to_table": "film",
+          "to_column": "film_id",
+          "relationship_type": "foreign_key"
+        },
+        {
           "from_table": "payment",
-          "from_column": "staff_id",
-          "to_table": "staff",
-          "to_column": "staff_id",
+          "from_column": "rental_id",
+          "to_table": "rental",
+          "to_column": "rental_id",
           "relationship_type": "foreign_key"
         },
         {
@@ -1404,13 +1404,6 @@
         },
         {
           "from_table": "payment",
-          "from_column": "rental_id",
-          "to_table": "rental",
-          "to_column": "rental_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "rental",
           "from_column": "staff_id",
           "to_table": "staff",
           "to_column": "staff_id",
@@ -1421,6 +1414,13 @@
           "from_column": "inventory_id",
           "to_table": "inventory",
           "to_column": "inventory_id",
+          "relationship_type": "foreign_key"
+        },
+        {
+          "from_table": "rental",
+          "from_column": "staff_id",
+          "to_table": "staff",
+          "to_column": "staff_id",
           "relationship_type": "foreign_key"
         },
         {
@@ -1438,28 +1438,16 @@
         "database_type": "Mysql"
       }
     },
-    "sql_query": "SELECT\n  first_name,\n  last_name\nFROM actor\nLIMIT 5;",
+    "sql_query": "SELECT first_name, last_name\nFROM staff;",
     "sql_dialect": "MYSQL",
     "original_data": [
       {
-        "first_name": "PENELOPE",
-        "last_name": "GUINESS"
+        "first_name": "Mike",
+        "last_name": "Hillyer"
       },
       {
-        "first_name": "NICK",
-        "last_name": "WAHLBERG"
-      },
-      {
-        "first_name": "ED",
-        "last_name": "CHASE"
-      },
-      {
-        "first_name": "JENNIFER",
-        "last_name": "DAVIS"
-      },
-      {
-        "first_name": "JOHNNY",
-        "last_name": "LOLLOBRIGIDA"
+        "first_name": "Jon",
+        "last_name": "Stephens"
       }
     ],
     "rearranged_data": [],
@@ -1470,7 +1458,7 @@
     "cardinalities": {},
     "suitable_graphs": [],
     "ranked_graphs": [],
-    "response": "Here are the first names and last names of the top 5 actors based on the `actor` table:\n\n*   **PENELOPE GUINESS**\n*   **NICK WAHLBERG**\n*   **ED CHASE**\n*   **JENNIFER DAVIS**\n*   **JOHNNY LOLLOBRIGIDA**",
+    "response": "The staff member names are:\n\n*   Mike Hillyer\n*   Jon Stephens",
     "messages": [
       "Generating SQL query...",
       "Validating SQL query...",

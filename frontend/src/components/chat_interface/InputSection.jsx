@@ -12,6 +12,7 @@ import {
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import SendIcon from "@mui/icons-material/Send";
+import { motion } from "framer-motion";
 
 const InputSection = ({
   userPrompt,
@@ -143,6 +144,7 @@ const InputSection = ({
               <IconButton
                 onClick={toggleListening}
                 color={isListening ? "error" : "primary"}
+                disabled={isLoading}
                 aria-label="Toggle voice input"
                 sx={{
                   border: "1px solid #ccc",
@@ -151,9 +153,32 @@ const InputSection = ({
                   ":hover": {
                     backgroundColor: isListening ? "#ffcdd2" : "#bbdefb",
                   },
+                  position: "relative",
+                  overflow: "visible",
                 }}
               >
-                {isListening ? <StopIcon /> : <MicIcon />}
+                {isListening ? (
+                  <StopIcon />
+                ) : (
+                  <motion.div
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [1, 0.6, 1],
+                    }}
+                    transition={{
+                      duration: 1.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <MicIcon />
+                  </motion.div>
+                )}
               </IconButton>
 
               {/* Send Button */}
