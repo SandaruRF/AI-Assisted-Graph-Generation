@@ -12,6 +12,7 @@ from app.utils.response_formatters import (
 from app.agents.intent_agent.intent_classifier import IntentClassifier
 from app.agents.system_agent.other_response import System
 from app.agents.system_agent.metadata_response import MetadataExpert
+from app.agents.system_agent.prompt_suggesion import SuggestionExpert
 from app.agents.sql_agent.metadata_retriever import get_cached_metadata
 from app.agents.sql_agent.sql_query_generator import SQLQueryGenerator
 from app.agents.sql_agent.sql_validator import SQLQueryValidator
@@ -263,6 +264,8 @@ async def response_generator(state: State):
         print(f"Sending WebSocket message: {update_message}")
         await send_websocket_update(state.session_id, update_message)
 
+    suggester = SuggestionExpert()
+    suggestions = suggester.suggest_prompt(state)["suggestions"]
     intents = state.intents
     response = ""
     
@@ -294,7 +297,8 @@ async def response_generator(state: State):
     
     return state.model_copy(update={
         "messages": messages,
-        "response": response
+        "response": response,
+        "suggestions": suggestions
     })
 
 

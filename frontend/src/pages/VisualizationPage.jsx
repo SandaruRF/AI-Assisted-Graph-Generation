@@ -38,6 +38,7 @@ const VisualizationPage = () => {
   const [tracesHistory, setTracesHistory] = useState({}); // Keep as object
   const [isFirstSend, setIsFirstSend] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
   const scrollContainerRef = useRef(null);
   const lastPromptRef = useRef(null);
   const socketRef = useRef(null);
@@ -73,6 +74,10 @@ const VisualizationPage = () => {
           setIsLoading(false);
           const result = data.result;
           console.log("Received final result:", result); // Debug log
+
+          if (result.suggestions) {
+            setSuggestions(result.suggestions);
+          }
 
           // Check if this is a customization response
           if (result.is_customization) {
@@ -600,6 +605,7 @@ const VisualizationPage = () => {
               handleSend={handleSend}
               handleStop={handleStop}
               isLoading={isLoading}
+              suggestions={suggestions}
             />
           </Box>
         </Box>

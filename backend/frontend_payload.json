@@ -2,1544 +2,1241 @@
   "type": "final",
   "message": "Prompt processed successfully!",
   "result": {
-    "session_id": "296389ab-f6d0-4bf0-b0ca-4f25ae248c97",
-    "user_prompt": "show me top 5 artists in bar chart",
+    "session_id": "61c0e506-4c1f-4a6a-a698-c84ecbcb75e9",
+    "user_prompt": "Albums per artist by genre chart",
+    "suggestions": [
+      "Albums per artist, sorted?",
+      "Show album count by genre.",
+      "Average tracks per album genre?"
+    ],
     "intents": [
       "exploratory",
       "visualization"
     ],
     "metadata": {
-      "database_name": "sakila",
+      "database_name": "chinook",
       "tables": {
-        "actor": {
+        "album": {
           "columns": [
-            "actor_id",
-            "first_name",
-            "last_name",
-            "last_update"
+            "AlbumId",
+            "Title",
+            "ArtistId"
           ],
           "column_details": [
             {
-              "column_name": "actor_id",
+              "column_name": "AlbumId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": true
             },
             {
-              "column_name": "first_name",
+              "column_name": "Title",
               "data_type": "text",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "last_name",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
+              "column_name": "ArtistId",
+              "data_type": "integer",
               "nullable": false,
               "primary_key": false
             }
           ],
           "primary_keys": [
-            "actor_id"
-          ],
-          "foreign_keys": [],
-          "numeric_columns": [
-            "actor_id"
-          ],
-          "categorical_columns": [],
-          "temporal_columns": [
-            "last_update"
-          ],
-          "text_columns": [
-            "first_name",
-            "last_name"
-          ],
-          "row_count": 200,
-          "sample_data": {
-            "actor_id": 1,
-            "first_name": "PENELOPE",
-            "last_name": "GUINESS",
-            "last_update": "2006-02-15 04:34:33"
-          },
-          "has_sample_data": true
-        },
-        "address": {
-          "columns": [
-            "address_id",
-            "address",
-            "address2",
-            "district",
-            "city_id",
-            "postal_code",
-            "phone",
-            "location",
-            "last_update"
-          ],
-          "column_details": [
-            {
-              "column_name": "address_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "address",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "address2",
-              "data_type": "text",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "district",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "city_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "postal_code",
-              "data_type": "text",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "phone",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "location",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": false,
-              "primary_key": false
-            }
-          ],
-          "primary_keys": [
-            "address_id"
+            "AlbumId"
           ],
           "foreign_keys": [
             {
-              "local_column": "city_id",
-              "referenced_table": "city",
-              "referenced_column": "city_id"
+              "local_column": "ArtistId",
+              "referenced_table": "artist",
+              "referenced_column": "ArtistId"
             }
           ],
           "numeric_columns": [
-            "address_id",
-            "city_id"
-          ],
-          "categorical_columns": [
-            "postal_code"
-          ],
-          "temporal_columns": [
-            "last_update"
-          ],
-          "text_columns": [
-            "address",
-            "address2",
-            "district",
-            "phone",
-            "location"
-          ],
-          "row_count": 603,
-          "sample_data": {
-            "address_id": 5,
-            "address": "1913 Hanoi Way",
-            "address2": "",
-            "district": "Nagasaki",
-            "city_id": 463,
-            "postal_code": "35200",
-            "phone": "28303384290",
-            "location": "b'\\x00\\x00\\x00\\x00\\x01\\x01\\x00\\x00\\x00(\\xd17\\x0e!7`@\\xab\\xb5\\x8b\\xc4_\\x94@@'",
-            "last_update": "2014-09-25 22:31:53"
-          },
-          "has_sample_data": true
-        },
-        "city": {
-          "columns": [
-            "city_id",
-            "city",
-            "country_id",
-            "last_update"
-          ],
-          "column_details": [
-            {
-              "column_name": "city_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "city",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "country_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": false,
-              "primary_key": false
-            }
-          ],
-          "primary_keys": [
-            "city_id"
-          ],
-          "foreign_keys": [
-            {
-              "local_column": "country_id",
-              "referenced_table": "country",
-              "referenced_column": "country_id"
-            }
-          ],
-          "numeric_columns": [
-            "city_id",
-            "country_id"
+            "AlbumId",
+            "ArtistId"
           ],
           "categorical_columns": [],
-          "temporal_columns": [
-            "last_update"
-          ],
+          "temporal_columns": [],
           "text_columns": [
-            "city"
+            "Title"
           ],
-          "row_count": 600,
+          "row_count": 347,
           "sample_data": {
-            "city_id": 1,
-            "city": "A Coru\u00f1a (La Coru\u00f1a)",
-            "country_id": 87,
-            "last_update": "2006-02-15 04:45:25"
+            "AlbumId": 1,
+            "Title": "For Those About To Rock We Salute You",
+            "ArtistId": 1
           },
           "has_sample_data": true
         },
-        "country": {
+        "artist": {
           "columns": [
-            "country_id",
-            "country",
-            "last_update"
+            "ArtistId",
+            "Name"
           ],
           "column_details": [
             {
-              "column_name": "country_id",
+              "column_name": "ArtistId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": true
             },
             {
-              "column_name": "country",
+              "column_name": "Name",
               "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": false,
+              "nullable": true,
               "primary_key": false
             }
           ],
           "primary_keys": [
-            "country_id"
+            "ArtistId"
           ],
           "foreign_keys": [],
           "numeric_columns": [
-            "country_id"
+            "ArtistId"
           ],
           "categorical_columns": [],
-          "temporal_columns": [
-            "last_update"
-          ],
+          "temporal_columns": [],
           "text_columns": [
-            "country"
+            "Name"
           ],
-          "row_count": 109,
+          "row_count": 275,
           "sample_data": {
-            "country_id": 1,
-            "country": "Afghanistan",
-            "last_update": "2006-02-15 04:44:00"
-          },
-          "has_sample_data": true
-        },
-        "category": {
-          "columns": [
-            "category_id",
-            "name",
-            "last_update"
-          ],
-          "column_details": [
-            {
-              "column_name": "category_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "name",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": false,
-              "primary_key": false
-            }
-          ],
-          "primary_keys": [
-            "category_id"
-          ],
-          "foreign_keys": [],
-          "numeric_columns": [
-            "category_id"
-          ],
-          "categorical_columns": [],
-          "temporal_columns": [
-            "last_update"
-          ],
-          "text_columns": [
-            "name"
-          ],
-          "row_count": 16,
-          "sample_data": {
-            "category_id": 1,
-            "name": "Action",
-            "last_update": "2006-02-15 04:46:27"
+            "ArtistId": 1,
+            "Name": "AC/DC"
           },
           "has_sample_data": true
         },
         "customer": {
           "columns": [
-            "customer_id",
-            "store_id",
-            "first_name",
-            "last_name",
-            "email",
-            "address_id",
-            "active",
-            "create_date",
-            "last_update"
+            "CustomerId",
+            "FirstName",
+            "LastName",
+            "Company",
+            "Address",
+            "City",
+            "State",
+            "Country",
+            "PostalCode",
+            "Phone",
+            "Fax",
+            "Email",
+            "SupportRepId"
           ],
           "column_details": [
             {
-              "column_name": "customer_id",
+              "column_name": "CustomerId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": true
             },
             {
-              "column_name": "store_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "first_name",
+              "column_name": "FirstName",
               "data_type": "text",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "last_name",
+              "column_name": "LastName",
               "data_type": "text",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "email",
+              "column_name": "Company",
               "data_type": "text",
               "nullable": true,
               "primary_key": false
             },
             {
-              "column_name": "address_id",
+              "column_name": "Address",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "City",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "State",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Country",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "PostalCode",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Phone",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Fax",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Email",
+              "data_type": "text",
+              "nullable": false,
+              "primary_key": false
+            },
+            {
+              "column_name": "SupportRepId",
               "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "active",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "create_date",
-              "data_type": "datetime",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
               "nullable": true,
               "primary_key": false
             }
           ],
           "primary_keys": [
-            "customer_id"
+            "CustomerId"
           ],
           "foreign_keys": [
             {
-              "local_column": "store_id",
-              "referenced_table": "store",
-              "referenced_column": "store_id"
-            },
-            {
-              "local_column": "address_id",
-              "referenced_table": "address",
-              "referenced_column": "address_id"
+              "local_column": "SupportRepId",
+              "referenced_table": "employee",
+              "referenced_column": "EmployeeId"
             }
           ],
           "numeric_columns": [
-            "customer_id",
-            "store_id",
-            "address_id",
-            "active"
-          ],
-          "categorical_columns": [],
-          "temporal_columns": [
-            "create_date",
-            "last_update"
-          ],
-          "text_columns": [
-            "first_name",
-            "last_name",
-            "email"
-          ],
-          "row_count": 599,
-          "sample_data": {
-            "customer_id": 1,
-            "store_id": 1,
-            "first_name": "MARY",
-            "last_name": "SMITH",
-            "email": "MARY.SMITH@sakilacustomer.org",
-            "address_id": 5,
-            "active": 1,
-            "create_date": "2006-02-14 22:04:36",
-            "last_update": "2006-02-15 04:57:20"
-          },
-          "has_sample_data": true
-        },
-        "store": {
-          "columns": [
-            "store_id",
-            "manager_staff_id",
-            "address_id",
-            "last_update"
-          ],
-          "column_details": [
-            {
-              "column_name": "store_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "manager_staff_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "address_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": false,
-              "primary_key": false
-            }
-          ],
-          "primary_keys": [
-            "store_id"
-          ],
-          "foreign_keys": [
-            {
-              "local_column": "manager_staff_id",
-              "referenced_table": "staff",
-              "referenced_column": "staff_id"
-            },
-            {
-              "local_column": "address_id",
-              "referenced_table": "address",
-              "referenced_column": "address_id"
-            }
-          ],
-          "numeric_columns": [
-            "store_id",
-            "manager_staff_id",
-            "address_id"
-          ],
-          "categorical_columns": [],
-          "temporal_columns": [
-            "last_update"
-          ],
-          "text_columns": [],
-          "row_count": 2,
-          "sample_data": {
-            "store_id": 1,
-            "manager_staff_id": 1,
-            "address_id": 1,
-            "last_update": "2006-02-15 04:57:12"
-          },
-          "has_sample_data": true
-        },
-        "staff": {
-          "columns": [
-            "staff_id",
-            "first_name",
-            "last_name",
-            "address_id",
-            "picture",
-            "email",
-            "store_id",
-            "active",
-            "username",
-            "password",
-            "last_update"
-          ],
-          "column_details": [
-            {
-              "column_name": "staff_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "first_name",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_name",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "address_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "picture",
-              "data_type": "binary",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "email",
-              "data_type": "text",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "store_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "active",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "username",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "password",
-              "data_type": "text",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": false,
-              "primary_key": false
-            }
-          ],
-          "primary_keys": [
-            "staff_id"
-          ],
-          "foreign_keys": [
-            {
-              "local_column": "address_id",
-              "referenced_table": "address",
-              "referenced_column": "address_id"
-            },
-            {
-              "local_column": "store_id",
-              "referenced_table": "store",
-              "referenced_column": "store_id"
-            }
-          ],
-          "numeric_columns": [
-            "staff_id",
-            "address_id",
-            "store_id",
-            "active"
+            "CustomerId",
+            "SupportRepId"
           ],
           "categorical_columns": [
-            "picture"
+            "PostalCode"
           ],
-          "temporal_columns": [
-            "last_update"
-          ],
+          "temporal_columns": [],
           "text_columns": [
-            "first_name",
-            "last_name",
-            "email",
-            "username",
-            "password"
+            "FirstName",
+            "LastName",
+            "Company",
+            "Address",
+            "City",
+            "State",
+            "Country",
+            "Phone",
+            "Fax",
+            "Email"
           ],
-          "row_count": 2,
+          "row_count": 59,
           "sample_data": {
-            "staff_id": 1,
-            "first_name": "Mike",
-            "last_name": "Hillyer",
-            "address_id": 3,
-            "picture": "b'\\x89PNG\\r\\n\\x1a\\n\\x00\\x00\\x00\\rIHDR\\x00\\x00\\x00y\\x00\\x00\\x00u\\x08\\x02\\x00\\x00\\x00\\xe5Z\\xd9e\\x00\\x0...",
-            "email": "Mike.Hillyer@sakilastaff.com",
-            "store_id": 1,
-            "active": 1,
-            "username": "Mike",
-            "password": "8cb2237d0679ca88db6464eac60da96345513964",
-            "last_update": "2006-02-15 03:57:16"
+            "CustomerId": 1,
+            "FirstName": "Lu\u00eds",
+            "LastName": "Gon\u00e7alves",
+            "Company": "Embraer - Empresa Brasileira de Aeron\u00e1utica S.A.",
+            "Address": "Av. Brigadeiro Faria Lima, 2170",
+            "City": "S\u00e3o Jos\u00e9 dos Campos",
+            "State": "SP",
+            "Country": "Brazil",
+            "PostalCode": "12227-000",
+            "Phone": "+55 (12) 3923-5555",
+            "Fax": "+55 (12) 3923-5566",
+            "Email": "luisg@embraer.com.br",
+            "SupportRepId": 3
           },
           "has_sample_data": true
         },
-        "film": {
+        "employee": {
           "columns": [
-            "film_id",
-            "title",
-            "description",
-            "release_year",
-            "language_id",
-            "original_language_id",
-            "rental_duration",
-            "rental_rate",
-            "length",
-            "replacement_cost",
-            "rating",
-            "special_features",
-            "last_update"
+            "EmployeeId",
+            "LastName",
+            "FirstName",
+            "Title",
+            "ReportsTo",
+            "BirthDate",
+            "HireDate",
+            "Address",
+            "City",
+            "State",
+            "Country",
+            "PostalCode",
+            "Phone",
+            "Fax",
+            "Email"
           ],
           "column_details": [
             {
-              "column_name": "film_id",
+              "column_name": "EmployeeId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": true
             },
             {
-              "column_name": "title",
+              "column_name": "LastName",
               "data_type": "text",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "description",
+              "column_name": "FirstName",
               "data_type": "text",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "release_year",
-              "data_type": "text",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "language_id",
-              "data_type": "integer",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "original_language_id",
+              "column_name": "Title",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "ReportsTo",
               "data_type": "integer",
               "nullable": true,
               "primary_key": false
             },
             {
-              "column_name": "rental_duration",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "rental_rate",
-              "data_type": "float",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "length",
-              "data_type": "integer",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "replacement_cost",
-              "data_type": "float",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "rating",
-              "data_type": "text",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "special_features",
-              "data_type": "text",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
+              "column_name": "BirthDate",
               "data_type": "datetime",
-              "nullable": false,
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "HireDate",
+              "data_type": "datetime",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Address",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "City",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "State",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Country",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "PostalCode",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Phone",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Fax",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Email",
+              "data_type": "text",
+              "nullable": true,
               "primary_key": false
             }
           ],
           "primary_keys": [
-            "film_id"
+            "EmployeeId"
           ],
           "foreign_keys": [
             {
-              "local_column": "original_language_id",
-              "referenced_table": "language",
-              "referenced_column": "language_id"
-            },
-            {
-              "local_column": "language_id",
-              "referenced_table": "language",
-              "referenced_column": "language_id"
+              "local_column": "ReportsTo",
+              "referenced_table": "employee",
+              "referenced_column": "EmployeeId"
             }
           ],
           "numeric_columns": [
-            "film_id",
-            "language_id",
-            "original_language_id",
-            "rental_duration",
-            "rental_rate",
-            "length",
-            "replacement_cost"
+            "EmployeeId",
+            "ReportsTo"
           ],
-          "categorical_columns": [],
+          "categorical_columns": [
+            "PostalCode"
+          ],
           "temporal_columns": [
-            "last_update"
+            "BirthDate",
+            "HireDate"
           ],
           "text_columns": [
-            "title",
-            "description",
-            "release_year",
-            "rating",
-            "special_features"
+            "LastName",
+            "FirstName",
+            "Title",
+            "Address",
+            "City",
+            "State",
+            "Country",
+            "Phone",
+            "Fax",
+            "Email"
           ],
-          "row_count": 1000,
+          "row_count": 8,
           "sample_data": {
-            "film_id": 1,
-            "title": "ACADEMY DINOSAUR",
-            "description": "A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rockies",
-            "release_year": 2006,
-            "language_id": 1,
-            "original_language_id": null,
-            "rental_duration": 6,
-            "rental_rate": "0.99",
-            "length": 86,
-            "replacement_cost": "20.99",
-            "rating": "PG",
-            "special_features": "Deleted Scenes,Behind the Scenes",
-            "last_update": "2006-02-15 05:03:42"
+            "EmployeeId": 2,
+            "LastName": "Edwards",
+            "FirstName": "Nancy",
+            "Title": "Sales Manager",
+            "ReportsTo": 1,
+            "BirthDate": "1958-12-08 00:00:00",
+            "HireDate": "2002-05-01 00:00:00",
+            "Address": "825 8 Ave SW",
+            "City": "Calgary",
+            "State": "AB",
+            "Country": "Canada",
+            "PostalCode": "T2P 2T3",
+            "Phone": "+1 (403) 262-3443",
+            "Fax": "+1 (403) 262-3322",
+            "Email": "nancy@chinookcorp.com"
           },
           "has_sample_data": true
         },
-        "language": {
+        "genre": {
           "columns": [
-            "language_id",
-            "name",
-            "last_update"
+            "GenreId",
+            "Name"
           ],
           "column_details": [
             {
-              "column_name": "language_id",
+              "column_name": "GenreId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": true
             },
             {
-              "column_name": "name",
+              "column_name": "Name",
               "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": false,
+              "nullable": true,
               "primary_key": false
             }
           ],
           "primary_keys": [
-            "language_id"
+            "GenreId"
           ],
           "foreign_keys": [],
           "numeric_columns": [
-            "language_id"
-          ],
-          "categorical_columns": [],
-          "temporal_columns": [
-            "last_update"
-          ],
-          "text_columns": [
-            "name"
-          ],
-          "row_count": 6,
-          "sample_data": {
-            "language_id": 1,
-            "name": "English",
-            "last_update": "2006-02-15 05:02:19"
-          },
-          "has_sample_data": true
-        },
-        "film_actor": {
-          "columns": [
-            "actor_id",
-            "film_id",
-            "last_update"
-          ],
-          "column_details": [
-            {
-              "column_name": "actor_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "film_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": false,
-              "primary_key": false
-            }
-          ],
-          "primary_keys": [
-            "actor_id",
-            "film_id"
-          ],
-          "foreign_keys": [
-            {
-              "local_column": "actor_id",
-              "referenced_table": "actor",
-              "referenced_column": "actor_id"
-            },
-            {
-              "local_column": "film_id",
-              "referenced_table": "film",
-              "referenced_column": "film_id"
-            }
-          ],
-          "numeric_columns": [
-            "actor_id",
-            "film_id"
-          ],
-          "categorical_columns": [],
-          "temporal_columns": [
-            "last_update"
-          ],
-          "text_columns": [],
-          "row_count": 5462,
-          "sample_data": {
-            "actor_id": 1,
-            "film_id": 1,
-            "last_update": "2006-02-15 05:05:03"
-          },
-          "has_sample_data": true
-        },
-        "film_category": {
-          "columns": [
-            "film_id",
-            "category_id",
-            "last_update"
-          ],
-          "column_details": [
-            {
-              "column_name": "film_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "category_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": false,
-              "primary_key": false
-            }
-          ],
-          "primary_keys": [
-            "film_id",
-            "category_id"
-          ],
-          "foreign_keys": [
-            {
-              "local_column": "film_id",
-              "referenced_table": "film",
-              "referenced_column": "film_id"
-            },
-            {
-              "local_column": "category_id",
-              "referenced_table": "category",
-              "referenced_column": "category_id"
-            }
-          ],
-          "numeric_columns": [
-            "film_id",
-            "category_id"
-          ],
-          "categorical_columns": [],
-          "temporal_columns": [
-            "last_update"
-          ],
-          "text_columns": [],
-          "row_count": 1000,
-          "sample_data": {
-            "film_id": 1,
-            "category_id": 6,
-            "last_update": "2006-02-15 05:07:09"
-          },
-          "has_sample_data": true
-        },
-        "film_text": {
-          "columns": [
-            "film_id",
-            "title",
-            "description"
-          ],
-          "column_details": [
-            {
-              "column_name": "film_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": true
-            },
-            {
-              "column_name": "title",
-              "data_type": "text",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "description",
-              "data_type": "text",
-              "nullable": true,
-              "primary_key": false
-            }
-          ],
-          "primary_keys": [
-            "film_id"
-          ],
-          "foreign_keys": [],
-          "numeric_columns": [
-            "film_id"
+            "GenreId"
           ],
           "categorical_columns": [],
           "temporal_columns": [],
           "text_columns": [
-            "title",
-            "description"
+            "Name"
           ],
-          "row_count": 1000,
+          "row_count": 25,
           "sample_data": {
-            "film_id": 1,
-            "title": "ACADEMY DINOSAUR",
-            "description": "A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rockies"
+            "GenreId": 1,
+            "Name": "Rock"
           },
           "has_sample_data": true
         },
-        "inventory": {
+        "invoice": {
           "columns": [
-            "inventory_id",
-            "film_id",
-            "store_id",
-            "last_update"
+            "InvoiceId",
+            "CustomerId",
+            "InvoiceDate",
+            "BillingAddress",
+            "BillingCity",
+            "BillingState",
+            "BillingCountry",
+            "BillingPostalCode",
+            "Total"
           ],
           "column_details": [
             {
-              "column_name": "inventory_id",
+              "column_name": "InvoiceId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": true
             },
             {
-              "column_name": "film_id",
+              "column_name": "CustomerId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "store_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
+              "column_name": "InvoiceDate",
               "data_type": "datetime",
+              "nullable": false,
+              "primary_key": false
+            },
+            {
+              "column_name": "BillingAddress",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "BillingCity",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "BillingState",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "BillingCountry",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "BillingPostalCode",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Total",
+              "data_type": "float",
               "nullable": false,
               "primary_key": false
             }
           ],
           "primary_keys": [
-            "inventory_id"
+            "InvoiceId"
           ],
           "foreign_keys": [
             {
-              "local_column": "store_id",
-              "referenced_table": "store",
-              "referenced_column": "store_id"
-            },
-            {
-              "local_column": "film_id",
-              "referenced_table": "film",
-              "referenced_column": "film_id"
+              "local_column": "CustomerId",
+              "referenced_table": "customer",
+              "referenced_column": "CustomerId"
             }
           ],
           "numeric_columns": [
-            "inventory_id",
-            "film_id",
-            "store_id"
+            "InvoiceId",
+            "CustomerId",
+            "Total"
           ],
-          "categorical_columns": [],
+          "categorical_columns": [
+            "BillingPostalCode"
+          ],
           "temporal_columns": [
-            "last_update"
+            "InvoiceDate"
           ],
-          "text_columns": [],
-          "row_count": 4581,
+          "text_columns": [
+            "BillingAddress",
+            "BillingCity",
+            "BillingState",
+            "BillingCountry"
+          ],
+          "row_count": 412,
           "sample_data": {
-            "inventory_id": 1,
-            "film_id": 1,
-            "store_id": 1,
-            "last_update": "2006-02-15 05:09:17"
+            "InvoiceId": 1,
+            "CustomerId": 2,
+            "InvoiceDate": "2021-01-01 00:00:00",
+            "BillingAddress": "Theodor-Heuss-Stra\u00dfe 34",
+            "BillingCity": "Stuttgart",
+            "BillingState": null,
+            "BillingCountry": "Germany",
+            "BillingPostalCode": "70174",
+            "Total": "1.98"
           },
           "has_sample_data": true
         },
-        "payment": {
+        "invoiceline": {
           "columns": [
-            "payment_id",
-            "customer_id",
-            "staff_id",
-            "rental_id",
-            "amount",
-            "payment_date",
-            "last_update"
+            "InvoiceLineId",
+            "InvoiceId",
+            "TrackId",
+            "UnitPrice",
+            "Quantity"
           ],
           "column_details": [
             {
-              "column_name": "payment_id",
+              "column_name": "InvoiceLineId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": true
             },
             {
-              "column_name": "customer_id",
+              "column_name": "InvoiceId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "staff_id",
+              "column_name": "TrackId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "rental_id",
-              "data_type": "integer",
-              "nullable": true,
-              "primary_key": false
-            },
-            {
-              "column_name": "amount",
+              "column_name": "UnitPrice",
               "data_type": "float",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "payment_date",
-              "data_type": "datetime",
+              "column_name": "Quantity",
+              "data_type": "integer",
               "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "last_update",
-              "data_type": "datetime",
-              "nullable": true,
               "primary_key": false
             }
           ],
           "primary_keys": [
-            "payment_id"
+            "InvoiceLineId"
           ],
           "foreign_keys": [
             {
-              "local_column": "rental_id",
-              "referenced_table": "rental",
-              "referenced_column": "rental_id"
+              "local_column": "TrackId",
+              "referenced_table": "track",
+              "referenced_column": "TrackId"
             },
             {
-              "local_column": "customer_id",
-              "referenced_table": "customer",
-              "referenced_column": "customer_id"
-            },
-            {
-              "local_column": "staff_id",
-              "referenced_table": "staff",
-              "referenced_column": "staff_id"
+              "local_column": "InvoiceId",
+              "referenced_table": "invoice",
+              "referenced_column": "InvoiceId"
             }
           ],
           "numeric_columns": [
-            "payment_id",
-            "customer_id",
-            "staff_id",
-            "rental_id",
-            "amount"
+            "InvoiceLineId",
+            "InvoiceId",
+            "TrackId",
+            "UnitPrice",
+            "Quantity"
           ],
           "categorical_columns": [],
-          "temporal_columns": [
-            "payment_date",
-            "last_update"
-          ],
+          "temporal_columns": [],
           "text_columns": [],
-          "row_count": 16044,
+          "row_count": 2240,
           "sample_data": {
-            "payment_id": 3504,
-            "customer_id": 130,
-            "staff_id": 1,
-            "rental_id": 1,
-            "amount": "2.99",
-            "payment_date": "2005-05-24 22:53:30",
-            "last_update": "2006-02-15 22:13:16"
+            "InvoiceLineId": 1,
+            "InvoiceId": 1,
+            "TrackId": 2,
+            "UnitPrice": "0.99",
+            "Quantity": 1
           },
           "has_sample_data": true
         },
-        "rental": {
+        "track": {
           "columns": [
-            "rental_id",
-            "rental_date",
-            "inventory_id",
-            "customer_id",
-            "return_date",
-            "staff_id",
-            "last_update"
+            "TrackId",
+            "Name",
+            "AlbumId",
+            "MediaTypeId",
+            "GenreId",
+            "Composer",
+            "Milliseconds",
+            "Bytes",
+            "UnitPrice"
           ],
           "column_details": [
             {
-              "column_name": "rental_id",
+              "column_name": "TrackId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": true
             },
             {
-              "column_name": "rental_date",
-              "data_type": "datetime",
+              "column_name": "Name",
+              "data_type": "text",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "inventory_id",
+              "column_name": "AlbumId",
               "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "customer_id",
-              "data_type": "integer",
-              "nullable": false,
-              "primary_key": false
-            },
-            {
-              "column_name": "return_date",
-              "data_type": "datetime",
               "nullable": true,
               "primary_key": false
             },
             {
-              "column_name": "staff_id",
+              "column_name": "MediaTypeId",
               "data_type": "integer",
               "nullable": false,
               "primary_key": false
             },
             {
-              "column_name": "last_update",
-              "data_type": "datetime",
+              "column_name": "GenreId",
+              "data_type": "integer",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Composer",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "Milliseconds",
+              "data_type": "integer",
+              "nullable": false,
+              "primary_key": false
+            },
+            {
+              "column_name": "Bytes",
+              "data_type": "integer",
+              "nullable": true,
+              "primary_key": false
+            },
+            {
+              "column_name": "UnitPrice",
+              "data_type": "float",
               "nullable": false,
               "primary_key": false
             }
           ],
           "primary_keys": [
-            "rental_id"
+            "TrackId"
           ],
           "foreign_keys": [
             {
-              "local_column": "staff_id",
-              "referenced_table": "staff",
-              "referenced_column": "staff_id"
+              "local_column": "MediaTypeId",
+              "referenced_table": "mediatype",
+              "referenced_column": "MediaTypeId"
             },
             {
-              "local_column": "customer_id",
-              "referenced_table": "customer",
-              "referenced_column": "customer_id"
+              "local_column": "AlbumId",
+              "referenced_table": "album",
+              "referenced_column": "AlbumId"
             },
             {
-              "local_column": "inventory_id",
-              "referenced_table": "inventory",
-              "referenced_column": "inventory_id"
+              "local_column": "GenreId",
+              "referenced_table": "genre",
+              "referenced_column": "GenreId"
             }
           ],
           "numeric_columns": [
-            "rental_id",
-            "inventory_id",
-            "customer_id",
-            "staff_id"
+            "TrackId",
+            "AlbumId",
+            "MediaTypeId",
+            "GenreId",
+            "Milliseconds",
+            "Bytes",
+            "UnitPrice"
           ],
           "categorical_columns": [],
-          "temporal_columns": [
-            "rental_date",
-            "return_date",
-            "last_update"
+          "temporal_columns": [],
+          "text_columns": [
+            "Name",
+            "Composer"
           ],
-          "text_columns": [],
-          "row_count": 16044,
+          "row_count": 3503,
           "sample_data": {
-            "rental_id": 1,
-            "rental_date": "2005-05-24 22:53:30",
-            "inventory_id": 367,
-            "customer_id": 130,
-            "return_date": "2005-05-26 22:04:30",
-            "staff_id": 1,
-            "last_update": "2006-02-15 21:30:53"
+            "TrackId": 1,
+            "Name": "For Those About To Rock (We Salute You)",
+            "AlbumId": 1,
+            "MediaTypeId": 1,
+            "GenreId": 1,
+            "Composer": "Angus Young, Malcolm Young, Brian Johnson",
+            "Milliseconds": 343719,
+            "Bytes": 11170334,
+            "UnitPrice": "0.99"
+          },
+          "has_sample_data": true
+        },
+        "mediatype": {
+          "columns": [
+            "MediaTypeId",
+            "Name"
+          ],
+          "column_details": [
+            {
+              "column_name": "MediaTypeId",
+              "data_type": "integer",
+              "nullable": false,
+              "primary_key": true
+            },
+            {
+              "column_name": "Name",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            }
+          ],
+          "primary_keys": [
+            "MediaTypeId"
+          ],
+          "foreign_keys": [],
+          "numeric_columns": [
+            "MediaTypeId"
+          ],
+          "categorical_columns": [],
+          "temporal_columns": [],
+          "text_columns": [
+            "Name"
+          ],
+          "row_count": 5,
+          "sample_data": {
+            "MediaTypeId": 1,
+            "Name": "MPEG audio file"
+          },
+          "has_sample_data": true
+        },
+        "playlist": {
+          "columns": [
+            "PlaylistId",
+            "Name"
+          ],
+          "column_details": [
+            {
+              "column_name": "PlaylistId",
+              "data_type": "integer",
+              "nullable": false,
+              "primary_key": true
+            },
+            {
+              "column_name": "Name",
+              "data_type": "text",
+              "nullable": true,
+              "primary_key": false
+            }
+          ],
+          "primary_keys": [
+            "PlaylistId"
+          ],
+          "foreign_keys": [],
+          "numeric_columns": [
+            "PlaylistId"
+          ],
+          "categorical_columns": [],
+          "temporal_columns": [],
+          "text_columns": [
+            "Name"
+          ],
+          "row_count": 18,
+          "sample_data": {
+            "PlaylistId": 1,
+            "Name": "Music"
+          },
+          "has_sample_data": true
+        },
+        "playlisttrack": {
+          "columns": [
+            "PlaylistId",
+            "TrackId"
+          ],
+          "column_details": [
+            {
+              "column_name": "PlaylistId",
+              "data_type": "integer",
+              "nullable": false,
+              "primary_key": true
+            },
+            {
+              "column_name": "TrackId",
+              "data_type": "integer",
+              "nullable": false,
+              "primary_key": true
+            }
+          ],
+          "primary_keys": [
+            "PlaylistId",
+            "TrackId"
+          ],
+          "foreign_keys": [
+            {
+              "local_column": "PlaylistId",
+              "referenced_table": "playlist",
+              "referenced_column": "PlaylistId"
+            },
+            {
+              "local_column": "TrackId",
+              "referenced_table": "track",
+              "referenced_column": "TrackId"
+            }
+          ],
+          "numeric_columns": [
+            "PlaylistId",
+            "TrackId"
+          ],
+          "categorical_columns": [],
+          "temporal_columns": [],
+          "text_columns": [],
+          "row_count": 8715,
+          "sample_data": {
+            "PlaylistId": 1,
+            "TrackId": 1
           },
           "has_sample_data": true
         }
       },
       "relationships": [
         {
-          "from_table": "address",
-          "from_column": "city_id",
-          "to_table": "city",
-          "to_column": "city_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "city",
-          "from_column": "country_id",
-          "to_table": "country",
-          "to_column": "country_id",
+          "from_table": "album",
+          "from_column": "ArtistId",
+          "to_table": "artist",
+          "to_column": "ArtistId",
           "relationship_type": "foreign_key"
         },
         {
           "from_table": "customer",
-          "from_column": "store_id",
-          "to_table": "store",
-          "to_column": "store_id",
+          "from_column": "SupportRepId",
+          "to_table": "employee",
+          "to_column": "EmployeeId",
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "customer",
-          "from_column": "address_id",
-          "to_table": "address",
-          "to_column": "address_id",
+          "from_table": "employee",
+          "from_column": "ReportsTo",
+          "to_table": "employee",
+          "to_column": "EmployeeId",
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "store",
-          "from_column": "manager_staff_id",
-          "to_table": "staff",
-          "to_column": "staff_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "store",
-          "from_column": "address_id",
-          "to_table": "address",
-          "to_column": "address_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "staff",
-          "from_column": "address_id",
-          "to_table": "address",
-          "to_column": "address_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "staff",
-          "from_column": "store_id",
-          "to_table": "store",
-          "to_column": "store_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "film",
-          "from_column": "original_language_id",
-          "to_table": "language",
-          "to_column": "language_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "film",
-          "from_column": "language_id",
-          "to_table": "language",
-          "to_column": "language_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "film_actor",
-          "from_column": "actor_id",
-          "to_table": "actor",
-          "to_column": "actor_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "film_actor",
-          "from_column": "film_id",
-          "to_table": "film",
-          "to_column": "film_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "film_category",
-          "from_column": "film_id",
-          "to_table": "film",
-          "to_column": "film_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "film_category",
-          "from_column": "category_id",
-          "to_table": "category",
-          "to_column": "category_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "inventory",
-          "from_column": "store_id",
-          "to_table": "store",
-          "to_column": "store_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "inventory",
-          "from_column": "film_id",
-          "to_table": "film",
-          "to_column": "film_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "payment",
-          "from_column": "rental_id",
-          "to_table": "rental",
-          "to_column": "rental_id",
-          "relationship_type": "foreign_key"
-        },
-        {
-          "from_table": "payment",
-          "from_column": "customer_id",
+          "from_table": "invoice",
+          "from_column": "CustomerId",
           "to_table": "customer",
-          "to_column": "customer_id",
+          "to_column": "CustomerId",
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "payment",
-          "from_column": "staff_id",
-          "to_table": "staff",
-          "to_column": "staff_id",
+          "from_table": "invoiceline",
+          "from_column": "TrackId",
+          "to_table": "track",
+          "to_column": "TrackId",
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "rental",
-          "from_column": "staff_id",
-          "to_table": "staff",
-          "to_column": "staff_id",
+          "from_table": "invoiceline",
+          "from_column": "InvoiceId",
+          "to_table": "invoice",
+          "to_column": "InvoiceId",
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "rental",
-          "from_column": "customer_id",
-          "to_table": "customer",
-          "to_column": "customer_id",
+          "from_table": "track",
+          "from_column": "MediaTypeId",
+          "to_table": "mediatype",
+          "to_column": "MediaTypeId",
           "relationship_type": "foreign_key"
         },
         {
-          "from_table": "rental",
-          "from_column": "inventory_id",
-          "to_table": "inventory",
-          "to_column": "inventory_id",
+          "from_table": "track",
+          "from_column": "AlbumId",
+          "to_table": "album",
+          "to_column": "AlbumId",
+          "relationship_type": "foreign_key"
+        },
+        {
+          "from_table": "track",
+          "from_column": "GenreId",
+          "to_table": "genre",
+          "to_column": "GenreId",
+          "relationship_type": "foreign_key"
+        },
+        {
+          "from_table": "playlisttrack",
+          "from_column": "PlaylistId",
+          "to_table": "playlist",
+          "to_column": "PlaylistId",
+          "relationship_type": "foreign_key"
+        },
+        {
+          "from_table": "playlisttrack",
+          "from_column": "TrackId",
+          "to_table": "track",
+          "to_column": "TrackId",
           "relationship_type": "foreign_key"
         }
       ],
-      "total_tables": 16,
+      "total_tables": 11,
       "sample_data_available": true,
       "connection_info": {
         "dialect": "mysql",
         "database_type": "Mysql"
       }
     },
-    "sql_query": "SELECT a.first_name, a.last_name, COUNT(fa.film_id) AS film_count\nFROM actor a\nJOIN film_actor fa ON a.actor_id = fa.actor_id\nGROUP BY a.actor_id, a.first_name, a.last_name\nORDER BY film_count DESC\nLIMIT 5;",
+    "sql_query": "SELECT\n  g.Name AS GenreName,\n  COUNT(DISTINCT a.AlbumId) AS NumberOfAlbums\nFROM genre AS g\nJOIN track AS t\n  ON g.GenreId = t.GenreId\nJOIN album AS a\n  ON t.AlbumId = a.AlbumId\nGROUP BY\n  g.Name\nORDER BY\n  g.Name;",
     "sql_dialect": "MYSQL",
     "original_data": [
       {
-        "first_name": "GINA",
-        "last_name": "DEGENERES",
-        "film_count": 42
+        "GenreName": "Alternative",
+        "NumberOfAlbums": 5
       },
       {
-        "first_name": "WALTER",
-        "last_name": "TORN",
-        "film_count": 41
+        "GenreName": "Alternative & Punk",
+        "NumberOfAlbums": 23
       },
       {
-        "first_name": "MARY",
-        "last_name": "KEITEL",
-        "film_count": 40
+        "GenreName": "Blues",
+        "NumberOfAlbums": 7
       },
       {
-        "first_name": "MATTHEW",
-        "last_name": "CARREY",
-        "film_count": 39
+        "GenreName": "Bossa Nova",
+        "NumberOfAlbums": 1
       },
       {
-        "first_name": "SANDRA",
-        "last_name": "KILMER",
-        "film_count": 37
+        "GenreName": "Classical",
+        "NumberOfAlbums": 72
+      },
+      {
+        "GenreName": "Comedy",
+        "NumberOfAlbums": 1
+      },
+      {
+        "GenreName": "Drama",
+        "NumberOfAlbums": 4
+      },
+      {
+        "GenreName": "Easy Listening",
+        "NumberOfAlbums": 1
+      },
+      {
+        "GenreName": "Electronica/Dance",
+        "NumberOfAlbums": 3
+      },
+      {
+        "GenreName": "Heavy Metal",
+        "NumberOfAlbums": 3
+      },
+      {
+        "GenreName": "Hip Hop/Rap",
+        "NumberOfAlbums": 2
+      },
+      {
+        "GenreName": "Jazz",
+        "NumberOfAlbums": 13
+      },
+      {
+        "GenreName": "Latin",
+        "NumberOfAlbums": 39
+      },
+      {
+        "GenreName": "Metal",
+        "NumberOfAlbums": 35
+      },
+      {
+        "GenreName": "Opera",
+        "NumberOfAlbums": 1
+      },
+      {
+        "GenreName": "Pop",
+        "NumberOfAlbums": 3
+      },
+      {
+        "GenreName": "R&B/Soul",
+        "NumberOfAlbums": 4
+      },
+      {
+        "GenreName": "Reggae",
+        "NumberOfAlbums": 4
+      },
+      {
+        "GenreName": "Rock",
+        "NumberOfAlbums": 117
+      },
+      {
+        "GenreName": "Rock And Roll",
+        "NumberOfAlbums": 1
+      },
+      {
+        "GenreName": "Sci Fi & Fantasy",
+        "NumberOfAlbums": 2
+      },
+      {
+        "GenreName": "Science Fiction",
+        "NumberOfAlbums": 2
+      },
+      {
+        "GenreName": "Soundtrack",
+        "NumberOfAlbums": 4
+      },
+      {
+        "GenreName": "TV Shows",
+        "NumberOfAlbums": 10
+      },
+      {
+        "GenreName": "World",
+        "NumberOfAlbums": 3
       }
     ],
     "rearranged_data": [
       {
-        "film_count": 42,
-        "first_name": "GINA",
-        "last_name": "DEGENERES"
+        "NumberOfAlbums": 5,
+        "GenreName": "Alternative"
       },
       {
-        "film_count": 41,
-        "first_name": "WALTER",
-        "last_name": "TORN"
+        "NumberOfAlbums": 23,
+        "GenreName": "Alternative & Punk"
       },
       {
-        "film_count": 40,
-        "first_name": "MARY",
-        "last_name": "KEITEL"
+        "NumberOfAlbums": 7,
+        "GenreName": "Blues"
       },
       {
-        "film_count": 39,
-        "first_name": "MATTHEW",
-        "last_name": "CARREY"
+        "NumberOfAlbums": 1,
+        "GenreName": "Bossa Nova"
       },
       {
-        "film_count": 37,
-        "first_name": "SANDRA",
-        "last_name": "KILMER"
+        "NumberOfAlbums": 72,
+        "GenreName": "Classical"
+      },
+      {
+        "NumberOfAlbums": 1,
+        "GenreName": "Comedy"
+      },
+      {
+        "NumberOfAlbums": 4,
+        "GenreName": "Drama"
+      },
+      {
+        "NumberOfAlbums": 1,
+        "GenreName": "Easy Listening"
+      },
+      {
+        "NumberOfAlbums": 3,
+        "GenreName": "Electronica/Dance"
+      },
+      {
+        "NumberOfAlbums": 3,
+        "GenreName": "Heavy Metal"
+      },
+      {
+        "NumberOfAlbums": 2,
+        "GenreName": "Hip Hop/Rap"
+      },
+      {
+        "NumberOfAlbums": 13,
+        "GenreName": "Jazz"
+      },
+      {
+        "NumberOfAlbums": 39,
+        "GenreName": "Latin"
+      },
+      {
+        "NumberOfAlbums": 35,
+        "GenreName": "Metal"
+      },
+      {
+        "NumberOfAlbums": 1,
+        "GenreName": "Opera"
+      },
+      {
+        "NumberOfAlbums": 3,
+        "GenreName": "Pop"
+      },
+      {
+        "NumberOfAlbums": 4,
+        "GenreName": "R&B/Soul"
+      },
+      {
+        "NumberOfAlbums": 4,
+        "GenreName": "Reggae"
+      },
+      {
+        "NumberOfAlbums": 117,
+        "GenreName": "Rock"
+      },
+      {
+        "NumberOfAlbums": 1,
+        "GenreName": "Rock And Roll"
+      },
+      {
+        "NumberOfAlbums": 2,
+        "GenreName": "Sci Fi & Fantasy"
+      },
+      {
+        "NumberOfAlbums": 2,
+        "GenreName": "Science Fiction"
+      },
+      {
+        "NumberOfAlbums": 4,
+        "GenreName": "Soundtrack"
+      },
+      {
+        "NumberOfAlbums": 10,
+        "GenreName": "TV Shows"
+      },
+      {
+        "NumberOfAlbums": 3,
+        "GenreName": "World"
       }
     ],
     "num_numeric": 1,
-    "num_cat": 2,
+    "num_cat": 1,
     "num_temporal": 0,
-    "num_rows": 5,
+    "num_rows": 25,
     "cardinalities": {
-      "film_count": {
+      "NumberOfAlbums": {
         "unique_values": [
-          37,
+          1,
+          2,
+          3,
+          4,
+          5,
+          35,
+          7,
+          72,
           39,
-          40,
-          41,
-          42
+          10,
+          13,
+          117,
+          23
         ],
-        "count": 5
+        "count": 13
       },
-      "first_name": {
+      "GenreName": {
         "unique_values": [
-          "MATTHEW",
-          "GINA",
-          "SANDRA",
-          "WALTER",
-          "MARY"
+          "Sci Fi & Fantasy",
+          "Blues",
+          "Alternative",
+          "Easy Listening",
+          "R&B/Soul",
+          "Latin",
+          "World",
+          "Reggae",
+          "Heavy Metal",
+          "Rock",
+          "Rock And Roll",
+          "Opera",
+          "Science Fiction",
+          "TV Shows",
+          "Metal",
+          "Bossa Nova",
+          "Hip Hop/Rap",
+          "Comedy",
+          "Soundtrack",
+          "Pop",
+          "Drama",
+          "Jazz",
+          "Classical",
+          "Alternative & Punk",
+          "Electronica/Dance"
         ],
-        "count": 5
-      },
-      "last_name": {
-        "unique_values": [
-          "CARREY",
-          "DEGENERES",
-          "TORN",
-          "KILMER",
-          "KEITEL"
-        ],
-        "count": 5
+        "count": 25
       }
     },
     "suitable_graphs": [
-      "Stacked Bar Chart",
-      "Grouped Bar Chart",
+      "Area Chart",
       "Box Plot",
+      "Bar Chart",
+      "Grouped Histogram",
+      "Stacked Histogram",
+      "Line Chart",
       "Pie Chart",
       "Donut Chart"
     ],
-    "ranked_graphs": "{\n  \"recommended_graphs\": [\"Grouped Bar Chart\", \"Stacked Bar Chart\"],\n  \"reason\": \"Grouped and Stacked Bar Charts are good for comparing different categories ('first_name', 'last_name') using a numeric value ('film_count'). Grouped Bar Chart is especially helpful for comparing film_count across artists.\"\n}",
-    "response": "Here's a bar chart representation of the top 5 artists based on the number of films they've appeared in:\n\n| Artist First Name | Artist Last Name | Film Count |\n|---|---|---|\n| GINA | DEGENERES | 42 |\n| WALTER | TORN | 41 |\n| MARY | KEITEL | 40 |\n| MATTHEW | CARREY | 39 |\n| SANDRA | KILMER | 37 |",
+    "ranked_graphs": "{\n  \"recommended_graphs\": [\"Bar Chart\", \"Grouped Histogram\"],\n  \"reason\": \"A bar chart is suitable for comparing albums per artist across different genres, while a grouped histogram can visualize the distribution of album counts within each genre.\"\n}",
+    "response": "Based on the data, here's a breakdown of the number of albums per genre:\n\nThe data shows the number of albums associated with each genre in the music database. Here's a summary of the findings:\n\n*   **Rock** has the highest number of albums with 117.\n*   **Classical** is second highest with 72 albums.\n*   **Metal** has 35 albums.\n*   **Alternative & Punk** contains 23 albums.\n*   Genres with a relatively low number of albums (1-4 albums each) include Bossa Nova, Comedy, Drama, Easy Listening, Electronica/Dance, Heavy Metal, Hip Hop/Rap, Opera, Pop, R&B/Soul, Reggae, Rock And Roll, Sci Fi & Fantasy, Science Fiction, and Soundtrack.\n*   The remaining genres fall in the middle range: Jazz (13), TV Shows (10), Blues (7).\n\nHere is a table summarizing the album counts by genre:\n\n| GenreName            | NumberOfAlbums |\n| -------------------- | -------------- |\n| Alternative          | 5              |\n| Alternative & Punk   | 23             |\n| Blues                | 7              |\n| Bossa Nova           | 1              |\n| Classical            | 72             |\n| Comedy               | 1              |\n| Drama                | 4              |\n| Easy Listening       | 1              |\n| Electronica/Dance    | 3              |\n| Heavy Metal          | 3              |\n| Hip Hop/Rap          | 2              |\n| Jazz                 | 13             |\n| Latin                | 39             |\n| Metal                | 35             |\n| Opera                | 1              |\n| Pop                  | 3              |\n| R&B/Soul             | 4              |\n| Reggae               | 4              |\n| Rock                 | 117            |\n| Rock And Roll        | 1              |\n| Sci Fi & Fantasy     | 2              |\n| Science Fiction      | 2              |\n| Soundtrack           | 4              |\n| TV Shows             | 10             |\n| World                | 3              |",
     "messages": [
       "Generating SQL query...",
       "Validating SQL query...",
@@ -1554,6 +1251,6 @@
     "search_plan": {},
     "search_results": {},
     "explanation": "",
-    "prompt_index": 0
+    "prompt_index": 1
   }
 }
