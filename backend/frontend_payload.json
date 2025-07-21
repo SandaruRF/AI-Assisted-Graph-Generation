@@ -1,0 +1,34 @@
+{
+  "type": "final",
+  "message": "Prompt processed successfully!",
+  "result": {
+    "session_id": "2d0b562d-4f94-4c0f-902b-4970ae3d3bfa",
+    "user_prompt": "hello",
+    "intents": [
+      "other"
+    ],
+    "metadata": {},
+    "sql_query": "",
+    "sql_dialect": "",
+    "original_data": [],
+    "rearranged_data": [],
+    "num_numeric": 0,
+    "num_cat": 0,
+    "num_temporal": 0,
+    "num_rows": 0,
+    "cardinalities": {},
+    "suitable_graphs": [],
+    "ranked_graphs": [],
+    "response": "Hello there! It's nice to hear from you.\n\nI'm here to help you create graphs and explore data. Perhaps you'd like to try asking me to generate a graph or find some insights in a dataset? Let me know what you have in mind!",
+    "messages": [
+      "Generating final response..."
+    ],
+    "insights": [],
+    "tool_results": {},
+    "insights_response": "",
+    "search_plan": {},
+    "search_results": {},
+    "explanation": "",
+    "prompt_index": 0
+  }
+}

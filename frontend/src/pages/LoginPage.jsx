@@ -36,8 +36,6 @@ const Logo = styled("div")(({ theme }) => ({
   },
 }));
 
-
-
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");

@@ -7,32 +7,94 @@ from app.utils.logging import logger
 
 class IntentClassifier:
     def __init__(self):
-        genai.configure(api_key=settings.GEMINI_API_KEY)
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
     def classify_intent(self, query: str) -> dict:
         prompt = f"""
         Classify the intent(s) of the following user query. The query may involve one or more intents.
         Query: "{query}"
-        Possible intents: visualization, insight, explanation, metadata, system, customization, other.
+        
+        Available intents: visualization, insight, explanation, schema, exploratory, system, customization, other.
 
-        For each intent, classify as follows:
-        - visualization: User only wants to generate basic, compare, or aggregated visualization.
-        - insight: User only wants to find trends, anomalies, or correlations.
-        - explanation: User only wants to generate explanations about the insights.
-        - metadata: User ONLY asks questions related to the database schema (e.g., "What tables are in the database?", "What are the columns in the 'sales' table?") or requests summary statistics (e.g., "What is the mean revenue?", "What is the standard deviation of product prices?").
-        - customization: User only wants to customize the generated graph (e.g., change color, add filter, change graph type, etc.). Assume the user already has a graph generated.
-        - system: User only wants to connect to a different database, export, or share the generated graph.
-        - other: User wants to do something else.
+        **CRITICAL DECISION LOGIC FOR SCHEMA vs EXPLORATORY:**
+        
+        The system has access to database metadata containing ONLY structural information:
+        - Database name and table names
+        - Column names and data types (integer, text, datetime, etc.)
+        - Primary keys and foreign key relationships
+        - Column categorization (numeric, categorical, temporal, text)
+        - Row counts per table
+        - Sample data structure (field names and example values)
+        - Database dialect information
+        
+        **KEY DISTINCTION:**
+        - **SCHEMA**: Questions about database STRUCTURE and ORGANIZATION
+        - **EXPLORATORY**: Questions about actual DATA CONTENT and VALUES
 
-        Return a JSON object with the following structure:
+        **Use "schema" intent IF the query asks about database structure/metadata only.**
+        **Use "exploratory" intent IF the query asks for actual data records, values, or content.**
+
+        Intent Classifications:
+
+        - **schema**: Questions about database structure that can be answered from metadata alone:
+            ✅ "What tables are in the database?"
+            ✅ "What columns are in the 'customer' table?"
+            ✅ "What is the primary key of the invoice table?"
+            ✅ "Which columns are temporal/numeric/text?"
+            ✅ "How are the album and artist tables related?"
+            ✅ "What data type is the Total column?"
+            ✅ "How many rows are in the track table?" (row count is in metadata)
+            ✅ "Show me sample data from the employee table" (sample structure is in metadata)
+            ✅ "What are the foreign key relationships?"
+            ✅ "Which tables have the most columns?"
+
+        - **exploratory**: Questions requiring actual data retrieval via SQL queries:
+            ✅ "What is the average Total in the invoice table?"
+            ✅ "List all artist names that start with 'A'"
+            ✅ "List all the artists in the db"                    
+            ✅ "Show me all customers from Brazil"                
+            ✅ "List all albums by AC/DC"                         
+            ✅ "What are all the genres in the database?"         
+            ✅ "Show me all invoice dates"                        
+            ✅ "List all track names"                             
+            ✅ "What are the top 10 customers by spending?"
+            ✅ "What is the most common value in the country column?"
+            ✅ "Show me all invoices from 2023"
+            ✅ "How many customers are from each country?"
+            ✅ "What is the median track duration?"
+            ✅ "Display the first 5 rows of the customer table"   
+            ✅ "What are all the unique cities in the database?"  
+
+        **IMPORTANT DISTINCTIONS:**
+        - "What tables exist?" = SCHEMA (structure)
+        - "List all artists" = EXPLORATORY (actual data content)
+        - "What columns are in artist table?" = SCHEMA (structure)
+        - "Show me artist names" = EXPLORATORY (actual data content)
+        - "How many rows in total?" = SCHEMA (count is in metadata)
+        - "Show me the actual rows" = EXPLORATORY (actual data content)
+
+        **Decision Process:**
+        1. Does the query ask for actual data records, values, or content? → EXPLORATORY
+        2. Does the query ask about database structure, organization, or metadata? → SCHEMA
+        3. Does the query use words like "list all", "show me", "display", "what are the" when referring to actual data? → EXPLORATORY
+        4. Does the query ask "what exists" vs "show me what exists"? → SCHEMA vs EXPLORATORY
+
+        - **visualization**: User wants to generate charts, graphs, or visual representations of data.
+        - **insight**: User wants to discover trends, anomalies, patterns, or correlations in the data.
+        - **explanation**: User wants explanations about discovered insights or data patterns.
+        - **customization**: User wants to modify existing visualizations (colors, filters, chart types).
+        - **system**: User wants to connect to different databases, export data, or share results.
+        - **other**: Queries that don't fit the above categories.
+
+        Return a JSON object with this exact structure:
         {{
-            "intent": ["intent1", "intent2"],  # List of intents
-            "confidence": 0.95,  # Confidence score (float between 0 and 1)
-            "reason": ["reason for intent1", "reason for intent2"]  # Reasons for each identified intent
+            "intent": ["intent1", "intent2"],
+            "confidence": 0.95,
+            "reason": ["reason for intent1", "reason for intent2"]
         }}
 
-        Ensure the response is a valid JSON format, contains both 'intent' and 'confidence', and provides a 'reason' for each intent. Avoid extra text or markdown—just the raw JSON object.
+        Ensure valid JSON format with no extra text or markdown.
         """
         
         try:

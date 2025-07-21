@@ -321,3 +321,83 @@ export const fetchUserInteractionData = async () => {
     return null;
   }
 };
+
+// Function to fetch user profile data for profile page
+export const fetchUserProfile = async (setProfileData, setError) => {
+  const token = localStorage.getItem("token");
+  try {
+    // Changed endpoint from /api/user/profile to /api/profile
+    const response = await axios.get(`${API_BASE_URL}/api/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setProfileData(response.data);
+  } catch (error) {
+    setError("Failed to fetch user profile data: " + error.message);
+  }
+};
+
+
+
+//user detail update in user profile page
+export const updateUserProfile = async (
+  updatedData,
+  setProfileData,
+  setError
+) => {
+  const token = localStorage.getItem("token");
+  try {
+    // Map frontend fields to backend fields
+    const payload = {
+      first_name: updatedData.firstName,
+      last_name: updatedData.lastName,
+      email: updatedData.email,
+      phone_number: updatedData.mobile,
+      user_profile_picture: updatedData.profilePhoto,
+    };
+    const response = await axios.put(`${API_BASE_URL}/api/update/profile`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setProfileData(response.data);
+  } catch (error) {
+    setError("Failed to update user profile: " + error.message);
+  }
+};
+
+
+//graph exporter 
+export const handleExportClick = async (sessionId) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/export-db`, {
+      session_id: sessionId,
+    }, {
+      responseType: 'blob', // for binary file (zip)
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'external_db_export.zip';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Export failed:", error);
+  }
+};
+
+export async function getGraphState() {
+  const res = await fetch(`${API_BASE_URL}/api/graph/state`);
+  return res.json();
+}
+
+export async function customizeGraph(prompt) {
+  const res = await fetch(`${API_BASE_URL}/api/graph/customize`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt }),
+  });
+  return res.json();
+}

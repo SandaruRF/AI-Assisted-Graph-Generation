@@ -1,6 +1,6 @@
 from sklearn.svm import OneClassSVM
 from sklearn.preprocessing import StandardScaler
-from langchain.agents import tool
+from langchain_core.tools import tool
 import pandas as pd
 from typing import List, Dict, Any
 from datetime import datetime, timedelta

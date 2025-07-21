@@ -4,7 +4,7 @@ from pyod.models.knn import KNN
 from pyod.models.auto_encoder import AutoEncoder
 from pyod.models.lof import LOF
 from pyod.models.ocsvm import OCSVM
-from langchain.agents import tool
+from langchain_core.tools import tool
 import pandas as pd
 from datetime import datetime, timedelta
 from typing import List, Dict, Any

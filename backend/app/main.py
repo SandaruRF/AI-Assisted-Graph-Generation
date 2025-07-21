@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -12,7 +12,9 @@ from app.api.web_socket import router as stream_ws_router
 from app.api.googleauth import router as google_auth_router
 from app.api.githubauth import router as github_auth_router
 from app.api.ranked_graphs_router import router as ranked_graphs_router
-
+from app.api.database_exporter import router as database_exporter
+from app.state import graph_state_manager
+from app.agents.visualization_agent.ui_customizer import parse_customization_prompt
 
 
 app = FastAPI(
@@ -23,7 +25,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,8 +41,34 @@ app.include_router(database_connection_router, prefix="/sql", tags=["Database Co
 app.include_router(stream_ws_router, tags=["Stream Web Socket"])
 app.include_router(interactions_router, prefix="/api", tags=["Graph Interactions"])
 app.include_router(ranked_graphs_router, prefix="/api")
+app.include_router(database_exporter, prefix="/api", tags=['Database Exporter'])
+
+
+@app.get("/simple-test")
+async def simple_test():
+    return {"simple": "test working"}
+
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to VizGen API"}
 
+@app.get("/test")
+async def test():
+    return {"test": "working"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "message": "Backend is running"}
+
+@app.get("/api/graph/state")
+def get_graph_state():
+    return graph_state_manager.get_state()
+
+@app.post("/api/graph/customize")
+async def customize_graph(request: Request):
+    data = await request.json()
+    prompt = data.get("prompt", "")
+    updates = parse_customization_prompt(prompt)
+    new_state = graph_state_manager.update_state(updates)
+    return new_state
