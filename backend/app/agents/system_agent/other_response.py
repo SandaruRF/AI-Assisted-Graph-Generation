@@ -1,4 +1,5 @@
-import google.generativeai as genai
+# import google.generativeai as genai
+from anthropic import Anthropic
 
 from app.config import settings
 from app.utils.logging import logger
@@ -6,8 +7,10 @@ from app.state import State
 
 class System:
     def __init__(self):
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel("gemini-2.0-flash")
+        # genai.configure(api_key=settings.GOOGLE_API_KEY)
+        # self.model = genai.GenerativeModel("gemini-2.0-flash")
+        self.client = Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+        self.model = "claude-3-5-sonnet-20241022"
     
     def other_response(self, state: State) -> str:
         prompt = f"""
@@ -26,8 +29,14 @@ class System:
         """
         
         try:
-            response = self.model.generate_content(prompt)
-            return response.text.strip() if response else "I'm here to help you explore your data! Ask me anything data-related."
+            response = self.client.messages.create(
+                model=self.model,
+                max_tokens=1000,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            return response.content[0].text if response else "I'm here to help you explore your data! Ask me anything data-related."
 
         except Exception as e:
             logger.error(f"Error generating response: {e}")

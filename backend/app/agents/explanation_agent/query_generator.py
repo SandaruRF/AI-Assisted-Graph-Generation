@@ -1,11 +1,11 @@
 from typing import List, Dict, Any, Optional
 import json
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_anthropic import ChatAnthropic
 
 class InsightExplanationQueryGenerator:
-    def __init__(self, model="gemini-2.0-flash"):
-        self.llm = ChatGoogleGenerativeAI(model=model, temperature=0.1)
+    def __init__(self, model="claude-3-5-sonnet-20241022"):
+        self.llm = ChatAnthropic(model=model, temperature=0.1)
         self.search_tools = {
             "tavily_contextual_search": {
                 "description": "Search for background, recent events, expert opinions, data/statistics, or related topics",

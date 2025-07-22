@@ -1,7 +1,7 @@
 from langgraph.graph import StateGraph, MessagesState
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 #from langchain_anthropic import ChatAnthropic
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_anthropic import ChatAnthropic
 
 from app.state import State, connected_clients
 from app.utils.web_socket_update import send_websocket_update
@@ -14,9 +14,11 @@ from app.agents.analysis_agents.trend_detection_agent.stumpy_motif_detection imp
 from app.agents.analysis_agents.trend_detection_agent.prophet_trend_forecast import prophet_forecast    
 
 
-# claude-3-5-haiku-20241022	
-# llm = ChatAnthropic(model="claude-sonnet-4-20250514", max_tokens=2000, temperature=0)
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", max_tokens=2000, temperature=0)
+llm = ChatAnthropic(
+        model="claude-3-5-sonnet-20241022",  # Latest Sonnet model
+        temperature=0.1
+    )
+# llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", max_tokens=2000, temperature=0)
 
 # Augment the LLM with tools
 tools = [detect_anomalies_sklearn, 

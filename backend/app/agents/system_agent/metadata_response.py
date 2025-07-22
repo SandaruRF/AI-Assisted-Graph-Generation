@@ -1,4 +1,5 @@
-import google.generativeai as genai
+# import google.generativeai as genai
+from anthropic import Anthropic
 import json
 
 from app.config import settings
@@ -7,8 +8,10 @@ from app.state import State
 
 class MetadataExpert:
     def __init__(self):
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel("gemini-2.0-flash")
+        # genai.configure(api_key=settings.GOOGLE_API_KEY)
+        # self.model = genai.GenerativeModel("gemini-2.0-flash")
+        self.client = Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+        self.model = "claude-3-5-sonnet-20241022"
     
     def answer_schema_question(self, state: State) -> str:
         """
@@ -69,8 +72,14 @@ class MetadataExpert:
         """
         
         try:
-            response = self.model.generate_content(prompt)
-            return response.text.strip() if response else "I'm sorry, I couldn't process that request. Could you please ask a question about the database structure?"
+            response = self.client.messages.create(
+                model=self.model,
+                max_tokens=1000,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            return response.content[0].text if response else "I'm sorry, I couldn't process that request. Could you please ask a question about the database structure?"
 
         except Exception as e:
             logger.error(f"Error generating metadata response: {e}")
@@ -135,8 +144,14 @@ class MetadataExpert:
             """
             
             try:
-                response = self.model.generate_content(prompt)
-                return response.text.strip() if response else "I'm sorry, I couldn't process the data to answer your question. Please try again."
+                response = self.client.messages.create(
+                model=self.model,
+                max_tokens=1000,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+                return response.content[0].text if response else "I'm sorry, I couldn't process the data to answer your question. Please try again."
 
             except Exception as e:
                 logger.error(f"Error generating exploratory response: {e}")

@@ -1,4 +1,5 @@
-import google.generativeai as genai
+# import google.generativeai as genai
+from anthropic import Anthropic
 import json
 
 from app.config import settings
@@ -7,8 +8,10 @@ from app.state import State
 
 class SuggestionExpert:
     def __init__(self):
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel("gemini-2.0-flash")
+        # genai.configure(api_key=settings.GOOGLE_API_KEY)
+        # self.model = genai.GenerativeModel("gemini-2.0-flash")
+        self.client = Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+        self.model = "claude-3-5-sonnet-20241022"
     
     def suggest_prompt(self, state: State) -> dict:
         prompt = f"""
@@ -31,7 +34,8 @@ class SuggestionExpert:
         {{
             "suggestions": [
                 "First suggestion",
-                "Second suggestion"
+                "Second suggestion",
+                "Third suggestion"
             ]
         }}
 
@@ -44,13 +48,19 @@ class SuggestionExpert:
         """
         
         try:
-            response = self.model.generate_content(prompt)
+            response = self.client.messages.create(
+                model=self.model,
+                max_tokens=1000,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
             
-            if not response or not response.text:
+            if not response or not response.content:
                 logger.error("Error: Received an empty response from Gemini API.")
                 return {"suggestions": ["Explore data patterns", "Create visualization", "Analyze trends"]}
 
-            result = response.text.strip()
+            result = response.content[0].text.strip()
             result = result.replace("```json", "").replace("```", "").strip()
             logger.info(f"Gemini Response: {result}")
 
