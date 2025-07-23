@@ -141,6 +141,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     state = State(
                         session_id=session_id,
                         user_prompt=user_prompt,
+                        suggestions=[],
                         intents=[],
                         metadata={},
                         sql_query="",

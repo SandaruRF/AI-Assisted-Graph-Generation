@@ -65,12 +65,14 @@ const TraceTimeline = ({ messages = [] }) => {
             padding: 0,
           },
           m: 0,
+          mt: -1.5,
           p: 1,
           "& .MuiTimelineItem-root": {
             minHeight: "auto",
             mb: 0,
           },
           backgroundColor: "#edf1f2",
+          borderRadius: "4px",
         }}
       >
         {animatedMessages.map((item, idx) => (

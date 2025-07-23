@@ -3,7 +3,8 @@ from datetime import timedelta
 
 from app.utils.logging import logger
 from app.config import db
-from app.models.user_detail import UserCreatep1,UserCreatep2 , Token, UserLogin
+from app.utils.auth import get_current_user
+from app.models.user_detail import UserCreatep1,UserCreatep2 , Token, UserLogin, userProfileDeails
 from app.utils.auth import hash_password, verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 router = APIRouter()
@@ -63,3 +64,48 @@ async def login(user: UserLogin):
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+#pass user data to the frontend to display in profile page
+@router.get("/profile", response_model=userProfileDeails)
+async def get_user_profile(email: str = Depends(get_current_user)):
+    if not email:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    logger.info(f"Fetching profile for user: {email}")
+    user = await users_collection.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return userProfileDeails(
+        user_profile_picture=user.get("user_profile_picture"),
+        email=user["email"],
+        first_name=user.get("first_name", ""),
+        last_name=user.get("last_name", ""),
+        phone_number=user.get("phone_number", "")
+    )
+    
+#update user profile data
+@router.put("/update/profile", response_model=userProfileDeails)
+async def update_user_profile(user_data: userProfileDeails, email: str = Depends(get_current_user)):
+    if not email:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    logger.info(f"Updating profile for user: {email}")
+    user = await users_collection.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    update_data = {
+        "first_name": user_data.first_name,
+        "last_name": user_data.last_name,
+        "phone_number": user_data.phone_number,
+        "user_profile_picture": user_data.user_profile_picture
+    }
+    
+    await users_collection.update_one({"email": email}, {"$set": update_data})
+
+    return userProfileDeails(
+        user_profile_picture=user_data.user_profile_picture,
+        email=email,
+        first_name=user_data.first_name,
+        last_name=user_data.last_name,
+        phone_number=user_data.phone_number
+    )

@@ -12,8 +12,10 @@ from app.utils.response_formatters import (
 from app.agents.intent_agent.intent_classifier import IntentClassifier
 from app.agents.system_agent.other_response import System
 from app.agents.system_agent.metadata_response import MetadataExpert
+from app.agents.system_agent.prompt_suggesion import SuggestionExpert
 from app.agents.sql_agent.metadata_retriever import get_cached_metadata
 from app.agents.sql_agent.sql_query_generator import SQLQueryGenerator
+from app.agents.sql_agent.sql_validator import SQLQueryValidator
 from app.agents.sql_agent.query_executor import execute_query_with_session
 from app.agents.visualization_agent.feature_extractor import process_and_clean_dataset
 from app.agents.visualization_agent.graph_recommender import get_graph_types, GraphRecommender
@@ -34,7 +36,7 @@ async def intent_classifier(state: State):
     if isinstance(intent_list, str):
         intent_list = [intent_list]
     
-    return state.copy(update={"intents": intent_list})
+    return state.model_copy(update={"intents": intent_list})
 
 
 async def metadata_retriever(state: State):
@@ -47,7 +49,7 @@ async def metadata_retriever(state: State):
 
     metadata = get_cached_metadata(state.session_id)
 
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages,
         "metadata": metadata.get("metadata", {}),
     })
@@ -67,10 +69,29 @@ async def sql_generator(state: State):
     sql_dialect = db_info["sql_dialect"]
     sql_query = sql_query_generator.generate_sql_query(state.user_prompt, metadata, sql_dialect)
     
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages,
         "metadata": metadata,
         "sql_dialect": sql_dialect,
+        "sql_query": sql_query
+    })
+    
+async def sql_validator(state: State):
+    """Validate the generated SQL query."""
+    update_message = f"Validating SQL query..."
+    messages = state.messages.copy()
+    messages.append(update_message)
+    if state.session_id in connected_clients:
+        await send_websocket_update(state.session_id, update_message)
+
+    sql_validator = SQLQueryValidator()
+    db_info = get_cached_metadata(state.session_id)
+    metadata = db_info["metadata"]
+    sql_dialect = db_info["sql_dialect"]
+    sql_query = sql_validator.validate_sql_query(state.sql_query, metadata, sql_dialect)
+    
+    return state.model_copy(update={
+        "messages": messages,
         "sql_query": sql_query
     })
 
@@ -85,7 +106,7 @@ async def sql_executor(state: State):
 
     original_data = execute_query_with_session(state.session_id, state.sql_query)
     
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages,
         "original_data": original_data
     })
@@ -107,7 +128,7 @@ async def data_preprocessor(state: State):
     num_rows = result["num_rows"]
     cardinalities = result["cardinalities"]
 
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages,
         "rearranged_data": rearranged_data,
         "num_numeric": num_numeric,
@@ -130,7 +151,7 @@ async def graph_ranker(state: State):
     recommender = GraphRecommender()
     ranked_graphs = recommender.recommend_graphs(state, suitable_graphs)
 
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages,
         "suitable_graphs": suitable_graphs,
         "ranked_graphs": ranked_graphs
@@ -148,7 +169,7 @@ async def insight_generator(state: State):
     # Call generate_insights and extract results
     insights_state = await generate_insights(state)
     
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": insights_state.messages,
         "insights": insights_state.insights,
         "tool_results": insights_state.tool_results,
@@ -200,7 +221,7 @@ async def explanation_generator(state: State):
         tool_results=state.tool_results
     )
     
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages,
         "search_plan": search_plan,
         "search_results": search_results,
@@ -216,10 +237,10 @@ async def customizer(state: State):
     if state.session_id in connected_clients:
         await send_websocket_update(state.session_id, update_message)
     
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages
     })
-
+  
 
 async def system(state: State):
     """Handle system-level operations like connecting to a different database or exporting the graph."""
@@ -229,7 +250,7 @@ async def system(state: State):
     if state.session_id in connected_clients:
         await send_websocket_update(state.session_id, update_message)
     
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages
     })
  
@@ -243,6 +264,8 @@ async def response_generator(state: State):
         print(f"Sending WebSocket message: {update_message}")
         await send_websocket_update(state.session_id, update_message)
 
+    suggester = SuggestionExpert()
+    suggestions = suggester.suggest_prompt(state)["suggestions"]
     intents = state.intents
     response = ""
     
@@ -272,9 +295,10 @@ async def response_generator(state: State):
         # Handle visualization, insight, and explanation intents
         response = generate_analysis_response(state, intents)
     
-    return state.copy(update={
+    return state.model_copy(update={
         "messages": messages,
-        "response": response
+        "response": response,
+        "suggestions": suggestions
     })
 
 
@@ -387,6 +411,7 @@ builder = StateGraph(State)
 builder.add_node("intent_classifier", intent_classifier)
 builder.add_node("metadata_retriever", metadata_retriever)
 builder.add_node("sql_generator", sql_generator)
+builder.add_node("sql_validator", sql_validator)
 builder.add_node("sql_executor", sql_executor)
 builder.add_node("data_preprocessor", data_preprocessor)
 builder.add_node("graph_ranker", graph_ranker)
@@ -431,8 +456,9 @@ builder.add_conditional_edges(
     }
 )
 
-# Exploratory queries: sql_generator -> sql_executor -> response_generator
-builder.add_edge("sql_generator", "sql_executor")
+# Exploratory queries: sql_generator -> sql_validator -> sql_executor -> response_generator
+builder.add_edge("sql_generator", "sql_validator")
+builder.add_edge("sql_validator", "sql_executor")
 
 # Add conditional routing after sql_executor
 builder.add_conditional_edges(

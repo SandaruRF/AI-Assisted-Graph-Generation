@@ -16,7 +16,10 @@ import LandingPage from "./pages/LandingPage";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import UserProfile from "./pages/UserProfile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import DocumentationPage from "./pages/docs";
+import SettingsPage from "./pages/Settings";
 
 
 
@@ -45,6 +48,13 @@ function App() {
               <Route path="/about" element={<AboutUs />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route
+                path="/user-profile"
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }/>
               <Route
                 path="/existing-connections"
                 element={
@@ -80,6 +90,8 @@ function App() {
               />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/github-callback" element={<GithubCallback />} />
+              <Route path="/docs" element={<DocumentationPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
               
             </Routes>
           </Router>
