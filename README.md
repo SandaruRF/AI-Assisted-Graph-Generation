@@ -69,3 +69,93 @@ Agents are designed using LangGraph workflows, allowing dynamic execution and ad
 git clone https://github.com/yourusername/VizGen.git
 cd VizGen
 ```
+
+### 2. Backend Setup
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+### 3. Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+### 🔑 Environment Variables
+
+Create a .env file in the backend with:
+
+```bash
+MONGO_URI=your_mongodb_connection_string
+SECRET_KEY=your_jwt_secret
+GOOGLE_CLIENT_ID=your_google_oauth_id
+GOOGLE_CLIENT_SECRET=your_google_secret
+```
+
+## ✅ Functional Highlights
+
+- Text-to-SQL query generation
+- Dynamic graph generation (Bar, Line, Pie, etc.)
+- Real-time interaction with live SQL databases
+- Multi-graph comparison support
+- Interactive feedback loop to improve future recommendations
+
+---
+
+## 📦 Deployment
+
+- Docker containers configured for both backend and frontend
+- Ready for deployment on AWS, GCP, or any containerized environment
+- CI/CD pipelines planned (GitHub Actions / Jenkins)
+
+---
+
+## 🛣 Roadmap
+
+- [ ] Support for NoSQL and CSV uploads
+- [ ] Voice command to visualization
+- [ ] Admin dashboard for usage analytics
+- [ ] Public API access for integration
+
+---
+
+## 🧠 Contributors
+
+| Name                   | Role                      |
+| ---------------------- | ------------------------- |
+| W. S. R. Fernando      | AI & Backend Engineer     |
+| K. A. I. N. Jayarathne | Frontend Developer        |
+| W. M. S. S. Abeysekara | Full Stack Engineer       |
+| S. Shanuja             | DevOps & Testing Engineer |
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📬 Contact
+
+- 👨‍💻 [Sandaru Fernando](https://github.com/SandaruRF)
+- 📧 sandaru@email.com
+- 🎓 Department of Computational Mathematics, University of Moratuwa
+
+> Special thanks to our mentors **Prof. A.T.P. Thushari** and **Mr. Deshan Jayawardana**, and Mitra Innovation for their support.
+
+---
+
+## 🧠 Citation
+
+If you use **VizGen** in your research or academic work, please cite it as:
+
+> Fernando, W.S.R., Jayarathne, K.A.I.N., Abeysekara, W.M.S.S., & Shanuja, S. (2025).  
+> _VizGen – AI-Assisted Graph Generator_. Department of Computational Mathematics, University of Moratuwa.
