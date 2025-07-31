@@ -55,7 +55,8 @@ Agents are designed using LangGraph workflows, allowing dynamic execution and ad
 
 | Interface                            | Description                                        |
 | ------------------------------------ | -------------------------------------------------- |
-| ![Landing](assets/landing.png)       | Simple login/signup with email or Google/GitHub    |
+| ![SignUp](assets/signup.png)         | Simple login/signup with email or Google/GitHub    |
+| ![Landing](assets/landing.png)       | Landing page of VizGen                             |
 | ![Prompt](assets/prompt_query.png)   | Enter natural language query to generate graph     |
 | ![Graph](assets/generated_graph.png) | Real-time Plotly.js graph with customization tools |
 
@@ -152,7 +153,7 @@ This project is licensed under the MIT License – see the [LICENSE](LICENSE) fi
 ## 📬 Contact
 
 - 👨‍💻 [Sandaru Fernando](https://github.com/SandaruRF)
-- 📧 sandaru@email.com
+- 📧 sandarurf@gmail.com
 - 🎓 Department of Computational Mathematics, University of Moratuwa
 
 > Special thanks to our mentors **Prof. A.T.P. Thushari** and **Mr. Deshan Jayawardana**, and Mitra Innovation for their support.
