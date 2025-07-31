@@ -66,7 +66,7 @@ Agents are designed using LangGraph workflows, allowing dynamic execution and ad
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/VizGen.git
+git clone https://github.com/SandaruRF/AI-Assisted-Graph-Generation.git
 cd VizGen
 ```
 
@@ -93,10 +93,18 @@ npm start
 Create a .env file in the backend with:
 
 ```bash
+FRONTEND_URL=your_frontend_url
+GOOGLE_API_KEY=your_google_api_key
+TAVILY_API_KEY=your_tavily_api_key
 MONGO_URI=your_mongodb_connection_string
+DATABASE_NAME=your_database_name
 SECRET_KEY=your_jwt_secret
+CLICK_SEND_API=your_clicksend_api_key
+CLICK_SEND_USERNAME=your_clicksend_username
 GOOGLE_CLIENT_ID=your_google_oauth_id
 GOOGLE_CLIENT_SECRET=your_google_secret
+GITHUB_CLIENT_ID=your_github_oauth_id
+GITHUB_CLIENT_SECRET=your_github_secret
 ```
 
 ## ✅ Functional Highlights
@@ -104,7 +112,6 @@ GOOGLE_CLIENT_SECRET=your_google_secret
 - Text-to-SQL query generation
 - Dynamic graph generation (Bar, Line, Pie, etc.)
 - Real-time interaction with live SQL databases
-- Multi-graph comparison support
 - Interactive feedback loop to improve future recommendations
 
 ---
@@ -120,7 +127,6 @@ GOOGLE_CLIENT_SECRET=your_google_secret
 ## 🛣 Roadmap
 
 - [ ] Support for NoSQL and CSV uploads
-- [ ] Voice command to visualization
 - [ ] Admin dashboard for usage analytics
 - [ ] Public API access for integration
 
@@ -128,12 +134,12 @@ GOOGLE_CLIENT_SECRET=your_google_secret
 
 ## 🧠 Contributors
 
-| Name                   | Role                      |
-| ---------------------- | ------------------------- |
-| W. S. R. Fernando      | AI & Backend Engineer     |
-| K. A. I. N. Jayarathne | Frontend Developer        |
-| W. M. S. S. Abeysekara | Full Stack Engineer       |
-| S. Shanuja             | DevOps & Testing Engineer |
+| Name                   |
+| ---------------------- |
+| W. S. R. Fernando      |
+| K. A. I. N. Jayarathne |
+| W. M. S. S. Abeysekara |
+| S. Shanuja             |
 
 ---
 
