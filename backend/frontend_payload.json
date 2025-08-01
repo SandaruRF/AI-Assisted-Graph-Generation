@@ -2,12 +2,12 @@
   "type": "final",
   "message": "Prompt processed successfully!",
   "result": {
-    "session_id": "38efffca-b67a-48d2-b2e5-8a229e8dd7cf",
+    "session_id": "19532cad-551f-46a1-9f04-355c2711923d",
     "user_prompt": "plot album sales by year",
     "suggestions": [
-      "Album sales by artist?",
-      "Sales trends over time?",
-      "Compare album sales by genre"
+      "sales trend by artist?",
+      "Sales by genre per year?",
+      "Compare album sales by country"
     ],
     "intents": [
       "visualization",
@@ -854,14 +854,14 @@
           ],
           "foreign_keys": [
             {
-              "local_column": "TrackId",
-              "referenced_table": "track",
-              "referenced_column": "TrackId"
-            },
-            {
               "local_column": "PlaylistId",
               "referenced_table": "playlist",
               "referenced_column": "PlaylistId"
+            },
+            {
+              "local_column": "TrackId",
+              "referenced_table": "track",
+              "referenced_column": "TrackId"
             }
           ],
           "numeric_columns": [
@@ -945,16 +945,16 @@
         },
         {
           "from_table": "playlisttrack",
-          "from_column": "TrackId",
-          "to_table": "track",
-          "to_column": "TrackId",
+          "from_column": "PlaylistId",
+          "to_table": "playlist",
+          "to_column": "PlaylistId",
           "relationship_type": "foreign_key"
         },
         {
           "from_table": "playlisttrack",
-          "from_column": "PlaylistId",
-          "to_table": "playlist",
-          "to_column": "PlaylistId",
+          "from_column": "TrackId",
+          "to_table": "track",
+          "to_column": "TrackId",
           "relationship_type": "foreign_key"
         }
       ],
@@ -965,7 +965,7 @@
         "database_type": "Mysql"
       }
     },
-    "sql_query": "SELECT\n    DATE_FORMAT(i.InvoiceDate, '%Y') AS SaleYear,\n    SUM(il.UnitPrice * il.Quantity) AS TotalSales\nFROM Invoice i\nJOIN InvoiceLine il ON i.InvoiceId = il.InvoiceId\nJOIN Track t ON il.TrackId = t.TrackId\nJOIN Album a ON t.AlbumId = a.AlbumId\nGROUP BY SaleYear\nORDER BY SaleYear;",
+    "sql_query": "SELECT\n    DATE_FORMAT(i.InvoiceDate, '%Y') AS SaleYear,\n    SUM(il.UnitPrice * il.Quantity) AS TotalSales\nFROM InvoiceLine il\nJOIN Invoice i ON il.InvoiceId = i.InvoiceId\nJOIN Track t ON il.TrackId = t.TrackId\nJOIN Album a ON t.AlbumId = a.AlbumId\nGROUP BY SaleYear\nORDER BY SaleYear;",
     "sql_dialect": "MYSQL",
     "original_data": [
       {
@@ -1028,11 +1028,11 @@
       },
       "SaleYear": {
         "unique_values": [
-          "2022",
           "2023",
-          "2021",
           "2025",
-          "2024"
+          "2021",
+          "2024",
+          "2022"
         ],
         "count": 5
       }
@@ -1045,11 +1045,17 @@
       "Line Chart",
       "Scatter Plot"
     ],
-    "ranked_graphs": [
-      "Line Chart",
-      "Bar Chart"
-    ],
-    "response": "Here's a breakdown of album sales by year, based on the provided data:\n\nThe table shows the total album sales for each year from 2021 to 2025.\n\n| SaleYear | TotalSales |\n|---|---|\n| 2021 | 449.46 |\n| 2022 | 481.45 |\n| 2023 | 469.58 |\n| 2024 | 477.53 |\n| 2025 | 450.58 |\n\n**Summary:**\n\n*   The highest sales occurred in 2022, with a total of 481.45.\n*   The lowest sales occurred in 2021, with a total of 449.46.\n*   The sales appear relatively consistent across the years.",
+    "ranked_graphs": {
+      "recommended_graphs": [
+        "Line Chart",
+        "Area Chart",
+        "Bar Chart",
+        "Scatter Plot",
+        "Histogram",
+        "Box Plot"
+      ]
+    },
+    "response": "Here's a summary of album sales by year based on the provided data:\n\nThe data shows album sales for the years 2021 through 2025. Here's a breakdown of the total sales for each year:\n\n| Year | Total Sales |\n|---|---|\n| 2021 | 449.46 |\n| 2022 | 481.45 |\n| 2023 | 469.58 |\n| 2024 | 477.53 |\n| 2025 | 450.58 |\n\n**Summary:**\n\n*   The highest sales occurred in 2022 with a total of 481.45.\n*   The lowest sales occurred in 2021 with a total of 449.46.\n*   The sales appear to fluctuate slightly year by year within a relatively narrow range.",
     "messages": [
       {
         "type": "system",

@@ -149,20 +149,7 @@ async def graph_ranker(state: State):
 
     suitable_graphs = get_graph_types(state.num_numeric, state.num_cat, state.num_temporal)
     recommender = GraphRecommender()
-    recommendation_result = recommender.recommend_graphs(state, suitable_graphs)
-    
-    # Handle the case where the result might be a string (JSON)
-    if isinstance(recommendation_result, str):
-        import json
-        try:
-            recommendation_dict = json.loads(recommendation_result)
-            ranked_graphs = recommendation_dict.get("recommended_graphs", [])
-        except json.JSONDecodeError:
-            print("Failed to parse recommendation result as JSON")
-            ranked_graphs = []
-    else:
-        # Handle the case where it's already a dictionary
-        ranked_graphs = recommendation_result.get("recommended_graphs", [])
+    ranked_graphs = recommender.recommend_graphs(state, suitable_graphs)
     
     print("="*50)
     print(ranked_graphs)

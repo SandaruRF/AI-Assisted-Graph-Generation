@@ -39,13 +39,13 @@ const Graph = ({ num_numeric, num_cat, num_temporal, types, data }) => {
   // Parse graph types from the `types` string prop
   const graphTypes = useMemo(() => {
     try {
-      if (types && typeof types === "string") {
-        const parsed = JSON.parse(types);
+      // Handle object format (new)
+      if (types && typeof types === "object") {
         if (
-          parsed?.recommended_graphs &&
-          Array.isArray(parsed.recommended_graphs)
+          types.recommended_graphs &&
+          Array.isArray(types.recommended_graphs)
         ) {
-          return parsed.recommended_graphs;
+          return types.recommended_graphs;
         }
       }
     } catch (error) {

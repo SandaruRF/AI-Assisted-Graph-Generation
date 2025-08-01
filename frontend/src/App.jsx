@@ -17,11 +17,9 @@ import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import UserProfile from "./pages/UserProfile";
+import GraphTestPage from "./components/chat_interface/GraphTest";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import DocumentationPage from "./pages/docs";
-
-
-
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -40,6 +38,7 @@ function App() {
         <div>
           <Router>
             <Routes>
+              <Route path="/graph-test" element={<GraphTestPage />} />
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignUpPage />} />
@@ -53,7 +52,8 @@ function App() {
                   <ProtectedRoute>
                     <UserProfile />
                   </ProtectedRoute>
-                }/>
+                }
+              />
               <Route
                 path="/existing-connections"
                 element={
@@ -90,7 +90,6 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/github-callback" element={<GithubCallback />} />
               <Route path="/docs" element={<DocumentationPage />} />
-              
             </Routes>
           </Router>
         </div>
@@ -98,7 +97,5 @@ function App() {
     </div>
   );
 }
-
-
 
 export default App;

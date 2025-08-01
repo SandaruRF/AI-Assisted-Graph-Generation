@@ -119,7 +119,7 @@ class State(BaseModel):
     num_rows: int
     cardinalities: Dict[str, Dict[str, Any]]
     suitable_graphs: List[str]
-    ranked_graphs: List[str]
+    ranked_graphs: Dict[str, List[str]]
     response: str
     messages: List[Dict[str, str]]
     insights: List[str]
