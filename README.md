@@ -53,12 +53,15 @@ Agents are designed using LangGraph workflows, allowing dynamic execution and ad
 
 ## 🧪 Screenshots
 
-| Interface                            | Description                                        |
-| ------------------------------------ | -------------------------------------------------- |
-| ![SignUp](assets/signup.png)         | Simple login/signup with email or Google/GitHub    |
-| ![Landing](assets/landing.png)       | Landing page of VizGen                             |
-| ![Prompt](assets/prompt_query.png)   | Enter natural language query to generate graph     |
-| ![Graph](assets/generated_graph.png) | Real-time Plotly.js graph with customization tools |
+| Interface                                   | Description                                        |
+| ------------------------------------------- | -------------------------------------------------- |
+| ![SignUp](assets/signup.png)                | Simple login/signup with email or Google/GitHub    |
+| ![Landing](assets/landing.png)              | Landing page of VizGen                             |
+| ![Landing](assets/db_connection_string.png) | SQL database connection using connection string    |
+| ![Landing](assets/db_connection_form.png)   | SQL database connection using connection form      |
+| ![Landing](assets/existing_connections.png) | Saved database connections                         |
+| ![Prompt](assets/prompt_query.png)          | Enter natural language query to generate graph     |
+| ![Graph](assets/generated_graph.png)        | Real-time Plotly.js graph with customization tools |
 
 ---
 
@@ -91,22 +94,47 @@ npm start
 
 ### 🔑 Environment Variables
 
-Create a .env file in the backend with:
+#### 📁 Backend – `.env`
 
-```bash
+Create a `.env` file in the `backend/` directory with the following variables:
+
+```env
 FRONTEND_URL=your_frontend_url
+
+# API Keys
 GOOGLE_API_KEY=your_google_api_key
 TAVILY_API_KEY=your_tavily_api_key
+
+# MongoDB Configuration
 MONGO_URI=your_mongodb_connection_string
 DATABASE_NAME=your_database_name
+
+# Authentication
 SECRET_KEY=your_jwt_secret
+
+# Email Service (ClickSend)
 CLICK_SEND_API=your_clicksend_api_key
 CLICK_SEND_USERNAME=your_clicksend_username
+
+# OAuth Credentials
 GOOGLE_CLIENT_ID=your_google_oauth_id
 GOOGLE_CLIENT_SECRET=your_google_secret
 GITHUB_CLIENT_ID=your_github_oauth_id
 GITHUB_CLIENT_SECRET=your_github_secret
 ```
+
+#### 📁 Frontend – .env
+
+Create a .env file in the frontend/ directory with the following variables:
+
+```env
+REACT_APP_BACKEND_URL=your_backend_url
+REACT_APP_GOOGLE_CLIENT_ID=your_google_oauth_id
+REACT_APP_GOOGLE_CLIENT_SECRET=your_google_secret
+REACT_APP_GITHUB_CLIENT_ID=your_github_oauth_id
+```
+
+> ⚠️ Note: All React environment variables must be prefixed with REACT*APP* to be accessible in the frontend code.
 
 ## ✅ Functional Highlights
 
