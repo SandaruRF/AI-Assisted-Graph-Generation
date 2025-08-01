@@ -17,7 +17,6 @@ import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import UserProfile from "./pages/UserProfile";
-import GraphTestPage from "./components/chat_interface/GraphTest";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import DocumentationPage from "./pages/docs";
 
@@ -38,7 +37,6 @@ function App() {
         <div>
           <Router>
             <Routes>
-              <Route path="/graph-test" element={<GraphTestPage />} />
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignUpPage />} />
