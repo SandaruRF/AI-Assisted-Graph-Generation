@@ -154,7 +154,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         num_rows=0,
                         cardinalities={},
                         suitable_graphs=[],
-                        ranked_graphs=[],
+                        ranked_graphs={},
                         response="",
                         messages=[],
                         insights=[],
@@ -203,7 +203,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     # Create a new graph state for this prompt
                     if result_dict.get('rearranged_data'):
                         new_graph_state = {
-                            "graph_type": result_dict.get('ranked_graphs', ['line'])[0] if result_dict.get('ranked_graphs') else "line",
+                            "graph_type": result_dict.get('ranked_graphs', {}).get('recommended_graphs', ['line'])[0] if result_dict.get('ranked_graphs', {}).get('recommended_graphs') else "line",
                             "x_label": "X Axis",
                             "y_label": "Y Axis",
                             "legend_label": "Legend",
