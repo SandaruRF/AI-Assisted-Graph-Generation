@@ -41,11 +41,11 @@ async def intent_classifier(state: State):
 
 async def metadata_retriever(state: State):
     """Retrieve metadata from the database."""
-    update_message = "Retrieving metadata..."
+    update_message = {"type": "system", "content": "Retrieving metadata..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
 
     metadata = get_cached_metadata(state.session_id)
 
@@ -57,11 +57,11 @@ async def metadata_retriever(state: State):
 
 async def sql_generator(state: State):
     """Generates an SQL query for retrieve data from the database."""
-    update_message = f"Generating SQL query..."
+    update_message = {"type": "system", "content": "Generating SQL query..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
 
     sql_query_generator = SQLQueryGenerator()
     db_info = get_cached_metadata(state.session_id)
@@ -78,11 +78,11 @@ async def sql_generator(state: State):
     
 async def sql_validator(state: State):
     """Validate the generated SQL query."""
-    update_message = f"Validating SQL query..."
+    update_message = {"type": "system", "content": "Validating SQL query..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
 
     sql_validator = SQLQueryValidator()
     db_info = get_cached_metadata(state.session_id)
@@ -98,11 +98,11 @@ async def sql_validator(state: State):
 
 async def sql_executor(state: State):
     """Execute the generated SQL query and fetch data from the database."""
-    update_message = f"Executing SQL query..."
+    update_message = {"type": "system", "content": "Executing SQL query..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
 
     original_data = execute_query_with_session(state.session_id, state.sql_query)
     
@@ -114,11 +114,11 @@ async def sql_executor(state: State):
 
 async def data_preprocessor(state: State):
     """Clean, preprocess and rearrange the dataset."""
-    update_message = f"Preprocessing data..."
+    update_message = {"type": "system", "content": "Preprocessing data..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
 
     result = process_and_clean_dataset(state.original_data)
     rearranged_data = result["reordered_dataset"]
@@ -141,15 +141,32 @@ async def data_preprocessor(state: State):
 
 async def graph_ranker(state: State):
     """Rank the graphs based on the data."""
-    update_message = f"Ranking suitable graphs..."
+    update_message = {"type": "system", "content": "Ranking suitable graphs..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
 
     suitable_graphs = get_graph_types(state.num_numeric, state.num_cat, state.num_temporal)
     recommender = GraphRecommender()
-    ranked_graphs = recommender.recommend_graphs(state, suitable_graphs)
+    recommendation_result = recommender.recommend_graphs(state, suitable_graphs)
+    
+    # Handle the case where the result might be a string (JSON)
+    if isinstance(recommendation_result, str):
+        import json
+        try:
+            recommendation_dict = json.loads(recommendation_result)
+            ranked_graphs = recommendation_dict.get("recommended_graphs", [])
+        except json.JSONDecodeError:
+            print("Failed to parse recommendation result as JSON")
+            ranked_graphs = []
+    else:
+        # Handle the case where it's already a dictionary
+        ranked_graphs = recommendation_result.get("recommended_graphs", [])
+    
+    print("="*50)
+    print(ranked_graphs)
+    print("="*50)
 
     return state.model_copy(update={
         "messages": messages,
@@ -160,11 +177,11 @@ async def graph_ranker(state: State):
 
 async def insight_generator(state: State):
     """Generate insights using autonomous tool selection based on user prompt and data."""
-    update_message = "Analyzing data for insights..."
+    update_message = {"type": "system", "content": "Analyzing data for insights..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
 
     # Call generate_insights and extract results
     insights_state = await generate_insights(state)
@@ -179,12 +196,12 @@ async def insight_generator(state: State):
 
 async def explanation_generator(state: State):
     """Generate explanations for discovered insights with external context."""
-    update_message = "Planning search strategy for insight explanations..."
+    update_message = {"type": "system", "content": "Planning search strategy for insight explanations..."}
     messages = state.messages.copy()
     messages.append(update_message)
     
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
     
     # Initialize insight-focused search generator
     search_generator = InsightExplanationQueryGenerator()
@@ -198,19 +215,19 @@ async def explanation_generator(state: State):
     )
     
     # Execute searches
-    update_message = "Searching for explanatory context..."
+    update_message = {"type": "system", "content": "Executing search plan for insights..."}
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
     
     search_executor = SearchExecutor()
     search_results = await search_executor.execute_search_plan(search_plan)
     
     # Generate final explanation
-    update_message = "Generating comprehensive explanations..."
+    update_message = {"type": "system", "content": "Generating comprehensive explanations..."}
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
     
     explanation = await generate_insight_explanation(
         user_query=state.user_prompt,
@@ -231,11 +248,11 @@ async def explanation_generator(state: State):
 
 async def customizer(state: State):
     """Customize the generated graph based on user prompts."""
-    update_message = "Customizing the graph..."
+    update_message = {"type": "system", "content": "Customizing the graph..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
     
     return state.model_copy(update={
         "messages": messages
@@ -244,11 +261,11 @@ async def customizer(state: State):
 
 async def system(state: State):
     """Handle system-level operations like connecting to a different database or exporting the graph."""
-    update_message = "Handling system operations..."
+    update_message = {"type": "system", "content": "Handling system operations..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        await send_websocket_update(state.session_id, update_message)
+        await send_websocket_update(state.session_id, update_message["content"])
     
     return state.model_copy(update={
         "messages": messages
@@ -257,12 +274,12 @@ async def system(state: State):
 
 async def response_generator(state: State):
     """Generate the final response based on detected intents."""
-    update_message = "Generating final response..."
+    update_message = {"type": "system", "content": "Generating final response..."}
     messages = state.messages.copy()
     messages.append(update_message)
     if state.session_id in connected_clients:
-        print(f"Sending WebSocket message: {update_message}")
-        await send_websocket_update(state.session_id, update_message)
+        print(f"Sending WebSocket message: {update_message['content']}")
+        await send_websocket_update(state.session_id, update_message["content"])
 
     suggester = SuggestionExpert()
     suggestions = suggester.suggest_prompt(state)["suggestions"]

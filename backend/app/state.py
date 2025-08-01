@@ -121,7 +121,7 @@ class State(BaseModel):
     suitable_graphs: List[str]
     ranked_graphs: List[str]
     response: str
-    messages: List[BaseMessage]
+    messages: List[Dict[str, str]]
     insights: List[str]
     tool_results: Dict[str, Any]
     insights_response: str
