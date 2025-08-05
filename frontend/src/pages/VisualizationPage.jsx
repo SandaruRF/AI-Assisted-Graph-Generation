@@ -16,7 +16,6 @@ import Graph from "../components/chat_interface/Graph";
 import ChartRenderer from "../components/graphs/ChartRenderer";
 import InputSection from "../components/chat_interface/InputSection";
 
-
 import IconButton from "@mui/material/IconButton";
 import { speakText } from "../components/TextSpeaker";
 import { motion } from "framer-motion";

@@ -21,9 +21,6 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import DocumentationPage from "./pages/docs";
 import SettingsPage from "./pages/Settings";
 
-
-
-
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +51,8 @@ function App() {
                   <ProtectedRoute>
                     <UserProfile />
                   </ProtectedRoute>
-                }/>
+                }
+              />
               <Route
                 path="/existing-connections"
                 element={
@@ -92,7 +90,6 @@ function App() {
               <Route path="/github-callback" element={<GithubCallback />} />
               <Route path="/docs" element={<DocumentationPage />} />
               <Route path="/settings" element={<SettingsPage />} />
-              
             </Routes>
           </Router>
         </div>
@@ -100,7 +97,5 @@ function App() {
     </div>
   );
 }
-
-
 
 export default App;

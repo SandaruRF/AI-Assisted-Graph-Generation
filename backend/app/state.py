@@ -119,9 +119,9 @@ class State(BaseModel):
     num_rows: int
     cardinalities: Dict[str, Dict[str, Any]]
     suitable_graphs: List[str]
-    ranked_graphs: List[str]
+    ranked_graphs: Dict[str, List[str]]
     response: str
-    messages: List[BaseMessage]
+    messages: List[Dict[str, str]]
     insights: List[str]
     tool_results: Dict[str, Any]
     insights_response: str

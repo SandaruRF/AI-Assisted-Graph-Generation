@@ -1,5 +1,6 @@
 import google.generativeai as genai
 from typing import Dict, Any, List
+import json
 
 from app.config import settings
 from app.utils.logging import logger
@@ -43,38 +44,28 @@ class GraphRecommender:
         genai.configure(api_key=settings.GOOGLE_API_KEY)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
     
-    def recommend_graphs(self, state: State, suitable_graphs: List[str]) -> Dict[str, Any]:
+    def recommend_graphs(self, state: State, suitable_graphs: List[str]) -> Dict[str, List[str]]:
         prompt = f'''
-        You are an intelligent graph recommendation assistant in a system called "AI-Assisted Graph Generator".
-        Your goal is to recommend and rank the most suitable graph types for visualizing a dataset, based only on the given information.
+        You are a graph ranking system. Rank ALL provided graph types by suitability.
 
-        Input details:
-        - User prompt: "{state.user_prompt}"
-        - Detected intents: {state.intents}
-        - Dataset characteristics:
-            - Number of numeric columns: {state.num_numeric}
-            - Number of categorical columns: {state.num_cat}
-            - Number of temporal columns: {state.num_temporal}
-            - Number of rows: {state.num_rows}
-            - Column cardinalities: {state.cardinalities}
+        Dataset: {state.num_numeric} numeric, {state.num_cat} categorical, {state.num_temporal} temporal columns
+        User request: "{state.user_prompt}"
 
-        Only consider and choose from this list of supported graph types: {suitable_graphs}
+        GRAPHS TO RANK (you must rank ALL of these):
+        {chr(10).join([f"- {graph}" for graph in suitable_graphs])}
 
-        Your task:
-        - Understand the user intent and dataset structure.
-        - Select and rank the top 1 to n graph types from the supported list (`suitable_graphs`) that best match the use case. 'n' can be any number less than or equal to {len(state.suitable_graphs)}.
-        - Use graph names exactly as they appear in the `suitable_graphs` list.
-        - Justify your recommendation in 1-2 short sentences.
-        - Do not suggest any graphs outside the `suitable_graphs` list.
-        - If none are suitable, say so briefly.
+        REQUIREMENTS:
+        1. Rank ALL {len(suitable_graphs)} graphs above
+        2. Order: most suitable → least suitable  
+        3. Use exact names from the list
+        4. Include EVERY graph in your response
 
-        Output format (JSON only):
+        JSON format:
         {{
-        "recommended_graphs": ["<first_most_suitable>", "<second_if_applicable>", "<third_if_applicable>"],
-        "reason": "<brief explanation>"
+        "recommended_graphs": ["most_suitable", "second_most", "third_most", "...", "least_suitable"]
         }}
 
-        Be concise, helpful, and never hallucinate chart types.
+        Return exactly {len(suitable_graphs)} graphs in your ranking.
         '''
 
         
@@ -82,8 +73,35 @@ class GraphRecommender:
             response = self.model.generate_content(prompt)
             result = response.text.strip()
             result = result.replace("```json", "").replace("```", "").strip()
-            return result if response else "I'm here to help you explore your data! Ask me anything data-related."
-
+            print("="*20)
+            print(suitable_graphs)
+            print("="*20)
+            print(f"Graphs: {result}")
+            print("="*20)
+            # Parse JSON and return dictionary
+            try:
+                parsed_result = json.loads(result)
+                
+                # Validate the structure
+                if "recommended_graphs" not in parsed_result:
+                    logger.warning("Missing 'recommended_graphs' in response")
+                    return {"recommended_graphs": suitable_graphs[:2]}
+                
+                # Validate that recommended graphs are from available options
+                recommended = parsed_result["recommended_graphs"]
+                valid_recommendations = [graph for graph in recommended if graph in suitable_graphs]
+                
+                if not valid_recommendations:
+                    logger.warning("No valid recommendations found")
+                    return {"recommended_graphs": suitable_graphs[:2]}
+                    
+                return {"recommended_graphs": valid_recommendations}
+                
+            except json.JSONDecodeError as e:
+                logger.error(f"JSON parsing error: {e}")
+                logger.error(f"Raw response: {result}")
+                return {"recommended_graphs": suitable_graphs[:2]}
+                
         except Exception as e:
             logger.error(f"Error generating response: {e}")
-            return "I'm here to help you explore your data! Ask me anything data-related."
+            return {"recommended_graphs": suitable_graphs[:1] if suitable_graphs else []}
