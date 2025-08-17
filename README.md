@@ -130,7 +130,6 @@ Create a .env file in the frontend/ directory with the following variables:
 ```env
 REACT_APP_BACKEND_URL=your_backend_url
 REACT_APP_GOOGLE_CLIENT_ID=your_google_oauth_id
-REACT_APP_GOOGLE_CLIENT_SECRET=your_google_secret
 REACT_APP_GITHUB_CLIENT_ID=your_github_oauth_id
 ```
 

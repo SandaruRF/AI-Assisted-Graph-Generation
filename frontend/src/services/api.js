@@ -3,7 +3,6 @@ import axios from "axios";
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 const GITHUB_CLIENT_ID = process.env.REACT_APP_GITHUB_CLIENT_ID;
 //const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-//const GOOGLE_CLIENT_SECRET = process.env.REACT_APP_GOOGLE_CLIENT_SECRET;
 
 // Save a new connection (supports both connection string and form)
 export const saveConnection = async (

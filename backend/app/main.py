@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 
 
 from app.config import settings
@@ -72,3 +73,7 @@ async def customize_graph(request: Request):
     updates = parse_customization_prompt(prompt)
     new_state = graph_state_manager.update_state(updates)
     return new_state
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "timestamp": datetime.utcnow()}
