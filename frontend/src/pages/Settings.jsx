@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Box,
   Typography,
@@ -10,8 +10,13 @@ import {
   Grid,
   Paper,
 } from "@mui/material";
+import { ThemeContext } from "../ThemeContext";
+import { useTheme } from "@mui/material/styles";
+
 
 const SettingsPage = () => {
+  const theme = useTheme();
+  const { mode, toggleTheme } = useContext(ThemeContext);
   const [darkMode, setDarkMode] = React.useState(false);
   const [emailNotifications, setEmailNotifications] = React.useState(true);
   const [smsNotifications, setSmsNotifications] = React.useState(false);
@@ -24,14 +29,14 @@ const SettingsPage = () => {
         </Typography>
 
         {/* Theme */}
-        <Box sx={{ my: 4 }}>
+        <Box sx={{ my: 4,bgcolor: theme.palette.background.default }}>
           <Typography variant="h6">Appearance</Typography>
           <FormControlLabel
             control={
               <Switch
-                checked={darkMode}
-                onChange={() => setDarkMode(!darkMode)}
-              />
+                checked={mode === "dark"} 
+                onChange={toggleTheme} 
+      />
             }
             label="Dark Mode"
           />

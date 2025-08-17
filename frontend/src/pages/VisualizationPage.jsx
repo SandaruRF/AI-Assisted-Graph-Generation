@@ -24,8 +24,11 @@ import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import CopyButton from "../components/CopyClipboard";
+import { useTheme } from "@mui/material/styles";
+
 
 const VisualizationPage = () => {
+  const theme = useTheme();
   const location = useLocation();
   const sessionId =
     location.state?.sessionId ||
@@ -292,7 +295,7 @@ const VisualizationPage = () => {
   return (
     <>
       {isFirstSend && (
-        <Box sx={{ textAlign: "center", mt: 25 }}>
+        <Box sx={{ textAlign: "center", mt: 25,}}>
           <Typography variant="h4" component="h1">
             Hi there! 👋 I'm your Data Assistant.
           </Typography>
@@ -335,7 +338,7 @@ const VisualizationPage = () => {
                   transition: "all 0.2s ease-in-out",
                   "&:hover": {
                     "& > .paper-component": {
-                      backgroundColor: "#eeeeee",
+                      backgroundColor: theme.palette.background.default,
                       transform: "translateY(-1px)",
                       boxShadow: 1,
                     },
@@ -351,7 +354,7 @@ const VisualizationPage = () => {
                     p: 2,
                     borderRadius: "12px",
                     ml: -4,
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: theme.palette.background.default,
                     maxWidth: "100%",
                     alignSelf: "flex-start",
                     transition: "all 0.2s ease-in-out",
@@ -537,7 +540,7 @@ const VisualizationPage = () => {
                             width: "100%",
                             mt: 2,
                             p: 2,
-                            backgroundColor: "#f0f0f0",
+                            backgroundColor: theme.palette.background.default,
                           }}
                         >
                           <Typography>
@@ -583,7 +586,7 @@ const VisualizationPage = () => {
             zIndex: 1,
             left: 0,
             right: 0,
-            backgroundColor: "background.paper",
+            backgroundColor: theme.palette.background.default,
             pb: 2,
             display: "flex",
             justifyContent: "center",

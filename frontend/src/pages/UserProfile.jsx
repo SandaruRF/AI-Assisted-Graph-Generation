@@ -30,12 +30,14 @@ import {
   Update,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+
 
 import { fetchUserProfile, updateUserProfile } from "../services/api";
 
 
-
 const UserProfile = () => {
+  const theme = useTheme();
   const [profileData, setProfileData] = useState({
     firstName: "Jack ",
     lastName: "Sparrow",
@@ -186,11 +188,12 @@ const UserProfile = () => {
 
   return (
     <Box
-      sx={{
-        backgroundColor: "#F8F9FD",
-        minHeight: "100vh",
-        overflow: "hidden",
-      }}
+        sx={{
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
+          minHeight: "100vh",
+          overflow: "hidden",
+        }}
     >
       <NavigationBar />
       <Container maxWidth="md" sx={{ py: 4 }}>

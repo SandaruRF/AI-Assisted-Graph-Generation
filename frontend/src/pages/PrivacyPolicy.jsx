@@ -3,11 +3,14 @@ import React from 'react';
 import { Box, Typography, Grid } from '@mui/material';
 import NavigationBar from '../components/NavigationBar';
 import Footer from '../components/Footer';
+import { useTheme } from "@mui/material/styles";
+
 
 
 const PrivacyPolicy = () => {
+  const theme = useTheme();
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#F8F9FD' }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: theme.palette.background.default,color: theme.palette.text.primary}}>
       <NavigationBar />
 
       {/* Main Content */}
@@ -18,7 +21,7 @@ const PrivacyPolicy = () => {
         mt: 8
       }}>
         <Box sx={{ 
-          backgroundColor: 'white',
+          backgroundColor: theme.palette.background.default,
           borderRadius: 3,
           boxShadow: '0 8px 24px rgba(4,93,159,0.08)',
           p: { xs: 3, md: 6 }

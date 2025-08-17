@@ -20,6 +20,8 @@ import GithubIcon from '@mui/icons-material/GitHub';
 import { useNavigate } from 'react-router-dom';
 import { handleSignUp, handleGoogleLogin, handleGitHubAuth } from '../services/api';
 import PasswordStrengthBar from "../components/PasswordStrengthBar";
+import { useTheme } from "@mui/material/styles";
+
 
 
 
@@ -41,10 +43,8 @@ const Logo = styled('div')(({ theme }) => ({
 
 
 const SignUpPage = () => {
-
-
-
-
+  const theme = useTheme();
+  const mode = theme.palette.mode;
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -99,7 +99,9 @@ const SignUpPage = () => {
       <GlobalStyles
         styles={{
           'html, body': { margin: 0, padding: 0 },
-          body: { backgroundColor: '#fff', overflowY: 'auto' },
+          body: { backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
+                 overflowY: 'auto' },
         }}
       />
       <Container
@@ -129,7 +131,7 @@ const SignUpPage = () => {
               justifyContent: 'center',
               textAlign: 'center',
               p: 4,
-              backgroundColor: '#f5f7fa',
+              backgroundColor: theme.palette.background.default,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               '&:before': {
@@ -199,7 +201,7 @@ const SignUpPage = () => {
               alignItems: 'center',
               justifyContent: 'center',
               p: 4,
-              bgcolor: '#ffffff', // White background
+              bgcolor: theme.palette.background.default // White background
             }}
           >
             {/* Mobile logo - only shown on small screens */}
@@ -296,17 +298,17 @@ const SignUpPage = () => {
                     mb: 2,
                     '& .MuiOutlinedInput-root': {
                       '& fieldset': {
-                        borderColor: 'rgba(0,0,0,0.2)',
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.5)',
                       },
                       '&:hover fieldset': {
-                        borderColor: 'rgba(0,0,0,0.4)',
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.4)' : '#FFFFFF',
                       },
                     },
                     '& .MuiInputLabel-root': {
-                      color: 'rgba(0,0,0,0.7)',
+                      color: mode === 'light' ? 'rgba(0,0,0,0.7)' : '#FFFFFF',
                     },
                     '& .MuiInputBase-input': {
-                      color: '#333',
+                      color: mode === 'light' ? '#333' : '#FFFFFF',
                     },
                     shrink: true,
                   }}
@@ -330,17 +332,17 @@ const SignUpPage = () => {
                     mb: 2,
                     '& .MuiOutlinedInput-root': {
                       '& fieldset': {
-                        borderColor: 'rgba(0,0,0,0.2)',
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.5)',
                       },
                       '&:hover fieldset': {
-                        borderColor: 'rgba(0,0,0,0.4)',
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.4)' : '#FFFFFF',
                       },
                     },
                     '& .MuiInputLabel-root': {
-                      color: 'rgba(0,0,0,0.7)',
+                      color: mode === 'light' ? 'rgba(0,0,0,0.7)' : '#FFFFFF',
                     },
                     '& .MuiInputBase-input': {
-                      color: '#333',
+                      color: mode === 'light' ? '#333' : '#FFFFFF',
                     },
                   }}
                   InputProps={{
@@ -378,18 +380,19 @@ const SignUpPage = () => {
                     mb: 2,
                     '& .MuiOutlinedInput-root': {
                       '& fieldset': {
-                        borderColor: 'rgba(0,0,0,0.2)',
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.5)',
                       },
                       '&:hover fieldset': {
-                        borderColor: 'rgba(0,0,0,0.4)',
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.4)' : '#FFFFFF',
                       },
                     },
                     '& .MuiInputLabel-root': {
-                      color: 'rgba(0,0,0,0.7)',
+                      color: mode === 'light' ? 'rgba(0,0,0,0.7)' : '#FFFFFF',
                     },
                     '& .MuiInputBase-input': {
-                      color: '#333',
+                      color: mode === 'light' ? '#333' : '#FFFFFF',
                     },
+                    
                   }}
                   InputProps={{
                     endAdornment: (

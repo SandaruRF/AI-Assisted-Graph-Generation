@@ -16,6 +16,8 @@ import LockIcon from "@mui/icons-material/Lock";
 import MemoryIcon from "@mui/icons-material/Memory";
 import { getConnectionById, updateConnection } from "../services/api";
 import NavigationBar from "../components/NavigationBar";
+import { useTheme } from "@mui/material/styles";
+
 
 const databaseTypes = [
   "MySQL",
@@ -27,6 +29,7 @@ const databaseTypes = [
 ];
 
 const EditConnection = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const { id } = useParams();
   const [selectedDbType, setSelectedDbType] = useState("");
@@ -135,7 +138,7 @@ const EditConnection = () => {
 
   return (
     <Box sx={{ 
-          backgroundColor: "#F8F9FD",
+          backgroundColor: theme.palette.background.default,
           minHeight: "100vh",
           overflow: "hidden"
         }}>

@@ -21,8 +21,10 @@ import {
   handleExportClick,
 } from "../services/api";
 import NavigationBar from "../components/NavigationBar";
+import { useTheme } from "@mui/material/styles";
 
 const ExistingDatabaseConnection = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const [connections, setConnections] = useState([]);
   const [connectedSessions, setConnectedSessions] = useState({});
@@ -78,7 +80,8 @@ const ExistingDatabaseConnection = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#F8F9FD",
+        backgroundColor: theme.palette.background.default,
+         color: theme.palette.text.primary,
         minHeight: "100vh",
         overflow: "hidden",
       }}

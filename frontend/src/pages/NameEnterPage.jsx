@@ -14,6 +14,8 @@ import {
   Step,
   StepLabel
 } from '@mui/material';
+import { useTheme } from "@mui/material/styles";
+  
 
 const theme = createTheme({
   palette: {
@@ -38,6 +40,9 @@ const theme = createTheme({
 });
 
 const NameEnterPage = (e) => {
+  const theme = useTheme();
+  const mode = theme.palette.mode;
+  
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -69,7 +74,7 @@ const NameEnterPage = (e) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          bgcolor: 'background.default',
+          bgcolor: theme.palette.background.default,
           py: 4,
         }}
       >
@@ -79,7 +84,7 @@ const NameEnterPage = (e) => {
             sx={{ 
               p: 4, 
               borderRadius: 2,
-              background: 'linear-gradient(to right, #ffffff, #f8f8f8)' 
+              background: theme.palette.background.default 
             }}
           >
             <Box sx={{ mb: 4, textAlign: 'center' }}>

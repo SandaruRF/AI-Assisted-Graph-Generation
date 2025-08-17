@@ -13,8 +13,11 @@ import NavigationBar from "../components/NavigationBar";
 import AnimationComponent from "../components/AnimationComponent";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import Footer from "../components/Footer";
+import { useTheme } from "@mui/material/styles";
+
 
 const LandingPage = () => {
+  const theme = useTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
@@ -23,6 +26,10 @@ const LandingPage = () => {
   const constraintsRef = useRef(null);
 
   const navigate = useNavigate();
+  const lightBg = "linear-gradient(90deg, #F8F9FD 20%, transparent 100%)";
+  const darkBg = "linear-gradient(90deg, #111111ff 20%, transparent 100%)";
+  const gradientLight = "linear-gradient(90deg, #045D9F, #00B4DB)";
+  const gradientDark = "linear-gradient(90deg, #90caf9, #64b5f6)";
 
   const databaseLogos = [
     { src: "/images/mysql.png", alt: "MySQL" },
@@ -123,7 +130,8 @@ const LandingPage = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#F8F9FD",
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
         minHeight: "100vh",
         overflow: "hidden",
       }}
@@ -158,15 +166,15 @@ const LandingPage = () => {
           <Typography
             variant="h1"
             sx={{
-              fontWeight: 800,
-              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem", lg: "3.5rem" },
-              lineHeight: 1.2,
-              mb: 3,
-              textAlign: { xs: "center", md: "left" },
-              background: "linear-gradient(90deg, #045D9F, #00B4DB)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+                fontWeight: 800,
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem", lg: "3.5rem" },
+                lineHeight: 1.2,
+                mb: 3,
+                textAlign: { xs: "center", md: "left" },
+                background: theme.palette.mode === "light" ? gradientLight : gradientDark,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
           >
             AI Assisted Graph Generator
           </Typography>
@@ -267,12 +275,15 @@ const LandingPage = () => {
               duration: 0.3,
               ease: "easeOut",
             }}
-            style={{
+           style={{
               position: "absolute",
               width: "95%",
               height: "95%",
               borderRadius: 16,
-              backgroundColor: "rgba(0, 0, 0, 0.2)",
+              backgroundColor:
+                theme.palette.mode === "light"
+                  ? "rgba(0, 0, 0, 0.2)"    // dark overlay in light mode
+                  : "rgba(255, 255, 255, 0.1)", // light overlay in dark mode
               zIndex: 0,
             }}
           />
@@ -372,18 +383,18 @@ const LandingPage = () => {
                   boxShadow: 3,
                   borderRadius: 4,
                   p: 4,
-                  backgroundColor: "#EAF2F8",
+                  backgroundColor: theme.palette.mode === "light" ? "#EAF2F8" : "#121212",
                   transition: "all 0.3s ease",
                   "&:hover": {
                     transform: "translateY(-8px)",
                     boxShadow: "0 8px 24px rgba(4, 93, 159, 0.2)",
-                    backgroundColor: "#001F3F",
+                    backgroundColor: theme.palette.mode === "light" ? "#001F3F" : "#333",
                     "& h6, & p": {
                       color: "white",
                     },
                   },
                 }}
-              >
+                        >
                 <Box
                   component="img"
                   src={feature.image}
@@ -540,6 +551,7 @@ const LandingPage = () => {
               ))}
             </motion.div>
           </Box>
+          
 
           {/* Enhanced Edge Fades */}
           <Box
@@ -557,17 +569,15 @@ const LandingPage = () => {
           />
           <Box
             sx={{
-              position: "absolute",
-              width: "calc(10% + 150px)", // Compensate for fade overlap
-              mx: "-100px", // Center the extended width
-              top: 0,
-              bottom: 0,
-              right: 0,
-              background:
-                "linear-gradient(270deg, #F8F9FD 20%, transparent 100%)",
-              zIndex: 2,
-              pointerEvents: "none",
-            }}
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: 100,
+                background: theme.palette.mode === "light" ? lightBg : darkBg,
+                zIndex: 2,
+                pointerEvents: "none",
+      }}
           />
         </Box>
       </Container>
@@ -671,7 +681,7 @@ const LandingPage = () => {
                       <Box
                         sx={{
                           p: 4,
-                          background: "#ffffff",
+                          backgroundColor: theme.palette.mode === "light" ? "#ffffff" : "#121212",
                           borderRadius: 4,
                           boxShadow: "0 8px 32px rgba(4, 93, 159, 0.1)",
                           transition: "all 0.3s ease",

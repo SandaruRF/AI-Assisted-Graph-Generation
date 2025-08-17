@@ -4,10 +4,13 @@ import { Box, Typography, Grid, TextField, Button } from '@mui/material';
 import { motion } from 'framer-motion';
 import NavigationBar from '../components/NavigationBar';
 import Footer from '../components/Footer';
+import { useTheme } from '@mui/material/styles';
 
 const ContactUs = () => {
+  const theme = useTheme();
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#F8F9FD' }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: theme.palette.background.default }}>
+      {/* Navigation Bar */}
       <NavigationBar />
 
       {/* Hero Section */}

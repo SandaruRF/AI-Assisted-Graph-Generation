@@ -16,6 +16,7 @@ import MemoryIcon from "@mui/icons-material/Memory";
 import { saveConnection } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
+import { useTheme } from "@mui/material/styles";
 
 const databaseTypes = [
   "MySQL",
@@ -26,6 +27,7 @@ const databaseTypes = [
 ];
 
 const NewConnection = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const [selectedDbType, setSelectedDbType] = useState("");
   const [useFormMode, setUseFormMode] = useState(false);
@@ -151,7 +153,7 @@ const NewConnection = () => {
 
   return (
         <Box sx={{ 
-          backgroundColor: "#F8F9FD",
+           backgroundColor: theme.palette.background.default,
           minHeight: "100vh",
           overflow: "hidden"
         }}>

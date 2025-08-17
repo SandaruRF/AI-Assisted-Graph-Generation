@@ -3,10 +3,14 @@ import { motion } from "framer-motion";
 import { Box, Typography, Grid } from '@mui/material';
 import NavigationBar from '../components/NavigationBar';
 import Footer from '../components/Footer';
+import { useTheme } from '@mui/material/styles';
 
 const AboutUs = () => {
+  const theme = useTheme();
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#F8F9FD' }}>
+    <Box sx={{ minHeight: '100vh', color: theme.palette.text.primary, 
+      backgroundColor: theme.palette.background.default, paddingBottom: 4
+     }}>
       <NavigationBar />
 
       {/* Hero Section */}
@@ -53,7 +57,7 @@ const AboutUs = () => {
     px: 2,
     maxWidth: '1200px',
     margin: '0 auto',
-    color: 'white'
+    color: theme.palette.background.default
   }}>
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -64,7 +68,6 @@ const AboutUs = () => {
         variant="h2"
         sx={{
           fontWeight: 900,
-          color: 'white',
           fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4rem' },
           letterSpacing: { xs: '0.03em', md: '0.05em' },
           mb: 2,
@@ -78,7 +81,8 @@ const AboutUs = () => {
             transform: 'translateX(-50%)',
             width: '30%',
             height: '4px',
-            background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, #FFFFFF 50%, rgba(255,255,255,0) 100%)',
+            background:theme.palette.background.default,
+            //background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, #FFFFFF 50%, rgba(255,255,255,0) 100%)',
             animation: 'underlineExpand 0.8s ease-out forwards',
             '@keyframes underlineExpand': {
               '0%': { width: '0%' },
@@ -118,11 +122,11 @@ const AboutUs = () => {
   spacing={2}
   alignItems="center"
   direction="row"
-  sx={{ flexWrap: 'nowrap', px: { xs: 0, md: 2 }, py: { xs: 4, md: 10 }, ml: { md: -4 } }}
+  sx={{ flexWrap: 'nowrap', px: { xs: 0, md: 2 }, py: { xs: 4, md: 10 }, ml: { md: -4 },backgroundColor: theme.palette.background.default }}
 >
   {/* Text Column - Left */}
   <Grid item xs={12} md={4}>
-    <Box sx={{ pr: { md: 2 }, ml: { md: -4 }, maxWidth: '90%' }}> {/* Reduced box width */}
+    <Box sx={{ pr: { md: 2 }, ml: { md: -4 }, maxWidth: '90%' ,backgroundColor: theme.palette.background.default}}> {/* Reduced box width */}
       <Typography
         variant="h3"
         sx={{
@@ -148,7 +152,7 @@ const AboutUs = () => {
       <Typography
         variant="body1"
         sx={{
-          color: '#4A4A4A',
+          color: (theme) => theme.palette.text.primary,
           lineHeight: 1.8,
           fontSize: '1.1rem',
           borderLeft: '3px solid #078DEB',
@@ -196,7 +200,7 @@ const AboutUs = () => {
     right: '-100px',
     width: '300px',
     height: '300px',
-    background: 'radial-gradient(circle, rgba(0,180,219,0.05) 0%, transparent 70%)',
+    background: 'radial-gradient(circle, rgba(37, 247, 9, 0.05) 0%, transparent 70%)',
     zIndex: -1
   }
 }}>
@@ -219,7 +223,7 @@ const AboutUs = () => {
                  <Box sx={{
           height: '100%',
           p: { xs: 3, md: 4 },
-          backgroundColor: 'rgba(255,255,255,0.97)',
+          backgroundColor: theme.palette.background.default,
           borderRadius: 4,
           boxShadow: '0 8px 24px rgba(4,93,159,0.08)',
           border: '1px solid rgba(4,93,159,0.1)',
@@ -243,7 +247,7 @@ const AboutUs = () => {
                       <Box sx={{
                 width: 60,
                 height: 60,
-                bgcolor: '#E3F4FE',
+                bgcolor: theme.palette.background.default,
                 borderRadius: 2,
                 display: 'flex',
                 alignItems: 'center',
@@ -322,7 +326,7 @@ const AboutUs = () => {
             </Typography>
                  </Box>
           <Typography variant="body1" sx={{ 
-            color: '#4A4A4A',
+            color: (theme) => theme.palette.text.primary,
             lineHeight: 1.8,
             fontSize: '1rem',
             pl: 1.5
@@ -346,7 +350,7 @@ const AboutUs = () => {
                  <Box sx={{
           height: '100%',
           p: { xs: 3, md: 4 },
-          backgroundColor: 'rgba(255,255,255,0.97)',
+          backgroundColor: theme.palette.background.default,
           borderRadius: 4,
           boxShadow: '0 8px 24px rgba(4,93,159,0.08)',
           border: '1px solid rgba(4,93,159,0.1)',
@@ -370,7 +374,7 @@ const AboutUs = () => {
                       <Box sx={{
                 width: 60,
                 height: 60,
-                bgcolor: '#E3F4FE',
+                bgcolor: theme.palette.background.default,
                 borderRadius: 2,
                 display: 'flex',
                 alignItems: 'center',
@@ -382,7 +386,8 @@ const AboutUs = () => {
                   content: '""',
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(45deg, transparent 0%, rgba(4,93,159,0.05) 100%)',
+                  background:theme.palette.background.default
+                  //background: 'linear-gradient(45deg, transparent 0%, rgba(4,93,159,0.05) 100%)',
                 }
               }}>
                         <motion.div
@@ -441,7 +446,8 @@ const AboutUs = () => {
                 left: 0,
                 width: '60px',
                 height: '3px',
-                background: 'linear-gradient(90deg, #00B4DB 0%, #045D9F 100%)',
+                background:theme.palette.background.default,
+                //background: 'linear-gradient(90deg, #00B4DB 0%, #045D9F 100%)',
                 borderRadius: 2
               }
             }}>
@@ -449,7 +455,7 @@ const AboutUs = () => {
                     </Typography>
                   </Box>
           <Typography variant="body1" sx={{ 
-            color: '#4A4A4A',
+            color: (theme) => theme.palette.text.primary,
             lineHeight: 1.8,
             fontSize: '1rem',
             pl: 1.5

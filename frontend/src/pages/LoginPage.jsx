@@ -18,6 +18,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+
 
 import {
   handleSubmit,
@@ -37,6 +39,8 @@ const Logo = styled("div")(({ theme }) => ({
 }));
 
 const LoginPage = () => {
+  const theme = useTheme();
+  const mode = theme.palette.mode;
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -74,7 +78,7 @@ const LoginPage = () => {
       <GlobalStyles
         styles={{
           "html, body": { margin: 0, padding: 0 },
-          body: { backgroundColor: "#fff", overflow: "hidden" },
+          body: { backgroundColor: theme.palette.background.default, overflow: "hidden" },
         }}
       />
       <Container
@@ -105,7 +109,7 @@ const LoginPage = () => {
               justifyContent: "center",
               textAlign: "center",
               p: 4,
-              backgroundColor: "#f5f7fa",
+              backgroundColor: theme.palette.background.default,
               backgroundSize: "cover",
               backgroundPosition: "center",
               "&:before": {
@@ -193,7 +197,7 @@ const LoginPage = () => {
               alignItems: "center",
               justifyContent: "center",
               p: 4,
-              bgcolor: "#ffffff", // White background
+              backgroundColor: theme.palette.background.default, // White background
             }}
           >
             {/* Mobile logo - only shown on small screens */}
@@ -273,7 +277,7 @@ const LoginPage = () => {
                   fontWeight: 500,
 
                   "&:hover": {
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: theme.palette.background.default,
                     borderColor: "#ccc",
                   },
                 }}
@@ -307,20 +311,21 @@ const LoginPage = () => {
                   variant="outlined"
                   sx={{
                     mb: 2,
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "rgba(0,0,0,0.2)",
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.5)',
                       },
-                      "&:hover fieldset": {
-                        borderColor: "rgba(0,0,0,0.4)",
+                      '&:hover fieldset': {
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.4)' : '#FFFFFF',
                       },
                     },
-                    "& .MuiInputLabel-root": {
-                      color: "rgba(0,0,0,0.7)",
+                    '& .MuiInputLabel-root': {
+                      color: mode === 'light' ? 'rgba(0,0,0,0.7)' : '#FFFFFF',
                     },
-                    "& .MuiInputBase-input": {
-                      color: "#333",
+                    '& .MuiInputBase-input': {
+                      color: mode === 'light' ? '#333' : '#FFFFFF',
                     },
+                    color: (theme) => theme.palette.text.primary,
                     shrink: true,
                   }}
                 />
@@ -339,19 +344,19 @@ const LoginPage = () => {
                   variant="outlined"
                   sx={{
                     mb: 2,
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "rgba(0,0,0,0.2)",
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.5)',
                       },
-                      "&:hover fieldset": {
-                        borderColor: "rgba(0,0,0,0.4)",
+                      '&:hover fieldset': {
+                        borderColor: mode === 'light' ? 'rgba(0,0,0,0.4)' : '#FFFFFF',
                       },
                     },
-                    "& .MuiInputLabel-root": {
-                      color: "rgba(0,0,0,0.7)",
+                    '& .MuiInputLabel-root': {
+                      color: mode === 'light' ? 'rgba(0,0,0,0.7)' : '#FFFFFF',
                     },
-                    "& .MuiInputBase-input": {
-                      color: "#333",
+                    '& .MuiInputBase-input': {
+                      color: mode === 'light' ? '#333' : '#FFFFFF',
                     },
                   }}
                   InputProps={{

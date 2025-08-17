@@ -3,6 +3,8 @@ import { Box, Container, Typography, Grid } from "@mui/material";
 import { motion } from "framer-motion";
 import NavigationBar from "../components/NavigationBar";
 import Footer from "../components/Footer";
+import { useTheme } from "@mui/material/styles";
+
 
 const docsSections = [
   {
@@ -33,8 +35,9 @@ const docsSections = [
 ];
 
 const DocumentationPage = () => {
+  const theme = useTheme();
   return (
-    <Box sx={{ backgroundColor: "#F8F9FD", minHeight: "100vh" }}>
+    <Box sx={{ backgroundColor: theme.palette.background.default, minHeight: "100vh" }}>
       <NavigationBar />
       <Container maxWidth="md" sx={{ py: 8 }}>
         <motion.div
@@ -62,12 +65,12 @@ const DocumentationPage = () => {
               sx={{
                 mb: 6,
                 p: 4,
-                backgroundColor: "#EAF2F8",
+                backgroundColor: theme.palette.background.default,
                 borderRadius: 3,
                 boxShadow: 2,
                 "&:hover": {
                   boxShadow: 6,
-                  backgroundColor: "#D0E4FB",
+                  backgroundColor: "#2989f7ff",
                 },
               }}
               component={motion.div}
@@ -88,7 +91,7 @@ const DocumentationPage = () => {
               </Typography>
               <Typography
                 variant="body1"
-                sx={{ whiteSpace: "pre-line", color: "#191970", lineHeight: 1.7 }}
+                sx={{ whiteSpace: "pre-line", color: theme.palette.text.primary, lineHeight: 1.7 }}
               >
                 {content}
               </Typography>
