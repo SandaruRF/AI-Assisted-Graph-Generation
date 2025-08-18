@@ -1,0 +1,70 @@
+services:
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vizgen_backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env  # Use your existing .env file
+    ports:
+      - "8000:8000"  # Expose backend port for testing
+    volumes:
+      - ./backend/logs:/app/logs
+      - ./backend/uploads:/app/uploads
+    networks:
+      - vizgen_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vizgen_frontend
+    restart: unless-stopped
+    env_file:
+      - ./frontend/.env.production  # Use your existing file
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - vizgen_network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: vizgen_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - vizgen_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  nginx_logs:
+    driver: local
+
+networks:
+  vizgen_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

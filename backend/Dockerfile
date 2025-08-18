@@ -10,8 +10,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements-dev.txt .
+RUN pip install --upgrade pip
+RUN pip install torch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0
+RUN pip install --no-cache-dir -r requirements-dev.txt
 
 COPY . .
 

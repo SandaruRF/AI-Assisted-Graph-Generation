@@ -15,7 +15,7 @@ RUN npm ci --only=production
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # Stage 2: Production stage
 FROM nginx:alpine AS production

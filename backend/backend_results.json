@@ -1,10 +1,10 @@
 {
-  "session_id": "48abf7ab-610a-4f07-aab1-db96c79f74c1",
+  "session_id": "d777df1a-84b4-4f93-9e07-513c4236bb46",
   "user_prompt": "what are the tables?",
   "suggestions": [
-    "Show album table columns",
-    "Which table contains customer names?",
-    "Explore relationships between tables"
+    "Show columns of the album table",
+    "Which tables have foreign keys?",
+    "What is the artist table data?"
   ],
   "intents": [
     "schema"
@@ -602,14 +602,14 @@
         ],
         "foreign_keys": [
           {
-            "local_column": "TrackId",
-            "referenced_table": "track",
-            "referenced_column": "TrackId"
-          },
-          {
             "local_column": "InvoiceId",
             "referenced_table": "invoice",
             "referenced_column": "InvoiceId"
+          },
+          {
+            "local_column": "TrackId",
+            "referenced_table": "track",
+            "referenced_column": "TrackId"
           }
         ],
         "numeric_columns": [
@@ -710,14 +710,14 @@
             "referenced_column": "MediaTypeId"
           },
           {
-            "local_column": "GenreId",
-            "referenced_table": "genre",
-            "referenced_column": "GenreId"
-          },
-          {
             "local_column": "AlbumId",
             "referenced_table": "album",
             "referenced_column": "AlbumId"
+          },
+          {
+            "local_column": "GenreId",
+            "referenced_table": "genre",
+            "referenced_column": "GenreId"
           }
         ],
         "numeric_columns": [
@@ -906,16 +906,16 @@
       },
       {
         "from_table": "invoiceline",
-        "from_column": "TrackId",
-        "to_table": "track",
-        "to_column": "TrackId",
+        "from_column": "InvoiceId",
+        "to_table": "invoice",
+        "to_column": "InvoiceId",
         "relationship_type": "foreign_key"
       },
       {
         "from_table": "invoiceline",
-        "from_column": "InvoiceId",
-        "to_table": "invoice",
-        "to_column": "InvoiceId",
+        "from_column": "TrackId",
+        "to_table": "track",
+        "to_column": "TrackId",
         "relationship_type": "foreign_key"
       },
       {
@@ -927,16 +927,16 @@
       },
       {
         "from_table": "track",
-        "from_column": "GenreId",
-        "to_table": "genre",
-        "to_column": "GenreId",
+        "from_column": "AlbumId",
+        "to_table": "album",
+        "to_column": "AlbumId",
         "relationship_type": "foreign_key"
       },
       {
         "from_table": "track",
-        "from_column": "AlbumId",
-        "to_table": "album",
-        "to_column": "AlbumId",
+        "from_column": "GenreId",
+        "to_table": "genre",
+        "to_column": "GenreId",
         "relationship_type": "foreign_key"
       },
       {
@@ -972,7 +972,7 @@
   "cardinalities": {},
   "suitable_graphs": [],
   "ranked_graphs": {},
-  "response": "Here are the tables in the database:\n\n*   `album`\n*   `artist`\n*   `customer`\n*   `employee`\n*   `genre`\n*   `invoice`\n*   `invoiceline`\n*   `track`\n*   `mediatype`\n*   `playlist`\n*   `playlisttrack`",
+  "response": "The tables in the database are:\n\n*   `album`\n*   `artist`\n*   `customer`\n*   `employee`\n*   `genre`\n*   `invoice`\n*   `invoiceline`\n*   `track`\n*   `mediatype`\n*   `playlist`\n*   `playlisttrack`",
   "messages": [
     {
       "type": "system",

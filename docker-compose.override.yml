@@ -1,0 +1,39 @@
+services:
+  # Backend Development Overrides
+  backend:
+    env_file:
+      - ./backend/.env  # References your existing backend .env
+    environment:
+      - DEBUG=True
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - ./backend:/app  # Mount entire backend for hot reload
+      - ./backend/logs:/app/logs
+      - ./backend/uploads:/app/uploads
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    ports:
+      - "8000:8000"  # Expose for direct access in dev
+    
+  # Frontend Development Overrides  
+  frontend:
+    env_file:
+      - ./frontend/.env  # Use development .env (not .env.production)
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - /app/node_modules  # Prevent overwriting node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # For hot reload in Docker
+      - WATCHPACK_POLLING=true
+    command: ["npm", "start"]
+    ports:
+      - "3000:3000"  # Expose for direct access in dev
+
+  # Nginx Development Overrides
+  nginx:
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/logs:/var/log/nginx
+    ports:
+      - "8080:80"
