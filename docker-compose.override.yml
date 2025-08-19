@@ -17,12 +17,14 @@ services:
     
   # Frontend Development Overrides  
   frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     env_file:
       - ./frontend/.env  # Use development .env (not .env.production)
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
-      - /app/node_modules  # Prevent overwriting node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true  # For hot reload in Docker
       - WATCHPACK_POLLING=true
