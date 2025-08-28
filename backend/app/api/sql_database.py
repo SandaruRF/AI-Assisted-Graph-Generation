@@ -6,6 +6,7 @@ import uuid
 from app.models.database_model import Database, DatabaseType
 from app.agents.sql_agent.metadata_retriever import reflect_sql_metadata
 from app.utils.sql_utils import generate_connection_string
+from app.utils.db_host_translation import resolve_database_host
 from app.utils.logging import logger
 from app.config import db
 
@@ -40,7 +41,7 @@ async def connect_database(connection_id: str):
         
         mapped_data = {
             "type": [DatabaseType(connection_data["db_type"].lower())],  # convert to enum
-            "host": connection_data["host"],
+            "host": resolve_database_host(connection_data["host"]),
             "port": connection_data["port"],
             "user": connection_data["username"],
             "password": connection_data["password"],

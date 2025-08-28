@@ -24,6 +24,8 @@ import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import CopyButton from "../components/CopyClipboard";
+import { getWebSocketUrl } from "../utils/websocket";
+
 
 const VisualizationPage = () => {
   const location = useLocation();
@@ -49,7 +51,7 @@ const VisualizationPage = () => {
   const [graphHistory, setGraphHistory] = useState([]);
 
   useEffect(() => {
-    socketRef.current = new WebSocket("http://localhost:8000/ws");
+    socketRef.current = new WebSocket(getWebSocketUrl());
 
     socketRef.current.onopen = () => {
       console.log("WebSocket connected successfully");
