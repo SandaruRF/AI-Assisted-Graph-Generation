@@ -15,9 +15,7 @@ export default function ChartRenderer({ data, state }) {
     y_label, 
     legend_label, 
     title, 
-    color,
-    use_multiple_colors,
-    colors 
+    color
   } = state;
 
   console.log("ChartRenderer extracted values:", { 
@@ -32,8 +30,7 @@ export default function ChartRenderer({ data, state }) {
   console.log("ChartRenderer x_label value:", x_label);
   console.log("ChartRenderer y_label value:", y_label);
 
-  // Default colors for multiple categories
-  const defaultColors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ffa500", "#800080"];
+  // Single color mode only
 
   // Auto-detect and map data format
   let processedData = data;
@@ -57,7 +54,7 @@ export default function ChartRenderer({ data, state }) {
   let plotData = [];
   let layout = {
     title: {
-      text: title || "Generated Graph",
+      text: title || undefined,
       font: {
         size: 18,
         color: "#333333"
@@ -69,7 +66,7 @@ export default function ChartRenderer({ data, state }) {
     },
     xaxis: { 
       title: {
-        text: x_label || "X Axis",
+        text: x_label || undefined,
         font: {
           size: 14,
           color: "#333333"
@@ -85,7 +82,7 @@ export default function ChartRenderer({ data, state }) {
     },
     yaxis: { 
       title: {
-        text: y_label || "Y Axis",
+        text: y_label || undefined,
         font: {
           size: 14,
           color: "#333333"
@@ -100,7 +97,7 @@ export default function ChartRenderer({ data, state }) {
       }
     },
     legend: { 
-      title: { text: legend_label || "Legend" },
+      title: { text: legend_label || undefined },
       x: 0.5,
       y: -0.2,
       xanchor: "center",
@@ -125,10 +122,10 @@ export default function ChartRenderer({ data, state }) {
           y: processedData.map(d => d.y),
           type: "bar",
           marker: { 
-            color: use_multiple_colors ? (colors || defaultColors) : (color || "#3366cc"),
+            color: color !== undefined ? color : undefined,
             line: { color: "#333", width: 1 }
           },
-          name: legend_label || "Data",
+          name: legend_label,
           text: processedData.map(d => d.y),
           textposition: "auto",
         },
@@ -143,11 +140,11 @@ export default function ChartRenderer({ data, state }) {
           mode: "markers",
           type: "scatter",
           marker: { 
-            color: color || "#3366cc",
+            color: color !== undefined ? color : undefined,
             size: 8,
             line: { color: "#333", width: 1 }
           },
-          name: legend_label || "Data",
+          name: legend_label,
         },
       ];
       break;
@@ -159,10 +156,10 @@ export default function ChartRenderer({ data, state }) {
           values: processedData.map(d => d.y),
           type: "pie",
           marker: { 
-            colors: use_multiple_colors ? (colors || defaultColors) : [color || "#3366cc"],
+            colors: color !== undefined ? [color] : undefined,
             line: { color: "#333", width: 2 }
           },
-          name: legend_label || "Data",
+          name: legend_label,
           textinfo: "label+percent",
           textposition: "outside",
         },
@@ -177,9 +174,9 @@ export default function ChartRenderer({ data, state }) {
           type: "scatter",
           mode: "lines",
           fill: "tonexty",
-          fillcolor: color || "#3366cc",
-          line: { color: color || "#3366cc", width: 2 },
-          name: legend_label || "Data",
+          fillcolor: color !== undefined ? color : undefined,
+          line: { color: color !== undefined ? color : undefined, width: 2 },
+          name: legend_label,
         },
       ];
       break;
@@ -190,10 +187,10 @@ export default function ChartRenderer({ data, state }) {
           x: processedData.map(d => d.y),
           type: "histogram",
           marker: { 
-            color: color || "#3366cc",
+            color: color !== undefined ? color : undefined,
             line: { color: "#333", width: 1 }
           },
-          name: legend_label || "Data",
+          name: legend_label,
           nbinsx: Math.min(20, processedData.length),
         },
       ];
@@ -209,7 +206,7 @@ export default function ChartRenderer({ data, state }) {
           low: processedData.map(d => d.low),
           close: processedData.map(d => d.close),
           type: "candlestick",
-          name: legend_label || "Data",
+          name: legend_label,
         },
       ];
       break;
@@ -222,8 +219,8 @@ export default function ChartRenderer({ data, state }) {
           y: processedData.map(d => d.y),
           x: processedData[0] && processedData[0].x !== undefined ? processedData.map(d => d.x) : undefined,
           type: "box",
-          name: legend_label || "Data",
-          marker: { color: color || "#3366cc" },
+          name: legend_label,
+          marker: { color: color !== undefined ? color : undefined },
           boxpoints: "all",
           jitter: 0.5,
           whiskerwidth: 0.2,
@@ -240,12 +237,12 @@ export default function ChartRenderer({ data, state }) {
           type: "scatter",
           mode: "lines+markers",
           marker: { 
-            color: color || "#3366cc",
+            color: color !== undefined ? color : undefined,
             size: 6,
             line: { color: "#333", width: 1 }
           },
-          line: { color: color || "#3366cc", width: 2 },
-          name: legend_label || "Data",
+          line: { color: color !== undefined ? color : undefined, width: 2 },
+          name: legend_label,
         },
       ];
       break;
