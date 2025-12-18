@@ -7,7 +7,7 @@ class DatabaseType(str, Enum):
     MYSQL = "mysql"
     POSTGRESQL = "postgresql"
     SQLSERVER = "sqlserver"
-    MARIA_DB = "marinadb"
+    MARIA_DB = "mariadb"
     ORACLE_DB = "oracledb"
     SQLITE = "sqlite"
     REDSHIFT = "redshift"

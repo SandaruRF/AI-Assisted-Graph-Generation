@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 class InsightExplanationQueryGenerator:
-    def __init__(self, model="gemini-2.0-flash"):
+    def __init__(self, model="gemini-2.5-flash"):
         self.llm = ChatGoogleGenerativeAI(model=model, temperature=0.1)
         self.search_tools = {
             "tavily_contextual_search": {

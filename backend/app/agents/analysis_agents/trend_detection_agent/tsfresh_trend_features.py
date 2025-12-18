@@ -1,3 +1,6 @@
+import os
+os.environ["STUMPY_USE_GPU"] = "false"
+
 from typing import List, Dict, Any
 from langchain_core.tools import tool
 import pandas as pd

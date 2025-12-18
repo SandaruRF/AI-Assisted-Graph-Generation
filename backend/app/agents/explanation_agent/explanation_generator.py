@@ -12,7 +12,7 @@ async def generate_insight_explanation(
 ) -> str:
     """Generate comprehensive explanation combining insights with external context."""
     
-    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.1)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.1)
     
     prompt = ChatPromptTemplate.from_template("""
     You are an expert data analyst providing explanations for discovered insights. Create a comprehensive explanation that connects data findings with external context.

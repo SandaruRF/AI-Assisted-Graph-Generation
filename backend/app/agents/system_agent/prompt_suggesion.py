@@ -8,7 +8,7 @@ from app.state import State
 class SuggestionExpert:
     def __init__(self):
         genai.configure(api_key=settings.GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel("gemini-2.0-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
     
     def suggest_prompt(self, state: State) -> dict:
         prompt = f"""

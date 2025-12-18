@@ -16,7 +16,7 @@ from app.agents.analysis_agents.trend_detection_agent.prophet_trend_forecast imp
 
 # claude-3-5-haiku-20241022	
 # llm = ChatAnthropic(model="claude-sonnet-4-20250514", max_tokens=2000, temperature=0)
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", max_tokens=2000, temperature=0)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", max_tokens=2000, temperature=0)
 
 # Augment the LLM with tools
 tools = [detect_anomalies_sklearn, 

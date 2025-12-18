@@ -8,7 +8,7 @@ from app.utils.logging import logger
 class IntentClassifier:
     def __init__(self):
         genai.configure(api_key=settings.GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel("gemini-2.0-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
     
     def classify_intent(self, query: str) -> dict:
         prompt = f"""

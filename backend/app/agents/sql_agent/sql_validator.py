@@ -6,7 +6,7 @@ import json,re
 class SQLQueryValidator:
     def __init__(self):
         genai.configure(api_key=settings.GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel("gemini-2.0-flash")
+        self.model = genai.GenerativeModel("gemini-2.5-flash")
 
     def validate_sql_query(self, sql_query:str, metadata:str, sql_dialect:str) -> str:
         print(f"SQL Query: {sql_query}")

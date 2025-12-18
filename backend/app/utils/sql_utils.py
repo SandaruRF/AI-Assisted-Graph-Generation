@@ -1,4 +1,5 @@
 from sqlalchemy.engine import URL
+from urllib.parse import quote_plus
 
 from app.models.database_model import Database, DatabaseType
 
@@ -11,9 +12,30 @@ def generate_connection_string(db: Database) -> str:
     elif db_type == DatabaseType.POSTGRESQL:
         return f"postgresql://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
     elif db_type == DatabaseType.SQLSERVER:
-        driver = "{ODBC Driver 17 for SQL Server}"
-        connection_details = f"DRIVER={driver};SERVER={db.host};PORT={db.port};DATABASE={db.database};UID={db.user};PWD={db.password}"
-        return URL.create("mssql+pyodbc", query={"odbc_connect": connection_details.replace(';', '&')})
+        # For SQL Server with Windows Authentication (username contains backslash)
+        if '\\' in db.user:
+            # Windows Authentication - use Trusted_Connection
+            driver = "ODBC Driver 17 for SQL Server"
+            connection_string = (
+                f"DRIVER={{{driver}}};"
+                f"SERVER={db.host};"
+                f"DATABASE={db.database};"
+                f"Trusted_Connection=yes;"
+            )
+        else:
+            # SQL Server Authentication
+            driver = "ODBC Driver 17 for SQL Server"
+            connection_string = (
+                f"DRIVER={{{driver}}};"
+                f"SERVER={db.host};"
+                f"DATABASE={db.database};"
+                f"UID={db.user};"
+                f"PWD={db.password};"
+            )
+        
+        # URL encode the connection string
+        params = quote_plus(connection_string)
+        return f"mssql+pyodbc:///?odbc_connect={params}"
     elif db_type == DatabaseType.MARIA_DB:
         return f"mariadb+pymysql://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
     elif db_type == DatabaseType.ORACLE_DB:

@@ -39,8 +39,11 @@ async def connect_database(connection_id: str):
         if not connection_data:
             raise HTTPException(status_code=404, detail="Connection ID not found.")
         
+        # Normalize database type (remove spaces and convert to lowercase)
+        db_type_normalized = connection_data["db_type"].lower().replace(" ", "")
+        
         mapped_data = {
-            "type": [DatabaseType(connection_data["db_type"].lower())],  # convert to enum
+            "type": [DatabaseType(db_type_normalized)],  # convert to enum
             "host": resolve_database_host(connection_data["host"]),
             "port": connection_data["port"],
             "user": connection_data["username"],
